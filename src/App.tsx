@@ -1,4 +1,5 @@
 import { twMerge } from "tailwind-merge";
+import { Button } from "@shadcn/components/ui/button";
 
 const App = () => (
   <div
@@ -10,6 +11,9 @@ const App = () => (
     <p className="text-6xl lg:text-8xl text-blue-900 font-bold text-center">
       Quiz Project
     </p>
+    <Button onClick={() => alert("You just clicked a button")}> 
+     Click me!
+    </Button>
   </div>
 );
 

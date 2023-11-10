@@ -32,3 +32,17 @@ If you are developing a production application, we recommend updating the config
 - Run 'npm install'
 - Run 'npm run dev'
 - Enjoy!
+
+
+# UI Components
+
+The projects uses [shadcn/ui]() component collection
+
+To add a new component from the collection use the command.
+
+` npx shadcn-ui@latest add <component_name> `
+
+The components can be found [here](https://ui.shadcn.com/docs/components/), and each component has the command at the start.
+
+
+After executing the command, a new file will be added in `src/component/ui` and you can customize the component as you need it.
