@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { twMerge } from "tailwind-merge";
 import { Button } from "@shadcn/components/ui/button";
 
@@ -12,7 +13,7 @@ const App = () => (
       Quiz Project
     </p>
     <Button onClick={() => alert("You just clicked a button")}> 
-     Click me!
+      Click me!
     </Button>
   </div>
 );
