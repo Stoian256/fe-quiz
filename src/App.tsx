@@ -1,10 +1,12 @@
-// import { twMerge } from "tailwind-merge";
-// import { Button } from "@shadcn/components/ui/button";
+import { CardWithForm } from "./components/components/cardWithForm/CardWithForm";
 
-const App = () => (
-  <div>
-    
-  </div>
-);
+
+const App = () => {
+  return (
+    <div>
+      <CardWithForm />
+    </div>
+  );
+}
 
 export default App;
