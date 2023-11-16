@@ -10,24 +10,26 @@ interface FormTagsProps {
   onUpdateTags: (tags: string[]) => void;
 }
 
-
-const FormTags: React.FC<FormTagsProps> = ({onUpdateTags}) => {
-
+const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
   const [inputTag, setInputTag] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);;
+  const [tags, setTags] = useState<string[]>([]);
   const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
     setInputTag(inputText);
 
     if (inputText === "" || inputText.endsWith(",")) {
       const newTag = inputText.replace(",", "").trim();
-      if (validateTag(newTag)) {
-        setTags([...tags, newTag]);
+      if (newTag && validateTag(newTag)) {
+        if (!tags.includes(newTag)) {
+          setTags([...tags, newTag]);
+          onUpdateTags([...tags, newTag]);
+        } else {
+          alert("Tag already exists");
+        }
         setInputTag("");
-        onUpdateTags([...tags, newTag]);
       }
     }
-  }
+  };
 
   const validateTag = (tag: string): boolean => {
     const isValid = /^[a-zA-Z0-9]{4,15}$/.test(tag);
@@ -35,19 +37,19 @@ const FormTags: React.FC<FormTagsProps> = ({onUpdateTags}) => {
       alert("Invalid Tag");
     }
     return isValid;
-  }
+  };
 
   const removeTag = (tagToRemove: string) => {
-    const updatedTags = tags.filter(tag => tag !== tagToRemove);
+    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
     setTags(updatedTags);
     onUpdateTags(updatedTags);
-  }
+  };
 
   const suggestTags = (inputText: string): string[] => {
-    const suggestedTags = tags.filter(tag => tag.startsWith(inputText));
+    const suggestedTags = tags.filter((tag) => tag.startsWith(inputText));
 
     return suggestedTags;
-  }
+  };
 
   return (
     <div className="flex flex-col space-y-1.5">
@@ -59,7 +61,11 @@ const FormTags: React.FC<FormTagsProps> = ({onUpdateTags}) => {
             {tags.map((tag, i) => (
               <div key={i} className="flex items-center">
                 <Tag tagName={tag} />
-                <Button variant={"ghost"} size={"icon"} onClick={()=> removeTag(tag)}>
+                <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  onClick={() => removeTag(tag)}
+                >
                   <X className="h-2 w-2" />
                 </Button>
               </div>
@@ -69,13 +75,12 @@ const FormTags: React.FC<FormTagsProps> = ({onUpdateTags}) => {
             <Label htmlFor="tag">Add new Tag</Label>
             <Input id="tag" value={inputTag} onChange={handleTagsChange} />
             <div>
-              {inputTag.length > 0 && 
+              {inputTag.length > 0 &&
                 suggestTags(inputTag).map((tag, i) => (
                   <div key={i} className="bg-gray-200 p-1">
                     {tag}
                   </div>
-                ))
-              }
+                ))}
             </div>
           </div>
         </CardContent>
