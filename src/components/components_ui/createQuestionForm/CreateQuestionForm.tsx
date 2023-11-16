@@ -1,5 +1,5 @@
-import { Button } from "../../ui/button";
-import { Card, CardContent, CardFooter } from "../../ui/card";
+
+import { Card, CardContent } from "../../ui/card";
 import Form from "../form/Form";
 
 const CreateQuestionForm = () => {
@@ -11,9 +11,6 @@ const CreateQuestionForm = () => {
         <CardContent>
           <Form />
         </CardContent>
-        <CardFooter className="flex">
-          <Button>Create Question</Button>
-        </CardFooter>
       </Card>
     </div>
   );

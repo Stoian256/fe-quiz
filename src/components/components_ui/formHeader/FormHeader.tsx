@@ -2,13 +2,13 @@ import { CardTitle } from "@shadcn/components/ui/card";
 import { Textarea } from "@shadcn/components/ui/textarea";
 
 interface QuestionBodyProps {
-  onQuestionBodyChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onQuestionBodyChange: (text: string) => void;
 }
 
 const FormHeader: React.FC<QuestionBodyProps> = ({ onQuestionBodyChange }) => {
   
   const handleQuestionBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onQuestionBodyChange(event);
+    onQuestionBodyChange(event.target.value);
   }
 
   return (
