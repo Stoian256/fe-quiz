@@ -1,6 +1,6 @@
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import { Outlet } from "react-router-dom";
+import Page from "./Page";
 
 const Layout = () => {
   return (
@@ -11,7 +11,10 @@ const Layout = () => {
         <Navbar />
         <div className="bg-gray-200 w-full">Breadcrumbs</div>
         <div className="flex-1 overflow-y-auto p-4 pt-2 bg-gray-200">
-          <Outlet />
+          <Page
+            mainTitle={"Create Question"}
+            title="Add a new question to the system"
+          />
         </div>
       </div>
     </div>
