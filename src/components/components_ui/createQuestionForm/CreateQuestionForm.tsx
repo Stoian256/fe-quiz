@@ -2,7 +2,7 @@ import { Button } from "../../ui/button";
 import { Card, CardContent, CardFooter } from "../../ui/card";
 import Form from "../form/Form";
 
-const CardWithForm = () => {
+const CreateQuestionForm = () => {
   return (
     <div>
       <h1 className="pl-6 mb-1.5 text-xl font-medium text-slate-500">Create Question</h1>
@@ -19,4 +19,4 @@ const CardWithForm = () => {
   );
 }
 
-export default CardWithForm;
+export default CreateQuestionForm;

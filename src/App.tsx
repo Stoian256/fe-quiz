@@ -1,10 +1,11 @@
-import { CardWithForm } from "./components/components_ui/createQuestionForm/CreateQuestionForm";
+import CreateQuestionForm from "./components/components_ui/createQuestionForm/CreateQuestionForm";
+
 
 
 const App = () => {
   return (
     <div>
-      <CardWithForm />
+      <CreateQuestionForm />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import FormHeader from "../formHeader/FormHeader";
 import FormDifficultySelect from "../formDifficultySelect/FormDifficultySelect";
@@ -11,6 +11,8 @@ interface FormData {
   tags: string[];
   answers: string[];
 }
+
+const BE_URL = "";
 
 const Form: React.FC = () => {
 
@@ -53,7 +55,7 @@ const Form: React.FC = () => {
   };
   const sendDataToBackend = async (dataToSend: FormData) => {
     try {
-      const response = await fetch('your-backend-url', {
+      const response = await fetch(BE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,14 +71,24 @@ const Form: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); 
+
     if (validateData()) {
-      sendDataToBackend(dataToSend);
+      try {
+        await sendDataToBackend(dataToSend);
+        
+      } catch (error) {
+        console.error('Error occurred while sending data:', error);
+        
+      }
+    } else {
+      throw new Error("There has been an error")
     }
-  }, [questionBody, difficultyLevel, tags, answers])
+  };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="grid w-full items-center gap-4">
         <FormHeader onQuestionBodyChange={handleQuestionBodyChange} />
         <FormDifficultySelect onDifficultyChange= {handleDifficultyLevelChange} />
