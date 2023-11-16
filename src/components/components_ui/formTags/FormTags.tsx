@@ -3,7 +3,17 @@ import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
 import { Label } from "@shadcn/components/ui/label";
 
-const FormTags = () => {
+interface TagsComponentProps {
+  onTagsChange: (tags: string[]) => void;
+}
+
+
+const FormTags: React.FC<TagsComponentProps> = ({ onTagsChange }) => {
+  const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsArray = event.target.value.split(',').map((tag) => tag.trim());
+    onTagsChange(tagsArray);
+  }
+
   return (
     <div className="flex flex-col space-y-1.5">
       <CardTitle className="text-sm mt-2">Tags</CardTitle>
@@ -16,7 +26,7 @@ const FormTags = () => {
           </div>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="tag">Add new Tag</Label>
-            <Input id="tag" />
+            <Input id="tag" onChange={handleTagsChange} />
           </div>
         </CardContent>
       </Card>

@@ -29,7 +29,11 @@ const answerData = [
   }
 ]
 
-const FormAnswers = () => {
+interface AnswersComponentProps {
+  onAnswersChange: (answers: string[]) => void;
+}
+
+const FormAnswers: React.FC<AnswersComponentProps> = ({ onAnswersChange }) => {
   return (
     <div className="flex flex-col space-y-3">
       <CardTitle className="text-sm mt-2">Answers</CardTitle>
@@ -46,6 +50,7 @@ const FormAnswers = () => {
                 answerTxt={answer.answerTxt}
                 inputId={answer.inputId}
                 switchId={answer.switchId}
+                onAnswersChange={onAnswersChange}
               />
             ))}
           </div>

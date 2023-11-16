@@ -11,9 +11,16 @@ interface Props {
   answerTxt: string;
   inputId: string;
   switchId: string;
+  onAnswersChange: (answers: string[]) => void;
 }
 
-const AnswerOption = ({option, button, answerTitle, answerTxt, inputId, switchId}: Props) => {
+const AnswerOption: React.FC<Props> = ({ option, button, answerTitle, answerTxt, inputId, switchId, onAnswersChange }) => {
+  
+  const handleAnswersChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const answersArray = event.target.value.split(',').map((answer) => answer.trim());
+    onAnswersChange(answersArray);
+  }
+
   return (
     <>
       <div className="flex items-center justify-between pt-1.5 pb-5 px-6 border-b">
@@ -26,7 +33,7 @@ const AnswerOption = ({option, button, answerTitle, answerTxt, inputId, switchId
         {answerTitle}
       </Label>
       <div className="px-6">
-        <Input id={inputId} />
+        <Input id={inputId} onChange={handleAnswersChange} />
       </div>
       <div className="flex items-center gap-2 pl-6">
         <Switch id={switchId} />
