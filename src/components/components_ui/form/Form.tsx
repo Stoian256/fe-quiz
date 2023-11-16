@@ -29,9 +29,8 @@ const Form: React.FC = () => {
     setDifficultyLevel(event.target.value);
   };
 
-  
-  const handleTagsChange = (tagsArray: string[]) => {
-    setTags(tagsArray);
+  const updateTags = (newTags: string[]) => {
+    setTags(newTags);
   }
 
   const handleAnswersChange = (answersArray: string[]) => {
@@ -92,7 +91,7 @@ const Form: React.FC = () => {
       <div className="grid w-full items-center gap-4">
         <FormHeader onQuestionBodyChange={handleQuestionBodyChange} />
         <FormDifficultySelect onDifficultyChange= {handleDifficultyLevelChange} />
-        <FormTags onTagsChange={handleTagsChange} />
+        <FormTags onUpdateTags={updateTags} />
         <FormAnswers onAnswersChange={handleAnswersChange} />
       </div>
     </form>
