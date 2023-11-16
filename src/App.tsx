@@ -1,4 +1,4 @@
-import { CardWithForm } from "./components/components/cardWithForm/CardWithForm";
+import { CardWithForm } from "./components/components_ui/cardWithForm/CardWithForm";
 
 
 const App = () => {
