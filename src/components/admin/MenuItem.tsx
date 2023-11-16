@@ -9,16 +9,14 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ icon, label, path }) => {
   return (
-    <div className="menu_item">
+    <div>
       <NavLink
         to={path}
         className={({ isActive }) =>
-          isActive
-            ? "text-black bg-gray-100"
-            : "hover:text-black hover:bg-gray-100 transition-colors duration-300"
+          isActive ? "text-yellow-500 bg-gray-100" : ""
         }
       >
-        <div className="flex flex-row p-2 gap-2">
+        <div className="flex flex-row p-2 gap-2 font-semibold hover:bg-white hover:text-dblue transition-colors duration-30">
           {icon}
           <span>{label}</span>
         </div>

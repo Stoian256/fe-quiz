@@ -1,11 +1,10 @@
-import logo from "./../assets/ddroidd.png";
+import logo from "./../assets/header-logo-white.svg";
 
 const Logo = () => {
   return (
-    <>
+    <div className="p-6 pl-2">
       <img src={logo} alt={logo} />
-      {/* <h1 className="text-5xl text-center mx-2">d_</h1> */}
-    </>
+    </div>
   );
 };
 
