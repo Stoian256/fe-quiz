@@ -73,7 +73,7 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
           </div>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="tag">Add new Tag</Label>
-            <Input id="tag" value={inputTag} onChange={handleTagsChange} />
+            <Input id="tag" value={inputTag} onChange={handleTagsChange} autoComplete="off" />
             <div>
               {inputTag.length > 0 &&
                 suggestTags(inputTag).map((tag, i) => (

@@ -14,7 +14,7 @@ const FormHeader: React.FC<QuestionBodyProps> = ({ onQuestionBodyChange }) => {
   return (
     <div className="flex flex-col space-y-1.5">
       <CardTitle className="text-sm mt-2">Question Title</CardTitle>
-      <Textarea id="title" placeholder="Your Question Title Here..." onChange={handleQuestionBodyChange} />
+      <Textarea id="title" placeholder="Your Question Title Here..." onChange={handleQuestionBodyChange} autoComplete="off" />
     </div>
   );
 };

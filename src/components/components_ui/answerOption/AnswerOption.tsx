@@ -33,7 +33,7 @@ const AnswerOption: React.FC<Props> = ({ option, button, answerTitle, answerTxt,
         {answerTitle}
       </Label>
       <div className="px-6">
-        <Input id={inputId} onChange={handleAnswersChange} />
+        <Input id={inputId} onChange={handleAnswersChange} autoComplete="off" />
       </div>
       <div className="flex items-center gap-2 pl-6">
         <Switch id={switchId} />
