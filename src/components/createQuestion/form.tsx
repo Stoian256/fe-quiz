@@ -6,12 +6,13 @@ import FormTags from "./formTags";
 import FormAnswers from "./formAnswers";
 import { CardFooter } from "@shadcn/components/ui/card";
 import { Button } from "@shadcn/components/ui/button";
+import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
 
 interface FormData {
   questionBody: string;
   difficultyLevel: string;
   tags: string[];
-  answers: string[];
+  answers: AnswerData[];
 }
 
 const BE_URL = "";
@@ -20,7 +21,12 @@ const Form: React.FC = () => {
   const [questionBody, setQuestionBody] = useState<string>("");
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<AnswerData[]>([
+    {
+      answerBody: "",
+      isCorrect: false
+    }
+  ]);
 
   const handleQuestionBodyChange = (text: string) => {
     setQuestionBody(text);
@@ -36,7 +42,7 @@ const Form: React.FC = () => {
     setTags(newTags);
   };
 
-  const handleAnswersChange = (answersArray: string[]) => {
+  const handleAnswersChange = (answersArray: AnswerData[]) => {
     setAnswers(answersArray);
   };
 
@@ -96,9 +102,12 @@ const Form: React.FC = () => {
           onDifficultyChange={handleDifficultyLevelChange}
         />
         <FormTags onUpdateTags={updateTags} questionBody={questionBody} />
-        <FormAnswers onAnswersChange={handleAnswersChange} />
+        <FormAnswers
+          onAnswersChange={handleAnswersChange}
+          answerData={answers}
+        />
         <CardFooter>
-          <Button>Create Question</Button>
+          <Button type="submit">Create Question</Button>
         </CardFooter>
       </div>
     </form>
