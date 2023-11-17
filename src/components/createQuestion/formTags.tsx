@@ -19,8 +19,12 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
       const newTag = inputText.replace(",", "").trim();
       if (newTag && validateTag(newTag)) {
         if (!tags.includes(newTag)) {
-          setTags([...tags, newTag]);
-          onUpdateTags([...tags, newTag]);
+          if (tags.length < 7) {
+            setTags([...tags, newTag]);
+            onUpdateTags([...tags, newTag]);
+          } else {
+            alert("Cannot add more than 7 tags");
+          }
         } else {
           alert("Tag already exists");
         }

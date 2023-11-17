@@ -1,15 +1,27 @@
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Textarea } from "@shadcn/components/ui/textarea";
+import { useState } from "react";
 
 interface QuestionBodyProps {
   onQuestionBodyChange: (text: string) => void;
 }
 
 const FormHeader: React.FC<QuestionBodyProps> = ({ onQuestionBodyChange }) => {
+
+  const [capitalizedText, setCapitalizedText] = useState<string>("");
+
+  const capitalizeFirstLetter = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
   const handleQuestionBodyChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    onQuestionBodyChange(event.target.value);
+
+    const inputText = event.target.value;
+    const capitalizedText = capitalizeFirstLetter(inputText);
+    setCapitalizedText(capitalizedText)
+    onQuestionBodyChange(capitalizedText);
   };
 
   const handleQuestionBodyBlur = (
@@ -17,7 +29,7 @@ const FormHeader: React.FC<QuestionBodyProps> = ({ onQuestionBodyChange }) => {
   ) => {
     const inputText = event.target.value;
 
-    const questionBodyRegex = /^[\w\s!?,.\-_@]{10,}$/;
+    const questionBodyRegex = /.{20,}$/;
 
     if (questionBodyRegex.test(inputText)) {
       onQuestionBodyChange(inputText);
@@ -32,6 +44,7 @@ const FormHeader: React.FC<QuestionBodyProps> = ({ onQuestionBodyChange }) => {
       <Textarea
         id="title"
         placeholder="Your Question Title Here..."
+        value={capitalizedText}
         onChange={handleQuestionBodyChange}
         onBlur={handleQuestionBodyBlur}
         autoComplete="off"

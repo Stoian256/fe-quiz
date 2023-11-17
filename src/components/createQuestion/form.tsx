@@ -77,14 +77,6 @@ const Form: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const questionBodyRegex = /^[a-zA-Z0-9!?,.\-_ ]{10,200}$/;
-
-    if (questionBodyRegex.test(questionBody)) {
-      console.log("Question body is valid: ", questionBody);
-    } else {
-      alert("Invalid Question Body");
-    }
-
     if (validateData()) {
       try {
         await sendDataToBackend(dataToSend);
