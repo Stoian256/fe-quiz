@@ -1,4 +1,4 @@
-import CreateQuestionForm from "./components/componentsCreateQuestion/createQuestionForm";
+import CreateQuestionForm from "./components/createQuestion/createQuestionForm";
 
 const App = () => {
   return (

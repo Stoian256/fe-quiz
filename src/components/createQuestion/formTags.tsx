@@ -3,8 +3,6 @@ import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
 import { Label } from "@shadcn/components/ui/label";
 import Tag from "./tag";
-import { Button } from "@shadcn/components/ui/button";
-import { X } from "lucide-react";
 
 interface FormTagsProps {
   onUpdateTags: (tags: string[]) => void;
@@ -31,8 +29,13 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
     }
   };
 
+  const handleRemoveAllTags = () => {
+    setTags([]);
+    onUpdateTags([]);
+  };
+
   const validateTag = (tag: string): boolean => {
-    const isValid = /^[a-zA-Z0-9]{4,15}$/.test(tag);
+    const isValid = /^[a-zA-Z0-9].{1,}$/.test(tag);
     if (!isValid) {
       alert("Invalid Tag");
     }
@@ -59,18 +62,17 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
           <CardTitle className="text-sm mt-2">Selected Tags</CardTitle>
           <div className="flex gap-1">
             {tags.map((tag, i) => (
-              <div key={i} className="flex items-center">
-                <Tag tagName={tag} />
-                <Button
-                  variant={"ghost"}
-                  size={"icon"}
-                  onClick={() => removeTag(tag)}
-                >
-                  <X className="h-2 w-2" />
-                </Button>
-              </div>
+              <Tag key={i} tagName={tag} onClick={() => removeTag(tag)} />
             ))}
           </div>
+          {tags.length > 1 && (
+            <button
+              onClick={handleRemoveAllTags}
+              className="mt-2 px-3 py-1 text-gray-400 bg-transparent"
+            >
+              remove all tags
+            </button>
+          )}
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="tag">Add new Tag</Label>
             <Input
