@@ -1,5 +1,5 @@
-import Logo from "../Logo";
-import MenuItem from "./MenuItem";
+import Logo from "./logo";
+import MenuItem from "./menuItem";
 import { PieChart } from "lucide-react";
 import { LayoutGrid } from "lucide-react";
 import { AppWindow } from "lucide-react";

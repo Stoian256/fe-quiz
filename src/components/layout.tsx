@@ -1,7 +1,7 @@
-import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
-import Page from "./Page";
-import Breadcrumbs from "./Breadcrumbs";
+import Sidebar from "./sidebar";
+import Navbar from "./navbar";
+import Page from "./page";
+import Breadcrumbs from "./breadcrumbs";
 
 const Layout = () => {
   return (

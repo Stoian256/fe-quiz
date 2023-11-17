@@ -1,10 +1,9 @@
-// import { twMerge } from "tailwind-merge";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/admin/Layout";
-import Dashboard from "./pages/admin/Dashboard";
-import Questions from "./pages/admin/Questions";
-import Quizzes from "./pages/admin/Quizzes";
-import QCreate from "./pages/admin/QCreate";
+import Layout from "./components/layout";
+import Dashboard from "./pages/adminDashboard";
+import Questions from "./pages/adminQuestions";
+import Quizzes from "./pages/adminQuizzes";
+import QCreate from "./pages/adminQCreate";
 
 const App = () => (
   <BrowserRouter>
