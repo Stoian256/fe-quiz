@@ -1,9 +1,12 @@
 import Sidebar from "./sidebar";
 import Navbar from "./navbar";
-import Page from "./page";
 import Breadcrumbs from "./breadcrumbs";
+import { Outlet, useLocation } from "react-router-dom";
 
 const Layout = () => {
+  const location = useLocation();
+  const { state } = location;
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -12,7 +15,13 @@ const Layout = () => {
         <Navbar />
         <Breadcrumbs />
         <div className="flex-1 overflow-y-auto p-4 pt-2 bg-gray-200">
-          <Page />
+          <div className="bg-gray-200">
+            <h1 className="text-lg font-semibold">{state?.mainTitle || ""}</h1>
+            <h3 className="text-sm">{state?.title || ""}</h3>
+            <div className="bg-white min-h-[calc(100vh-200px)] rounded-md mt-4">
+              <Outlet />
+            </div>
+          </div>
         </div>
       </div>
     </div>
