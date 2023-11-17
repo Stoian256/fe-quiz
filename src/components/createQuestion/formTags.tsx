@@ -6,9 +6,10 @@ import Tag from "./tag";
 
 interface FormTagsProps {
   onUpdateTags: (tags: string[]) => void;
+  questionBody: string;
 }
 
-const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
+const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionBody }) => {
   const [inputTag, setInputTag] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,10 +53,35 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
     onUpdateTags(updatedTags);
   };
 
-  const suggestTags = (inputText: string): string[] => {
-    const suggestedTags = tags.filter((tag) => tag.startsWith(inputText));
+  const suggestTagsFromBody = (bodyText: string): string[] => {
+    const words = bodyText.split(/\s+/);
 
-    return suggestedTags;
+    const tagSuggestions = words
+      .filter((word) => word.length > 2 && word.length <= 15)
+      .slice(0, 5)
+      .map((word) => word.toLowerCase());
+    return tagSuggestions;
+  };
+
+  const suggestTags = (inputText: string, questionBody: string): string[] => {
+    const suggestedTags = suggestTagsFromBody(questionBody);
+
+    const matchingTags = suggestedTags.filter((tag) =>
+      tag.toLowerCase().includes(inputText.toLowerCase())
+    );
+
+    return matchingTags.filter((tag) => !tags.includes(tag));
+  };
+
+  const handleTagSelection = (selectedTag: string) => {
+    setInputTag(selectedTag);
+    if (validateTag(selectedTag)) {
+      setTags([...tags, selectedTag]);
+      onUpdateTags([...tags, selectedTag]);
+      setInputTag("");
+    } else {
+      alert("Invalid Tag");
+    }
   };
 
   return (
@@ -87,8 +113,12 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
             />
             <div>
               {inputTag.length > 0 &&
-                suggestTags(inputTag).map((tag, i) => (
-                  <div key={i} className="bg-gray-200 p-1">
+                suggestTags(inputTag, questionBody).map((tag, i) => (
+                  <div
+                    key={i}
+                    className="bg-gray-200 p-1"
+                    onClick={() => handleTagSelection(tag)}
+                  >
                     {tag}
                   </div>
                 ))}

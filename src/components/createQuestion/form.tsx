@@ -95,7 +95,7 @@ const Form: React.FC = () => {
         <FormDifficultySelect
           onDifficultyChange={handleDifficultyLevelChange}
         />
-        <FormTags onUpdateTags={updateTags} />
+        <FormTags onUpdateTags={updateTags} questionBody={questionBody} />
         <FormAnswers onAnswersChange={handleAnswersChange} />
         <CardFooter>
           <Button>Create Question</Button>
