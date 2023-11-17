@@ -30,13 +30,12 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
   onAnswersChange,
   answerData
 }) => {
-  const addNewAnswer = () => {
-    const newAnswer = {
-      answerBody: "",
-      isCorrect: false
-    };
-
-    const updatedAnswers = [...answerData, newAnswer];
+  const handleAnswerChange = (index: number, newData: Partial<AnswerData>) => {
+    const updatedAnswers = [...answerData];
+    if (index >= updatedAnswers.length) {
+      updatedAnswers.push({ answerBody: '', isCorrect: false });
+    }
+    updatedAnswers[index] = { ...updatedAnswers[index], ...newData };
     onAnswersChange(updatedAnswers);
   };
 
@@ -59,9 +58,8 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
                 answerTxt={answer.answerTxt}
                 inputId={answer.inputId}
                 switchId={answer.switchId}
-                onAnswersChange={onAnswersChange}
+                onAnswersChange={handleAnswerChange}
                 answerData={answerData}
-                addNewAnswer={addNewAnswer}
               />
             ))}
           </div>

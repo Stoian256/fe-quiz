@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@shadcn/components/ui/button";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
@@ -14,7 +13,7 @@ interface Props {
   answerTxt: string;
   inputId: string;
   switchId: string;
-  onAnswersChange: (answers: AnswerData[]) => void;
+  onAnswersChange: (index: number, answerBody: {}) => void;
   answerData: AnswerData[];
 }
 
@@ -28,29 +27,17 @@ const AnswerOption: React.FC<Props> = ({
   switchId,
   onAnswersChange,
   answerData,
-  addNewAnswer
 }) => {
   const initialAnswerData = answerData.length > index ? answerData[index] : { answerBody: "", isCorrect: false };
-  const [answerBody, setAnswerBody] = useState<string>(initialAnswerData.answerBody);
-  const [isCorrect, setIsCorrect] = useState<boolean>(initialAnswerData.isCorrect);
 
   const handleAnswerInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const newAnswerBody = event.target.value;
-    setAnswerBody(newAnswerBody);
-    updateAnswers({ answerBody: newAnswerBody, isCorrect });
+    onAnswersChange(index, { answerBody: event.target.value });
   };
 
   const handleSwitchChange = () => {
-    setIsCorrect((prevIsCorrect) => !prevIsCorrect);
-    updateAnswers({ answerBody, isCorrect: !isCorrect });
-  };
-
-  const updateAnswers = (newAnswer: AnswerData) => {
-    const updatedAnswers = answerData.map((answer, i) => (i === index ? newAnswer : answer));
-    onAnswersChange(updatedAnswers);
-    addNewAnswer()
+    onAnswersChange(index, { isCorrect: !initialAnswerData.isCorrect });
   };
 
   return (
@@ -67,7 +54,7 @@ const AnswerOption: React.FC<Props> = ({
       <div className="px-6">
         <Input
           id={inputId}
-          value={answerBody}
+          
           onChange={handleAnswerInputChange}
           autoComplete="off"
         />
@@ -75,7 +62,7 @@ const AnswerOption: React.FC<Props> = ({
       <div className="flex items-center gap-2 pl-6">
         <Switch
           id={switchId}
-          checked={isCorrect}
+          checked={initialAnswerData.isCorrect}
           onClick={handleSwitchChange}
         />
         <span>{answerTxt}</span>
