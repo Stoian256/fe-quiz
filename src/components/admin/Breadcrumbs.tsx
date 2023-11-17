@@ -19,7 +19,7 @@ const Breadcrumbs = () => {
     <div className="bg-gray-200 w-full ">
       <div className="flex items-center justify-start pl-4 h-6">
         <Link to={"/"}>
-          <Home className="h-3 w-3" />
+          <Home className="h-3 w-3 hover:text-yellow-600 transition-colors duration-30" />
         </Link>
         {space}
         {pathnames.map((value, index) => {
@@ -42,7 +42,10 @@ const Breadcrumbs = () => {
                 </>
               ) : (
                 <>
-                  <Link to={to} className="">
+                  <Link
+                    to={to}
+                    className="hover:text-yellow-600 transition-colors duration-30"
+                  >
                     <span>/</span>
                     <span>
                       {space}

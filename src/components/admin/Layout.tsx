@@ -12,10 +12,7 @@ const Layout = () => {
         <Navbar />
         <Breadcrumbs />
         <div className="flex-1 overflow-y-auto p-4 pt-2 bg-gray-200">
-          <Page
-            mainTitle={"Create Question"}
-            title="Add a new question to the system"
-          />
+          <Page />
         </div>
       </div>
     </div>
