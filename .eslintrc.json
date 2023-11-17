@@ -6,10 +6,6 @@
     "tsconfigRootDir": "__dirname",
     "sourceType": "module",
     "ecmaVersion": "latest"
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "project": ["./tsconfig.json", "./tsconfig.node.json"],
-    "tsconfigRootDir": "__dirname"
   },
   "plugins": ["react-refresh"],
   "extends": [

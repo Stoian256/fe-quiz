@@ -3,7 +3,7 @@ import Form from "./form";
 
 const CreateQuestionForm = () => {
   return (
-    <Card className="pt-5 m-5">
+    <Card className="mx-5">
       <CardContent>
         <Form />
       </CardContent>
