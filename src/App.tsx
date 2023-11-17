@@ -1,6 +1,4 @@
-import CreateQuestionForm from "./components/components_ui/createQuestionForm/CreateQuestionForm";
-
-
+import CreateQuestionForm from "./components/componentsCreateQuestion/createQuestionForm";
 
 const App = () => {
   return (
@@ -8,6 +6,6 @@ const App = () => {
       <CreateQuestionForm />
     </div>
   );
-}
+};
 
 export default App;

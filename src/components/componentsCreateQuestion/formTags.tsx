@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
 import { Label } from "@shadcn/components/ui/label";
-import Tag from "../tag/Tag";
+import Tag from "./tag";
 import { Button } from "@shadcn/components/ui/button";
 import { X } from "lucide-react";
 
@@ -73,7 +73,12 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags }) => {
           </div>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="tag">Add new Tag</Label>
-            <Input id="tag" value={inputTag} onChange={handleTagsChange} autoComplete="off" />
+            <Input
+              id="tag"
+              value={inputTag}
+              onChange={handleTagsChange}
+              autoComplete="off"
+            />
             <div>
               {inputTag.length > 0 &&
                 suggestTags(inputTag).map((tag, i) => (

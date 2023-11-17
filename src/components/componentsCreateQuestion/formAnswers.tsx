@@ -1,6 +1,6 @@
 import { Button } from "@shadcn/components/ui/button";
 import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
-import AnswerOption from "../answerOption/AnswerOption";
+import AnswerOption from "./answerOption";
 
 const answerData = [
   {
@@ -27,7 +27,7 @@ const answerData = [
     inputId: "answer3",
     switchId: "switch3"
   }
-]
+];
 
 interface AnswersComponentProps {
   onAnswersChange: (answers: string[]) => void;

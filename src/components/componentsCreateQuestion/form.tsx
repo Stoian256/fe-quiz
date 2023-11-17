@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import FormHeader from "../formHeader/FormHeader";
-import FormDifficultySelect from "../formDifficultySelect/FormDifficultySelect";
-import FormTags from "../formTags/FormTags";
-import FormAnswers from "../formAnswers/FormAnswers";
+import FormHeader from "./formHeader";
+import FormDifficultySelect from "./formDifficultySelect";
+import FormTags from "./formTags";
+import FormAnswers from "./formAnswers";
 import { CardFooter } from "@shadcn/components/ui/card";
 import { Button } from "@shadcn/components/ui/button";
 
