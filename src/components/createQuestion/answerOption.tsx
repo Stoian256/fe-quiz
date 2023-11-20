@@ -15,6 +15,7 @@ interface Props {
   switchId: string;
   onAnswersChange: (index: number, answerBody: {}) => void;
   answerData: AnswerData[];
+  onRemove: () => void;
 }
 
 const AnswerOption: React.FC<Props> = ({
@@ -27,8 +28,12 @@ const AnswerOption: React.FC<Props> = ({
   switchId,
   onAnswersChange,
   answerData,
+  onRemove
 }) => {
-  const initialAnswerData = answerData.length > index ? answerData[index] : { answerBody: "", isCorrect: false };
+  const initialAnswerData =
+    answerData.length > index
+      ? answerData[index]
+      : { answerBody: "", isCorrect: false };
 
   const handleAnswerInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -44,7 +49,12 @@ const AnswerOption: React.FC<Props> = ({
     <>
       <div className="flex items-center justify-between pt-1.5 pb-5 px-6 border-b">
         <CardTitle className="text-sm mt-2 font-normal">{option}</CardTitle>
-        <Button className="text-red-400 border-red-400" variant={"outline"}>
+        <Button
+          className="text-red-400 border-red-400"
+          variant={"outline"}
+          type="button"
+          onClick={onRemove}
+        >
           {button}
         </Button>
       </div>
@@ -54,7 +64,6 @@ const AnswerOption: React.FC<Props> = ({
       <div className="px-6">
         <Input
           id={inputId}
-          
           onChange={handleAnswerInputChange}
           autoComplete="off"
         />
