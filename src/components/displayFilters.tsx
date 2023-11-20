@@ -19,7 +19,7 @@ import {
   DialogTrigger
 } from "./ui/dialog";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import { useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 
 const listOfAllTags = [
   {
@@ -48,17 +48,29 @@ const listOfAllTags = [
   }
 ];
 
+interface Filters {
+  keyword: string;
+  difficulty: string;
+  tags: string[];
+  [key: string]: string | string[]; // Index signature
+}
+
+interface ListOfTags {
+  id: number;
+  name: string;
+}
+
 const DisplayFilters = () => {
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [listOfTags, setListOfTags] = useState(listOfAllTags);
-  const [filters, setFilters] = useState({
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [listOfTags, setListOfTags] = useState<ListOfTags[]>(listOfAllTags);
+  const [filters, setFilters] = useState<Filters>({
     keyword: "",
     difficulty: "",
     tags: []
   });
-  const difficulties = ["Easy", "Medium", "Hard"];
+  const difficulties: string[] = ["Easy", "Medium", "Hard"];
 
-  const handleOnSelect = (item) => {
+  const handleOnSelect = (item: { name: string }) => {
     const { name } = item;
 
     // filter the list of tags to not include the already selected tags
@@ -67,14 +79,15 @@ const DisplayFilters = () => {
     setSelectedTags((prevTags) => [...prevTags, name]);
   };
 
-  const formatResult = (item) => (
+  const formatResult = (item: { name: string }) => (
     <span style={{ cursor: "pointer", fontSize: "14px" }}>{item.name}</span>
   );
 
-  const handleDeleteTag = (e) => {
+  const handleDeleteTag = (e: MouseEvent<HTMLDivElement, MouseEvent>): void => {
     // accesing e.target.innerHTML to get the Badge value
     // removing the clicked tag from the selected tags list AND adding it to the list tags
-    const tagToChange = e.target.innerHTML;
+
+    const tagToChange: string = e.currentTarget.innerHTML; // changed target to currentTarget
 
     setSelectedTags((prevTags) =>
       prevTags.filter((tag) => tag !== tagToChange)
@@ -93,7 +106,7 @@ const DisplayFilters = () => {
     setListOfTags(listOfAllTags);
   };
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e: string | ChangeEvent<HTMLInputElement>) => {
     if (typeof e === "string") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -169,7 +182,10 @@ const DisplayFilters = () => {
                 {selectedTags.map((tag, index) => (
                   <Badge
                     key={index}
-                    onClick={(e) => handleDeleteTag(e)}
+                    onClick={
+                      handleDeleteTag as unknown as React.MouseEventHandler<HTMLDivElement>
+                      // fixed the ts error from onClick={(e) => handleDeleteTag(e)}
+                    }
                     className="cursor-pointer flex gap-2 relative pr-5"
                   >
                     {tag}
