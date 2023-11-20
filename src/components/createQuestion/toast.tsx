@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 interface ToastProps {
-  type: "success" | "error";
+  type: string;
   message: string;
   onClose: () => void;
 }

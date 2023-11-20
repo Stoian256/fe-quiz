@@ -28,8 +28,18 @@ const Form: React.FC = () => {
       isCorrect: false
     }
   ]);
-  const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);
-  const [showErrorToast, setShowErrorToast] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState<{ type: string; message: string } | null>(null);
+
+  const handleToastClose = () => {
+    setShowToast(null);
+  };
+
+  const displayToast = (type: string, message: string) => {
+    setShowToast({ type, message });
+    setTimeout(() => {
+      setShowToast(null);
+    }, 3000);
+  };
 
   const handleQuestionBodyChange = (text: string) => {
     setQuestionBody(text);
@@ -118,13 +128,13 @@ const Form: React.FC = () => {
       if (isFormValid) {
         await sendDataToBackend(dataToSend);
         resetForm();
-        setShowSuccessToast(true);
+        displayToast('success', 'Form submitted successfully!');
       } else {
         throw new Error("Invalid form data");
       }
     } catch (error) {
       console.error("Error occurred while submitting the form:", error);
-      setShowErrorToast(true);
+      displayToast('error', 'Failed to submit the form. Please try again.');
     }
   };
 
@@ -147,19 +157,11 @@ const Form: React.FC = () => {
         </div>
       </form>
       <div className="fixed bottom-4 right-4 z-50">
-        {showSuccessToast && (
+      {showToast && (
           <Toast
-            type="success"
-            message="Form submitted successfully!"
-            onClose={() => setShowSuccessToast(false)}
-          />
-        )}
-
-        {showErrorToast && (
-          <Toast
-            type="error"
-            message="Failed to submit the form. Please try again."
-            onClose={() => setShowErrorToast(false)}
+            type={showToast.type}
+            message={showToast.message}
+            onClose={handleToastClose}
           />
         )}
       </div>

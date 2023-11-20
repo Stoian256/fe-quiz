@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@shadcn/components/ui/button";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
@@ -35,10 +36,19 @@ const AnswerOption: React.FC<Props> = ({
       ? answerData[index]
       : { answerBody: "", isCorrect: false };
 
+  const [capitalizedText, setCapitalizedText] = useState<string>("");
+
+  const capitalizeFirstLetter = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
   const handleAnswerInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    onAnswersChange(index, { answerBody: event.target.value });
+    const inputText = event.target.value;
+    const capitalizedInputText = capitalizeFirstLetter(inputText);
+    setCapitalizedText(capitalizedInputText);
+    onAnswersChange(index, { answerBody: capitalizedInputText });
   };
 
   const handleSwitchChange = () => {
@@ -67,6 +77,7 @@ const AnswerOption: React.FC<Props> = ({
           onChange={handleAnswerInputChange}
           autoComplete="off"
           required
+          value={capitalizedText}
         />
       </div>
       <div className="flex items-center gap-2 pl-6">
