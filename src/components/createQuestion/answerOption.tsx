@@ -66,6 +66,7 @@ const AnswerOption: React.FC<Props> = ({
           id={inputId}
           onChange={handleAnswerInputChange}
           autoComplete="off"
+          required
         />
       </div>
       <div className="flex items-center gap-2 pl-6">

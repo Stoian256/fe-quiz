@@ -48,6 +48,7 @@ const FormHeader: React.FC<QuestionBodyProps> = ({ onQuestionBodyChange }) => {
         onChange={handleQuestionBodyChange}
         onBlur={handleQuestionBodyBlur}
         autoComplete="off"
+        required
       />
     </div>
   );

@@ -25,7 +25,7 @@ const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
   return (
     <div className="flex flex-col space-y-1.5">
       <CardTitle className="text-sm mt-2">Difficulty Level</CardTitle>
-      <Select onValueChange={handleDifficultyChange}>
+      <Select onValueChange={handleDifficultyChange} required>
         <SelectTrigger id="difficulty">
           <SelectValue placeholder="Select Difficulty Level..." />
         </SelectTrigger>

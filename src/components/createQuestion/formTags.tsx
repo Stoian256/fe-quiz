@@ -110,6 +110,7 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionBody }) => {
               value={inputTag}
               onChange={handleTagsChange}
               autoComplete="off"
+              required
             />
             <div>
               {inputTag.length > 0 &&
