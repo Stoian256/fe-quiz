@@ -375,16 +375,24 @@ const questionsData = [
   }
 ];
 
+interface Question {
+  question: string;
+  difficultyLevel: string;
+  tags: string[];
+  usedInQuizzes: number;
+  correctnessAccuracy: number;
+}
+
 // const handleDelete = (e) => {
 //   console.log(`Must delete question #${e.target.value}`);
 // };
 
 const DisplayQuestions = () => {
-  const [questions, setQuestions] = useState(questionsData);
-  const [filters, setFilters] = useState({});
-  const [pageNumber, setPageNumber] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState("10"); // 10, 15, 20
-  const [numbersOfPages, setNumbersOfPages] = useState(
+  const [questions, setQuestions] = useState<Question[]>(questionsData);
+  // const [filters, setFilters] = useState({}); // this are not used here - the filters are in the displayFilters component
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState("10"); // 10, 15, 20 // should be numbers!
+  const [numbersOfPages, setNumbersOfPages] = useState<number>(
     Math.ceil(questionsData.length / Number(itemsPerPage)) // calculate the numbers of page based on data array length
   );
 
@@ -399,7 +407,7 @@ const DisplayQuestions = () => {
     setQuestions((prevQuestions) =>
       prevQuestions.slice(startingIndex, lastIndex)
     );
-  }, [numbersOfPages, filters, pageNumber, itemsPerPage]);
+  }, [numbersOfPages, pageNumber, itemsPerPage]); // to also add filters in the dependency array
 
   const handleArrowClick = (direction: string) => {
     if (direction === "left") {
@@ -505,7 +513,8 @@ const DisplayQuestions = () => {
         />
 
         {/* add condition here for numbersOfPages max number */}
-        {[...Array(numbersOfPages)].map((page, index) => {
+        {[...Array(numbersOfPages)].map((_page, index) => {
+          // added _page because page is not used; could been only _ but page is more descriptive
           return (
             <Button
               variant="outline"
@@ -516,7 +525,7 @@ const DisplayQuestions = () => {
               }
               key={index}
               name={(index + 1).toString()}
-              onClick={(e) => setPageNumber(Number(e.target.name))}
+              onClick={(e) => setPageNumber(Number(e.currentTarget.name))} // changed target to currentTarget to fix TS issue
             >
               {index + 1}
             </Button>
