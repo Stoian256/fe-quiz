@@ -3,6 +3,8 @@ import { Button } from "@shadcn/components/ui/button";
 import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
 import AnswerOption from "./answerOption";
 import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
+import { Answer } from "@shadcn/utils/interfaces/Answer";
+
 interface AnswersComponentProps {
   onAnswersChange: (answers: AnswerData[]) => void;
   answerData: AnswerData[];
@@ -15,7 +17,7 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
   answerData
 }) => {
 
-  const [answersInfo, setAnswersInfo] = useState<object[]>([
+  const [answersInfo, setAnswersInfo] = useState<Answer[]>([
     {
       option: "Option 1",
       button: "Remove",

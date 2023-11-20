@@ -3,11 +3,13 @@ import Form from "./form";
 
 const CreateQuestionForm = () => {
   return (
-    <Card className="mx-5">
-      <CardContent>
-        <Form />
-      </CardContent>
-    </Card>
+    <div className="py-5">
+      <Card className="mx-5">
+        <CardContent>
+          <Form />
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
