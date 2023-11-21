@@ -154,7 +154,7 @@ const Form: React.FC = () => {
           <FormDifficultySelect
             onDifficultyChange={handleDifficultyLevelChange}
           />
-          <FormTags onUpdateTags={updateTags} questionBody={questionBody} />
+          <FormTags onUpdateTags={updateTags} questionTitle={questionTitle} />
           <FormAnswers
             onAnswersChange={handleAnswersChange}
             answerData={answers}
