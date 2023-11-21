@@ -10,6 +10,7 @@ import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
 import Toast from "./toast";
 
 interface FormData {
+  questionTitle: string,
   questionBody: string;
   difficultyLevel: string;
   tags: string[];
@@ -19,6 +20,7 @@ interface FormData {
 const BE_URL = "";
 
 const Form: React.FC = () => {
+  const [questionTitle, setQuestionTitle] = useState<string>("");
   const [questionBody, setQuestionBody] = useState<string>("");
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
@@ -40,6 +42,10 @@ const Form: React.FC = () => {
       setShowToast(null);
     }, 3000);
   };
+
+  const handleQuestionTitleChange = (text: string) => {
+    setQuestionTitle(text);
+  }
 
   const handleQuestionBodyChange = (text: string) => {
     setQuestionBody(text);
@@ -69,7 +75,7 @@ const Form: React.FC = () => {
     ).length;
 
     return (
-      questionBody.trim().length > 0 &&
+      questionTitle.length > 0 &&
       difficultyLevel !== "" &&
       tags.length > 0 &&
       answersCount >= minimumAnswers &&
@@ -78,6 +84,7 @@ const Form: React.FC = () => {
   };
 
   const dataToSend = {
+    questionTitle,
     questionBody,
     difficultyLevel,
     tags,
@@ -104,6 +111,7 @@ const Form: React.FC = () => {
   };
 
   const resetForm = () => {
+    setQuestionTitle("");
     setQuestionBody("");
     setDifficultyLevel("");
     setTags([]);
@@ -142,7 +150,7 @@ const Form: React.FC = () => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="grid w-full items-center gap-4">
-          <FormHeader onQuestionBodyChange={handleQuestionBodyChange} />
+          <FormHeader onQuestionBodyChange={handleQuestionBodyChange} onQuestionTitleChange={handleQuestionTitleChange} />
           <FormDifficultySelect
             onDifficultyChange={handleDifficultyLevelChange}
           />
