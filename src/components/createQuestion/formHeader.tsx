@@ -1,13 +1,32 @@
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { useEffect, useState } from "react";
+import ReactMarkdown, { Components } from "react-markdown";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Textarea } from "@shadcn/components/ui/textarea";
 import { Input } from "../ui/input";
+import Prism from 'prismjs';
+import 'prismjs/themes/prism.css';
 
 interface QuestionBodyProps {
   onQuestionTitleChange: (text: string) => void;
   onQuestionBodyChange: (text: string) => void;
 }
+
+const components: Components = {
+  code({ node, inline, className, children, ...props }: any) {
+    const match = /language-(\w+)/.exec(className || '');
+    return !inline && match ? (
+      <pre className={`rounded-md bg-gray-800 p-4`}>
+        <code className={`${className} text-sm font-mono language-${match[1]}`} {...props}>
+          {String(children).replace(/\n$/, "")}
+        </code>
+      </pre>
+    ) : (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    );
+  }
+};
 
 const FormHeader: React.FC<QuestionBodyProps> = ({
   onQuestionBodyChange,
@@ -17,6 +36,10 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
   const [body, setBody] = useState<string>("");
   const [titleError, setTitleError] = useState<string>("");
   const [bodyError, setBodyError] = useState<string>("");
+
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [body]);
 
   const capitalizeFirstLetter = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
@@ -67,7 +90,7 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
   };
 
   const hasMarkdown = body !== "" && body !== body.trim();
-  
+  const hasCodeBlock = body.includes("```");
 
   return (
     <div className="flex flex-col space-y-2">
@@ -95,9 +118,17 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
       {bodyError && <p className="text-red-500 text-sm">{bodyError}</p>}
       {hasMarkdown && (
         <div className="w-full">
-          <CardTitle className="text-sm">Preview</CardTitle>
+          <CardTitle className="text-sm">Markdown Preview</CardTitle>
           <div className="border p-2 h-40 overflow-y-auto">
             <ReactMarkdown>{body}</ReactMarkdown>
+          </div>
+        </div>
+      )}
+      {hasCodeBlock && (
+        <div className="w-full">
+          <CardTitle className="text-sm">Code Preview</CardTitle>
+          <div className="border p-2 h-40 overflow-y-auto">
+            <ReactMarkdown components={components}>{body}</ReactMarkdown>
           </div>
         </div>
       )}
