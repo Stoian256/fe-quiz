@@ -1,5 +1,4 @@
 import { Badge } from "@shadcn/components/ui/badge";
-import { X } from "lucide-react";
 
 interface TagProps {
   tagName: string;
@@ -17,12 +16,12 @@ const Tag: React.FC<TagProps> = ({ tagName, onClick }) => {
   return (
     <div className="inline-block py-1 px-2 text-gray-700 rounded-full cursor-pointer transition duration-300">
       <Badge
-        className="truncate"
+        className="truncate flex items-center"
         title={tagName.length > MAX_LENGTH ? tagName : ""}
         onClick={onClick}
       >
         {displayText}
-        <X className="h-2 w-2 text-red-500 ml-1" />
+        <p className="text-xs text-red-500 ml-1">x</p>
       </Badge>
     </div>
   );

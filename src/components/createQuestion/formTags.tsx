@@ -38,25 +38,30 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
 
   const addTag = () => {
     const trimmedTag = inputTag.trim();
-    if (trimmedTag && validateTag(trimmedTag, tags.length)) {
-      if (tags.length < 7) {
-        if (!tags.includes(trimmedTag)) {
-          setTags([...tags, trimmedTag]);
-          onUpdateTags([...tags, trimmedTag]);
-        } else {
-          setTagErrors({
-            ...tagErrors,
-            [tags.indexOf(trimmedTag)]: "Tag already exists!"
-          });
-        }
-      } else {
-        setTagErrors({
-          ...tagErrors,
-          [tags.indexOf(trimmedTag)]: "Can't add more than 7 tags"
-        });
-      }
-      setInputTag("");
+
+    if (!trimmedTag || !validateTag(trimmedTag, tags.length)) {
+      return;
     }
+
+    if (tags.length >= 7) {
+      setTagErrors({
+        ...tagErrors,
+        [tags.indexOf(trimmedTag)]: "Can't add more than 7 tags"
+      });
+      return;
+    }
+
+    if (tags.includes(trimmedTag)) {
+      setTagErrors({
+        ...tagErrors,
+        [tags.indexOf(trimmedTag)]: "Tag already exists!"
+      });
+      return;
+    }
+
+    setTags([...tags, trimmedTag]);
+    onUpdateTags([...tags, trimmedTag]);
+    setInputTag("");
   };
 
   const handleRemoveAllTags = () => {
@@ -82,9 +87,9 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
 
   const suggestTagsFromTitle = (titleText: string): string[] => {
     const tagSuggestions: string[] = [];
-  
+
     const words = titleText.match(/\b\w{3,15}\b/g);
-  
+
     if (words) {
       for (const word of words) {
         const lowercaseWord = word.toLowerCase();
@@ -93,20 +98,21 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
         }
       }
     }
-  
+
     return tagSuggestions;
   };
-  
+
   const suggestTags = (inputText: string, questionTitle: string): string[] => {
     const suggestedTags = suggestTagsFromTitle(questionTitle);
-  
-    const matchingTags = suggestedTags.filter((tag) =>
-      tag.includes(inputText.toLowerCase()) || inputText.toLowerCase().includes(tag)
+
+    const matchingTags = suggestedTags.filter(
+      (tag) =>
+        tag.includes(inputText.toLowerCase()) ||
+        inputText.toLowerCase().includes(tag)
     );
-  
+
     return matchingTags.filter((tag) => !tags.includes(tag));
   };
-  
 
   return (
     <div className="flex flex-col space-y-1.5">
