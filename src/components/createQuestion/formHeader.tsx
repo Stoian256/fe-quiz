@@ -3,8 +3,8 @@ import ReactMarkdown, { Components } from "react-markdown";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Textarea } from "@shadcn/components/ui/textarea";
 import { Input } from "../ui/input";
-import Prism from 'prismjs';
-import 'prismjs/themes/prism.css';
+import Prism from "prismjs";
+import "prismjs/themes/prism.css";
 
 interface QuestionBodyProps {
   onQuestionTitleChange: (text: string) => void;
@@ -13,10 +13,13 @@ interface QuestionBodyProps {
 
 const components: Components = {
   code({ node, inline, className, children, ...props }: any) {
-    const match = /language-(\w+)/.exec(className || '');
+    const match = /language-(\w+)/.exec(className || "");
     return !inline && match ? (
       <pre className={`rounded-md bg-gray-800 p-4`}>
-        <code className={`${className} text-sm font-mono language-${match[1]}`} {...props}>
+        <code
+          className={`${className} text-sm font-mono language-${match[1]}`}
+          {...props}
+        >
           {String(children).replace(/\n$/, "")}
         </code>
       </pre>
@@ -89,7 +92,10 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
     }
   };
 
-  const hasMarkdown = body !== "" && body !== body.trim();
+  const hasMarkdown =
+    /(^# .+|\n\n|\*{1,3}[^*\n]+[*_]|_{1,3}[^_*\n]+[_*]|\`{3}[\s\S]*?\n\`{3}|!\[.*\]\(.*\)|\[.*\]\(.*\)|^>\s*|\d+\. .+|^-{3,}\s*|_[^\s*]+_)/.test(
+      body
+    );
   const hasCodeBlock = body.includes("```");
 
   return (
