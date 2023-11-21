@@ -1,6 +1,7 @@
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Textarea } from "@shadcn/components/ui/textarea";
-import { useState } from "react";
 import { Input } from "../ui/input";
 
 interface QuestionBodyProps {
@@ -41,7 +42,9 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
     setBodyError("");
   };
 
-  const handleQuestionTitleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+  const handleQuestionTitleBlur = (
+    event: React.FocusEvent<HTMLInputElement>
+  ) => {
     const inputText = event.target.value;
 
     if (inputText.length < 20 || inputText.length > 255) {
@@ -51,7 +54,9 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
     }
   };
 
-  const handleQuestionBodyBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleQuestionBodyBlur = (
+    event: React.FocusEvent<HTMLTextAreaElement>
+  ) => {
     const inputText = event.target.value;
 
     if (inputText.length < 20) {
@@ -60,6 +65,9 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
       onQuestionBodyChange(inputText);
     }
   };
+
+  const hasMarkdown = body !== "" && body !== body.trim();
+  
 
   return (
     <div className="flex flex-col space-y-2">
@@ -85,6 +93,14 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
         autoComplete="off"
       />
       {bodyError && <p className="text-red-500 text-sm">{bodyError}</p>}
+      {hasMarkdown && (
+        <div className="w-full">
+          <CardTitle className="text-sm">Preview</CardTitle>
+          <div className="border p-2 h-40 overflow-y-auto">
+            <ReactMarkdown>{body}</ReactMarkdown>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
