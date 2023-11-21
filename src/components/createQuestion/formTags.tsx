@@ -13,8 +13,6 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
   const [inputTag, setInputTag] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagErrors, setTagErrors] = useState<{ [key: number]: string }>({});
-  const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
-    useState<number>(-1);
 
   const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
@@ -24,7 +22,6 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
       addTag();
     } else {
       setTagErrors({});
-      setSelectedSuggestionIndex(-1);
     }
   };
 
@@ -38,7 +35,6 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
       setInputTag("");
     }
   };
-  
 
   const addTag = () => {
     const trimmedTag = inputTag.trim();
@@ -84,26 +80,33 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
     onUpdateTags(updatedTags);
   };
 
-  const suggestTagsFromBody = (titleText: string): string[] => {
-    const words = titleText.split(/\s+/);
-
-    const tagSuggestions = words
-      .filter((word) => word.length > 2 && word.length <= 15)
-      .slice(0, 5)
-      .map((word) => word.toLowerCase())
-      .map((word) => word.replace(",", ""));
+  const suggestTagsFromTitle = (titleText: string): string[] => {
+    const tagSuggestions: string[] = [];
+  
+    const words = titleText.match(/\b\w{3,15}\b/g);
+  
+    if (words) {
+      for (const word of words) {
+        const lowercaseWord = word.toLowerCase();
+        if (!tagSuggestions.includes(lowercaseWord)) {
+          tagSuggestions.push(lowercaseWord);
+        }
+      }
+    }
+  
     return tagSuggestions;
   };
-
+  
   const suggestTags = (inputText: string, questionTitle: string): string[] => {
-    const suggestedTags = suggestTagsFromBody(questionTitle);
-
+    const suggestedTags = suggestTagsFromTitle(questionTitle);
+  
     const matchingTags = suggestedTags.filter((tag) =>
-      tag.toLowerCase().includes(inputText.toLowerCase())
+      tag.includes(inputText.toLowerCase()) || inputText.toLowerCase().includes(tag)
     );
-
+  
     return matchingTags.filter((tag) => !tags.includes(tag));
   };
+  
 
   return (
     <div className="flex flex-col space-y-1.5">
@@ -149,11 +152,8 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
                   .map((tag, i) => (
                     <div
                       key={i}
-                      className={`bg-gray-200 p-1 cursor-pointer ${
-                        i === selectedSuggestionIndex ? "bg-blue-200" : ""
-                      }`}
+                      className={"bg-gray-200 p-1 cursor-pointer"}
                       onClick={() => handleTagSelection(tag)}
-                      tabIndex={0}
                     >
                       {tag}
                     </div>
