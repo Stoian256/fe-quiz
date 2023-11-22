@@ -77,13 +77,32 @@ const Form: React.FC = () => {
       (answer) => answer.isCorrect
     ).length;
 
-    return (
-      questionTitle.length > 0 &&
-      difficultyLevel !== "" &&
-      tags.length > 0 &&
-      answersCount >= minimumAnswers &&
-      correctAnswersCount >= minimumCorrectAnswers
-    );
+    const validationErrors = [];
+
+    if (questionTitle.length === 0) {
+      validationErrors.push("Please provide a question title.");
+    }
+
+    if (difficultyLevel === "") {
+      validationErrors.push("Please select a difficulty level.");
+    }
+
+    if (tags.length === 0) {
+      validationErrors.push("Please add at least one tag.");
+    }
+
+    if (answersCount < minimumAnswers) {
+      validationErrors.push("Please add at least two answers.");
+    }
+
+    if (correctAnswersCount < minimumCorrectAnswers) {
+      validationErrors.push("Please mark at least one answer as correct.");
+    }
+
+    return {
+      isValid: validationErrors.length === 0,
+      errors: validationErrors
+    };
   };
 
   const dataToSend = {
@@ -134,17 +153,22 @@ const Form: React.FC = () => {
     event.preventDefault();
 
     try {
-      const isFormValid = validateData();
+      const { isValid, errors } = validateData();
 
-      if (!isFormValid) {
-        throw new Error("Invalid form data");
+      if (!isValid) {
+        const errorMessage = errors.join("\n");
+        throw new Error(errorMessage);
       }
       await sendDataToBackend(dataToSend);
       resetForm();
       displayToast("success", "Form submitted successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error occurred while submitting the form:", error);
-      displayToast("error", "Failed to submit the form. Please try again.");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to submit the form. Please try again.";
+      displayToast("error", errorMessage);
     }
   };
 
