@@ -10,7 +10,7 @@ import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
 import Toast from "./toast";
 
 interface FormData {
-  questionTitle: string,
+  questionTitle: string;
   questionBody: string;
   difficultyLevel: string;
   tags: string[];
@@ -30,7 +30,10 @@ const Form: React.FC = () => {
       isCorrect: false
     }
   ]);
-  const [showToast, setShowToast] = useState<{ type: string; message: string } | null>(null);
+  const [showToast, setShowToast] = useState<{
+    type: string;
+    message: string;
+  } | null>(null);
 
   const handleToastClose = () => {
     setShowToast(null);
@@ -45,7 +48,7 @@ const Form: React.FC = () => {
 
   const handleQuestionTitleChange = (text: string) => {
     setQuestionTitle(text);
-  }
+  };
 
   const handleQuestionBodyChange = (text: string) => {
     setQuestionBody(text);
@@ -133,16 +136,15 @@ const Form: React.FC = () => {
     try {
       const isFormValid = validateData();
 
-      if (isFormValid) {
-        await sendDataToBackend(dataToSend);
-        resetForm();
-        displayToast('success', 'Form submitted successfully!');
-      } else {
+      if (!isFormValid) {
         throw new Error("Invalid form data");
       }
+      await sendDataToBackend(dataToSend);
+      resetForm();
+      displayToast("success", "Form submitted successfully!");
     } catch (error) {
       console.error("Error occurred while submitting the form:", error);
-      displayToast('error', 'Failed to submit the form. Please try again.');
+      displayToast("error", "Failed to submit the form. Please try again.");
     }
   };
 
@@ -150,7 +152,10 @@ const Form: React.FC = () => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="grid w-full items-center gap-4">
-          <FormHeader onQuestionBodyChange={handleQuestionBodyChange} onQuestionTitleChange={handleQuestionTitleChange} />
+          <FormHeader
+            onQuestionBodyChange={handleQuestionBodyChange}
+            onQuestionTitleChange={handleQuestionTitleChange}
+          />
           <FormDifficultySelect
             onDifficultyChange={handleDifficultyLevelChange}
           />
@@ -165,7 +170,7 @@ const Form: React.FC = () => {
         </div>
       </form>
       <div className="fixed bottom-4 right-4 z-50">
-      {showToast && (
+        {showToast && (
           <Toast
             type={showToast.type}
             message={showToast.message}
