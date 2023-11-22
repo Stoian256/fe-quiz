@@ -1,14 +1,4 @@
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Badge } from "./ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "./ui/select";
 import {
   Dialog,
   DialogContent,
@@ -18,8 +8,20 @@ import {
   DialogTitle,
   DialogTrigger
 } from "./ui/dialog";
-import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import { ChangeEvent, MouseEvent, useState } from "react";
+import {
+  ChangeEvent,
+  MouseEvent,
+  MouseEventHandler,
+  useEffect,
+  useState
+} from "react";
+import DisplayQuestions from "./displayQuestions";
+import FilterSearch from "./displayFilters/filterSearch";
+import FilterDifficulty from "./displayFilters/filterDifficulty";
+import FilterTags from "./displayFilters/filterTags";
+import ShowSelectedFilters from "./displayFilters/showSelectedFilters";
+import { ListOfTags } from "../utils/interfaces/ListOfTags";
+import { Filters } from "../utils/interfaces/Filters";
 
 const listOfAllTags = [
   {
@@ -48,57 +50,26 @@ const listOfAllTags = [
   }
 ];
 
-interface Filters {
-  keyword: string;
-  difficulty: string;
-  tags: string[];
-  [key: string]: string | string[]; // Index signature
-}
-
-interface ListOfTags {
-  id: number;
-  name: string;
-}
-
 const DisplayFilters = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [listOfTags, setListOfTags] = useState<ListOfTags[]>(listOfAllTags);
   const [filters, setFilters] = useState<Filters>({
-    keyword: "",
-    difficulty: "",
+    keyword: [],
+    difficulty: [],
     tags: []
   });
-  const difficulties: string[] = ["Easy", "Medium", "Hard"];
+
+  const [difficultyFilter, setDifficultyFilter] = useState(["any"]);
+
+  useEffect(() => {
+    setSelectedTags(filters.tags);
+    setDifficultyFilter(filters.difficulty);
+  }, [filters]);
 
   const handleOnSelect = (item: { name: string }) => {
     const { name } = item;
-
-    // filter the list of tags to not include the already selected tags
     setListOfTags((prevTags) => prevTags.filter((tag) => tag.name !== name));
-
     setSelectedTags((prevTags) => [...prevTags, name]);
-  };
-
-  const formatResult = (item: { name: string }) => (
-    <span style={{ cursor: "pointer", fontSize: "14px" }}>{item.name}</span>
-  );
-
-  const handleDeleteTag = (e: MouseEvent<HTMLDivElement, MouseEvent>): void => {
-    // accesing e.target.innerHTML to get the Badge value
-    // removing the clicked tag from the selected tags list AND adding it to the list tags
-
-    const tagToChange: string = e.currentTarget.innerHTML; // changed target to currentTarget
-
-    setSelectedTags((prevTags) =>
-      prevTags.filter((tag) => tag !== tagToChange)
-    );
-
-    // look up in the initial tag list to take the tag id, because I can't add name or value to the badge component
-
-    const tagToAddInList = listOfAllTags.filter(
-      (tag) => tag.name === tagToChange
-    );
-    setListOfTags((prevTags) => [...prevTags, tagToAddInList[0]]);
   };
 
   const removeAllTags = () => {
@@ -106,132 +77,116 @@ const DisplayFilters = () => {
     setListOfTags(listOfAllTags);
   };
 
-  const handleFilterChange = (e: string | ChangeEvent<HTMLInputElement>) => {
-    if (typeof e === "string") {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        difficulty: e
-      }));
-    } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        [e.target.name]: e.target.value
-      }));
-    }
+  const formatResult = (item: { name: string }) => (
+    <span className="cursor-pointer text-sm">{item.name}</span>
+  );
+
+  const handleDeleteTag: MouseEventHandler<HTMLDivElement> = (e) => {
+    const tagToDelete = e.currentTarget.title;
+    setSelectedTags((prevTags) =>
+      prevTags.filter((tag) => tag !== tagToDelete)
+    );
+    const tagToAddInList = listOfAllTags.filter(
+      (tag) => tag.name === tagToDelete
+    );
+    setListOfTags((prevTags) => [...prevTags, tagToAddInList[0]]);
   };
 
   const applyFiltersBtn = () => {
     setFilters((prevFilters) => ({
       ...prevFilters,
+      difficulty: difficultyFilter.filter((tag) => tag !== "any"),
       tags: selectedTags
     }));
+  };
 
-    // send request for new questions data based on filters
-    // close filters modal
+  const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [e.target.name]: [e.target.value]
+    }));
+  };
+
+  const handleFilterDelete = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    const filterName = e.currentTarget.id;
+    const filterValue = e.currentTarget.title;
+    setFilters((prevFilter) => ({
+      ...prevFilter,
+      [filterName]: prevFilter[filterName].filter((e) => e !== filterValue)
+    }));
+
+    if (filterName === "tags") {
+      const tagToAddInList = listOfAllTags.filter(
+        (tag) => tag.name === filterValue
+      );
+      setListOfTags((prevTags) => [...prevTags, tagToAddInList[0]]);
+    }
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      keyword: [],
+      difficulty: [],
+      tags: []
+    });
+    setListOfTags(listOfAllTags);
   };
 
   return (
-    <div className="p-4 pb-0 flex items-start gap-2">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Filters</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Filters</DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="search">Search</Label>
-              <Input
-                id="search"
-                placeholder="Search..."
-                value={filters.keyword}
-                name="keyword"
-                onChange={(e) => handleFilterChange(e)}
+    <div className="p-4 pb-0 flex flex-col items-start gap-2">
+      <div className="flex gap-2 pb-2 w-full">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Filters</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Filters</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <FilterSearch
+                keyword={filters.keyword}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleFilterChange(e)
+                }
               />
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="difficulty">Difficulty Level</Label>
-              <Select
-                onValueChange={(e) => handleFilterChange(e)}
-                value={filters.difficulty}
-                name="difficulty"
-              >
-                <SelectTrigger id="difficulty">
-                  <SelectValue placeholder="Difficulty level" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  {difficulties.map((level, index) => (
-                    <SelectItem key={index} value={level.toLowerCase()}>
-                      {level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="tags">Tags</Label>
-              <ReactSearchAutocomplete
-                items={listOfTags}
-                onSelect={handleOnSelect}
+              <FilterDifficulty
+                difficultyFilter={difficultyFilter}
+                setDifficultyFilter={setDifficultyFilter}
+              />
+              <FilterTags
+                listOfTags={listOfTags}
+                selectedTags={selectedTags}
+                handleOnSelect={handleOnSelect}
                 formatResult={formatResult}
-                styling={{ fontSize: "14px" }}
+                handleDeleteTag={handleDeleteTag}
+                removeAllTags={removeAllTags}
               />
-              <div className="flex gap-1">
-                {selectedTags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    onClick={
-                      handleDeleteTag as unknown as React.MouseEventHandler<HTMLDivElement>
-                      // fixed the ts error from onClick={(e) => handleDeleteTag(e)}
-                    }
-                    className="cursor-pointer flex gap-2 relative pr-5"
-                  >
-                    {tag}
-                    <div className="absolute right-1.5 -top-0.5 ">
-                      <span style={{ fontSize: "10px" }}>x</span>
-                    </div>
-                  </Badge>
-                ))}
-              </div>
-              {/* conditionally rendering the remove all tags option */}
-              {selectedTags.length > 1 && (
-                <span
-                  onClick={removeAllTags}
-                  style={{ display: "block", color: "grey", cursor: "pointer" }}
-                  // might change this later from inline style
-                >
-                  remove all tags
-                </span>
-              )}
             </div>
-          </div>
-          <DialogFooter className="flex justify-between sm:justify-between">
-            <DialogClose
-              className="bg-orange-300 text-black hover:bg-yellow-300 p-2 rounded-md"
-              onClick={applyFiltersBtn}
-            >
-              Apply Filters
-            </DialogClose>
-            <DialogClose asChild>
-              <Button variant="outline" className="border-none">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {Object.keys(filters).some((key) => filters[key].length > 0) && (
-        <p className="text-sm text-left">
-          Selected Filters: <br></br>
-          {filters.keyword && `Keyword - ${filters.keyword}; `}
-          {filters.difficulty && `Difficulty - ${filters.difficulty}; `}
-          {filters.tags.length > 0 &&
-            `Tags - ${filters.tags.map((tag) => ` ${tag}`)}`}
-        </p>
-      )}
+            <DialogFooter className="flex justify-between sm:justify-between">
+              <DialogClose
+                className="bg-orange-300 text-black hover:bg-yellow-300 p-2 rounded-md"
+                onClick={applyFiltersBtn}
+              >
+                Apply Filters
+              </DialogClose>
+              <DialogClose asChild>
+                <Button variant="outline" className="border-none">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <ShowSelectedFilters
+          filters={filters}
+          handleFilterDelete={handleFilterDelete}
+          clearAllFilters={clearAllFilters}
+        />
+      </div>
+      <DisplayQuestions filters={filters} />
     </div>
   );
 };

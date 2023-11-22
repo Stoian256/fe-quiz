@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DisplayFilters from "../components/displayFilters";
-import DisplayQuestions from "../components/displayQuestions";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,7 +13,6 @@ const Dashboard = () => {
   return (
     <div className="text-center">
       <DisplayFilters />
-      <DisplayQuestions />
     </div>
   );
 };
