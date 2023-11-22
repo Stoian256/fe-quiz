@@ -65,6 +65,12 @@ const FormRender: React.FC<FormRenderProps> = ({
     );
   const hasCodeBlock = body.includes("```");
 
+  const enableFocus = useRef<boolean>(false);
+
+  const enableTextareaFocus = () => {
+    enableFocus.current = true;
+  };
+
   useEffect(() => {
     if (textareaRef.current) {
       storedValue.current = textareaRef.current.value;
@@ -72,7 +78,14 @@ const FormRender: React.FC<FormRenderProps> = ({
   }, [hasMarkdown, hasCodeBlock]);
 
   useEffect(() => {
-    if (textareaRef.current) {
+    if (enableFocus.current && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [enableFocus, hasMarkdown, hasCodeBlock]);
+
+  useEffect(() => {
+    if ((hasMarkdown || hasCodeBlock) && textareaRef.current) {
+      enableTextareaFocus()
       textareaRef.current.focus();
     }
   }, [hasMarkdown, hasCodeBlock]);
@@ -97,7 +110,7 @@ const FormRender: React.FC<FormRenderProps> = ({
               autoComplete="off"
               ref={textareaRef}
             />
-            {bodyError && <p className="text-red-500 text-sm">{bodyError}</p>}
+            {bodyError && body && <p className="text-red-500 text-sm">{bodyError}</p>}
           </div>
           <div className="w-full">
             <CardTitle className="text-sm mb-2">Markdown Preview</CardTitle>
@@ -122,7 +135,7 @@ const FormRender: React.FC<FormRenderProps> = ({
               autoComplete="off"
               ref={textareaRef}
             />
-            {bodyError && <p className="text-red-500 text-sm">{bodyError}</p>}
+            {bodyError && body && <p className="text-red-500 text-sm">{bodyError}</p>}
           </div>
           <div className="w-full">
             <CardTitle className="text-sm mb-2">Code Preview</CardTitle>
@@ -145,7 +158,7 @@ const FormRender: React.FC<FormRenderProps> = ({
             autoComplete="off"
             ref={textareaRef}
           />
-          {bodyError && <p className="text-red-500 text-sm">{bodyError}</p>}
+          {bodyError && body && <p className="text-red-500 text-sm">{bodyError}</p>}
         </div>
       );
     }
@@ -164,7 +177,7 @@ const FormRender: React.FC<FormRenderProps> = ({
         autoComplete="off"
         required
       />
-      {titleError && <p className="text-red-500 text-sm">{titleError}</p>}
+      {titleError && title && <p className="text-red-500 text-sm">{titleError}</p>}
       {renderBodySection()}
     </div>
   );

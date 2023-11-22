@@ -145,10 +145,22 @@ const Form: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        let errorMessage = `HTTP error! Status: ${response.status}`;
+        if (response.status === 400) {
+          errorMessage = "Bad request. Please check your data and try again.";
+        } else if (response.status === 500) {
+          errorMessage = "Internal server error. Please try again later.";
+        }
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
+      console.error("Failed request details:", {
+        url: BE_URL,
+        method: "POST",
+        body: dataToSend,
+        error
+      });
       throw error;
     }
   };
