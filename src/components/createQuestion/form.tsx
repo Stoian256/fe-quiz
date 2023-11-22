@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { z } from "zod";
 
 import FormHeader from "./formHeader";
 import FormDifficultySelect from "./formDifficultySelect";
@@ -68,9 +69,41 @@ const Form: React.FC = () => {
     setAnswers(answersArray);
   };
 
+  const formSchema = z.object({
+    questionTitle: z
+      .string()
+      .min(1, { message: "Please provide a question title." })
+      .max(255),
+    questionBody: z.string(),
+    difficultyLevel: z
+      .string()
+      .min(1, { message: "Please choose a difficulty level" }),
+    tags: z.array(
+      z
+        .string()
+        .min(1, { message: "There must be at least 1 tag" })
+        .max(7, { message: "There can't be more than 7 tags" })
+    ),
+    answers: z.array(
+      z.object({
+        answerBody: z.string().min(1),
+        isCorrect: z.boolean()
+      })
+    )
+  });
+
   const validateData = () => {
     const minimumAnswers = 2;
     const minimumCorrectAnswers = 1;
+
+    let zodErrors: string[] = [];
+    try {
+      formSchema.parse(dataToSend);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        zodErrors = error.errors.map((err) => err.message);
+      }
+    }
 
     const answersCount = answers.length;
     const correctAnswersCount = answers.filter(
@@ -78,18 +111,6 @@ const Form: React.FC = () => {
     ).length;
 
     const validationErrors = [];
-
-    if (questionTitle.length === 0) {
-      validationErrors.push("Please provide a question title.");
-    }
-
-    if (difficultyLevel === "") {
-      validationErrors.push("Please select a difficulty level.");
-    }
-
-    if (tags.length === 0) {
-      validationErrors.push("Please add at least one tag.");
-    }
 
     if (answersCount < minimumAnswers) {
       validationErrors.push("Please add at least two answers.");
@@ -100,8 +121,8 @@ const Form: React.FC = () => {
     }
 
     return {
-      isValid: validationErrors.length === 0,
-      errors: validationErrors
+      isValid: zodErrors.length === 0 && validationErrors.length === 0,
+      errors: [...zodErrors, ...validationErrors]
     };
   };
 
@@ -159,15 +180,21 @@ const Form: React.FC = () => {
         const errorMessage = errors.join("\n");
         throw new Error(errorMessage);
       }
+
       await sendDataToBackend(dataToSend);
       resetForm();
       displayToast("success", "Form submitted successfully!");
     } catch (error: any) {
-      console.error("Error occurred while submitting the form:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to submit the form. Please try again.";
+      let errorMessage = "Failed to submit the form. Please try again.";
+
+      if (error instanceof z.ZodError) {
+        errorMessage = error.errors.map((err) => err.message).join("\n");
+      } else if (error.response?.data?.[0]?.message) {
+        errorMessage = error.response.data[0].message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       displayToast("error", errorMessage);
     }
   };

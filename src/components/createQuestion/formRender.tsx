@@ -1,8 +1,9 @@
+import { useEffect, useRef } from "react";
+
 import ReactMarkdown, { Components } from "react-markdown";
 import Prism from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
 import { Textarea } from "@shadcn/components/ui/textarea";
-import { useEffect, useRef } from "react";
 import { CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 
@@ -56,7 +57,7 @@ const FormRender: React.FC<FormRenderProps> = ({
   handleQuestionTitleChange
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const storedValue = useRef<string>('');
+  const storedValue = useRef<string>("");
 
   const hasMarkdown =
     /(^# .+|\n\n|\*{1,3}[^*\n]+[*_]|_{1,3}[^_*\n]+[_*]|\`{3}[\s\S]*?\n\`{3}|!\[.*\]\(.*\)|\[.*\]\(.*\)|^>\s*|\d+\. .+|^-{3,}\s*|_[^\s*]+_)/.test(
@@ -80,7 +81,6 @@ const FormRender: React.FC<FormRenderProps> = ({
     Prism.highlightAll();
   }, [body]);
 
-  
   const renderBodySection = () => {
     if (hasMarkdown) {
       return (
