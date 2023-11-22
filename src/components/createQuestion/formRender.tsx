@@ -1,6 +1,6 @@
 import ReactMarkdown, { Components } from "react-markdown";
 import Prism from "prismjs";
-import "prismjs/themes/prism.css";
+import "prismjs/themes/prism-tomorrow.css";
 import { Textarea } from "@shadcn/components/ui/textarea";
 import { useEffect, useRef } from "react";
 import { CardTitle } from "../ui/card";
@@ -126,7 +126,7 @@ const FormRender: React.FC<FormRenderProps> = ({
           </div>
           <div className="w-full">
             <CardTitle className="text-sm mb-2">Code Preview</CardTitle>
-            <div className="border p-2 h-40 overflow-y-auto">
+            <div className="border p-2 h-40 overflow-y-auto rounded-lg bg-gray-400">
               <ReactMarkdown components={components}>{body}</ReactMarkdown>
             </div>
           </div>
