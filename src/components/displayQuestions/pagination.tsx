@@ -18,7 +18,7 @@ import {
 
 type PaginationProps = {
   pageNumber: number;
-  setPageNumber: Dispatch<SetStateAction<number>>;
+  onPageNumberChange: Dispatch<SetStateAction<number>>;
   handleArrowClick: (direction: string) => void;
   itemsPerPage: number;
   handleItemsPerPage: (e: SetStateAction<string>) => void;
@@ -27,7 +27,7 @@ type PaginationProps = {
 
 const Pagination = ({
   pageNumber,
-  setPageNumber,
+  onPageNumberChange,
   handleArrowClick,
   itemsPerPage,
   handleItemsPerPage,
@@ -37,7 +37,7 @@ const Pagination = ({
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2 mt-3">
         <ChevronsLeft
-          onClick={() => setPageNumber(1)}
+          onClick={() => onPageNumberChange(1)}
           className={
             pageNumber === 1 ? "invert cursor-not-allowed" : "cursor-pointer"
           }
@@ -77,7 +77,9 @@ const Pagination = ({
                         : ""
                     }
                     name={(index + 1).toString()}
-                    onClick={(e) => setPageNumber(Number(e.currentTarget.name))}
+                    onClick={(e) =>
+                      onPageNumberChange(Number(e.currentTarget.name))
+                    }
                   >
                     {index + 1}
                   </Button>
@@ -102,7 +104,9 @@ const Pagination = ({
                     }
                     key={index}
                     name={(index + 1).toString()}
-                    onClick={(e) => setPageNumber(Number(e.currentTarget.name))}
+                    onClick={(e) =>
+                      onPageNumberChange(Number(e.currentTarget.name))
+                    }
                   >
                     {index + 1}
                   </Button>
@@ -123,7 +127,9 @@ const Pagination = ({
                 }
                 key={index}
                 name={(index + 1).toString()}
-                onClick={(e) => setPageNumber(Number(e.currentTarget.name))}
+                onClick={(e) =>
+                  onPageNumberChange(Number(e.currentTarget.name))
+                }
               >
                 {index + 1}
               </Button>
@@ -140,7 +146,7 @@ const Pagination = ({
           }
         />
         <ChevronsRight
-          onClick={() => setPageNumber(numbersOfPages)}
+          onClick={() => onPageNumberChange(numbersOfPages)}
           className={
             pageNumber === numbersOfPages
               ? "invert cursor-not-allowed"

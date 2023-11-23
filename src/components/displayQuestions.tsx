@@ -171,7 +171,7 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
       </Table>
       <Pagination
         pageNumber={pageNumber}
-        setPageNumber={setPageNumber}
+        onPageNumberChange={(page) => setPageNumber(page)}
         handleArrowClick={handleArrowClick}
         itemsPerPage={itemsPerPage}
         handleItemsPerPage={handleItemsPerPage}
