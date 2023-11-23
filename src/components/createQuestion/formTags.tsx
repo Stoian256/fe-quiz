@@ -6,10 +6,10 @@ import Tag from "./tag";
 
 interface FormTagsProps {
   onUpdateTags: (tags: string[]) => void;
-  questionTitle: string;
+  content: string;
 }
 
-const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
+const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content }) => {
   const [inputTag, setInputTag] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagErrors, setTagErrors] = useState<{ [key: number]: string }>({});
@@ -153,7 +153,7 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, questionTitle }) => {
             />
             <div className="overflow-y-scroll overscroll-auto">
               {inputTag.length > 0 &&
-                suggestTags(inputTag.trim(), questionTitle)
+                suggestTags(inputTag.trim(), content)
                   .map((tag) => tag.replace(",", ""))
                   .map((tag, i) => (
                     <div

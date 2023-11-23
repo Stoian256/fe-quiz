@@ -9,22 +9,28 @@ import { CardFooter } from "@shadcn/components/ui/card";
 import { Button } from "@shadcn/components/ui/button";
 import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
 import Toast from "./toast";
+import QuizHeader from "../createQuiz/quizHeader";
 
-interface FormData {
+interface QuestionFormData {
   questionTitle: string;
   questionBody: string;
-  difficultyLevel: string;
-  tags: string[];
+  questionDifficultyLevel: string;
+  questionTags: string[];
   answers: AnswerData[];
+}
+
+interface FormProps {
+  formType: "question" | "quiz";
 }
 
 const BE_URL = "";
 
-const Form: React.FC = () => {
+const Form: React.FC<FormProps> = ({ formType }) => {
   const [questionTitle, setQuestionTitle] = useState<string>("");
   const [questionBody, setQuestionBody] = useState<string>("");
-  const [difficultyLevel, setDifficultyLevel] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [questionDifficultyLevel, setQuestionDifficultyLevel] =
+    useState<string>("");
+  const [questionTags, setQuestionTags] = useState<string[]>([]);
   const [answers, setAnswers] = useState<AnswerData[]>([
     {
       answerBody: "",
@@ -35,6 +41,10 @@ const Form: React.FC = () => {
     type: string;
     message: string;
   } | null>(null);
+
+  const [quizTitle, setQuizTitle] = useState<string>("");
+  const [quizDifficultyLevel, setQuizDifficultyLevel] = useState<string>("");
+  const [quizTags, setQuizTags] = useState<string[]>([]);
 
   const handleToastClose = () => {
     setShowToast(null);
@@ -55,21 +65,35 @@ const Form: React.FC = () => {
     setQuestionBody(text);
   };
 
-  const handleDifficultyLevelChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setDifficultyLevel(event.target.value);
+  const handleQuizTitleChange = (text: string) => {
+    setQuizTitle(text);
   };
 
-  const updateTags = (newTags: string[]) => {
-    setTags(newTags);
+  const handleQuestionDifficultyLevelChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setQuestionDifficultyLevel(event.target.value);
+  };
+
+  const handleQuizDifficultyLevelChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setQuizDifficultyLevel(event.target.value);
+  };
+
+  const updateQuestionTags = (newTags: string[]) => {
+    setQuestionTags(newTags);
+  };
+
+  const updateQuizTags = (newTags: string[]) => {
+    setQuizTags(newTags);
   };
 
   const handleAnswersChange = (answersArray: AnswerData[]) => {
     setAnswers(answersArray);
   };
 
-  const formSchema = z.object({
+  const formQuestionSchema = z.object({
     questionTitle: z
       .string()
       .min(1, { message: "Please provide a question title." })
@@ -92,13 +116,29 @@ const Form: React.FC = () => {
     )
   });
 
-  const validateData = () => {
+  const formQuizSchema = z.object({
+    quizTitle: z
+      .string()
+      .min(1, { message: "Please provide a quiz title." })
+      .max(255),
+    difficultyLevel: z
+      .string()
+      .min(1, { message: "Please choose a difficulty level" }),
+    tags: z.array(
+      z
+        .string()
+        .min(1, { message: "There must be at least 1 tag" })
+        .max(7, { message: "There can't be more than 7 tags" })
+    )
+  });
+
+  const validateQuestionData = () => {
     const minimumAnswers = 2;
     const minimumCorrectAnswers = 1;
 
     let zodErrors: string[] = [];
     try {
-      formSchema.parse(dataToSend);
+      formQuestionSchema.parse(questionDataToSend);
     } catch (error) {
       if (error instanceof z.ZodError) {
         zodErrors = error.errors.map((err) => err.message);
@@ -126,22 +166,46 @@ const Form: React.FC = () => {
     };
   };
 
-  const dataToSend = {
+  const validateQuizData = () => {
+    let zodErrors: string[] = [];
+
+    try {
+      formQuizSchema.parse(quizDataToSend);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        zodErrors = error.errors.map((err) => err.message);
+      }
+    }
+    return {
+      isValid: zodErrors.length === 0,
+      errors: zodErrors
+    };
+  };
+
+  console.log(validateQuizData);
+
+  const questionDataToSend = {
     questionTitle,
     questionBody,
-    difficultyLevel,
-    tags,
+    questionDifficultyLevel,
+    questionTags,
     answers
   };
 
-  const sendDataToBackend = async (dataToSend: FormData) => {
+  const quizDataToSend = {
+    quizTitle,
+    quizDifficultyLevel,
+    quizTags
+  };
+
+  const sendDataToBackend = async (questionDataToSend: QuestionFormData) => {
     try {
       const response = await fetch(BE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(dataToSend)
+        body: JSON.stringify(questionDataToSend)
       });
 
       if (!response.ok) {
@@ -158,7 +222,7 @@ const Form: React.FC = () => {
       console.error("Failed request details:", {
         url: BE_URL,
         method: "POST",
-        body: dataToSend,
+        body: questionDataToSend,
         error
       });
       throw error;
@@ -168,8 +232,8 @@ const Form: React.FC = () => {
   const resetForm = () => {
     setQuestionTitle("");
     setQuestionBody("");
-    setDifficultyLevel("");
-    setTags([]);
+    setQuestionDifficultyLevel("");
+    setQuestionTags([]);
     setAnswers([
       {
         answerBody: "",
@@ -186,14 +250,14 @@ const Form: React.FC = () => {
     event.preventDefault();
 
     try {
-      const { isValid, errors } = validateData();
+      const { isValid, errors } = validateQuestionData();
 
       if (!isValid) {
         const errorMessage = errors.join("\n");
         throw new Error(errorMessage);
       }
 
-      await sendDataToBackend(dataToSend);
+      await sendDataToBackend(questionDataToSend);
       resetForm();
       displayToast("success", "Form submitted successfully!");
     } catch (error: any) {
@@ -215,14 +279,31 @@ const Form: React.FC = () => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="grid w-full items-center gap-4">
-          <FormHeader
-            onQuestionBodyChange={handleQuestionBodyChange}
-            onQuestionTitleChange={handleQuestionTitleChange}
-          />
-          <FormDifficultySelect
-            onDifficultyChange={handleDifficultyLevelChange}
-          />
-          <FormTags onUpdateTags={updateTags} questionTitle={questionTitle} />
+          {formType === "question" ? (
+            <FormHeader
+              onQuestionBodyChange={handleQuestionBodyChange}
+              onQuestionTitleChange={handleQuestionTitleChange}
+            />
+          ) : (
+            <QuizHeader onQuizTitleChange={handleQuizTitleChange} />
+          )}
+          {formType === "question" ? (
+            <FormDifficultySelect
+              onDifficultyChange={handleQuestionDifficultyLevelChange}
+            />
+          ) : (
+            <FormDifficultySelect
+              onDifficultyChange={handleQuizDifficultyLevelChange}
+            />
+          )}
+          {formType === "question" ? (
+            <FormTags
+              onUpdateTags={updateQuestionTags}
+              content={questionTitle}
+            />
+          ) : (
+            <FormTags onUpdateTags={updateQuizTags} content={quizTitle} />
+          )}
           <FormAnswers
             onAnswersChange={handleAnswersChange}
             answerData={answers}
