@@ -8,16 +8,15 @@ import {
 } from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Dispatch, SetStateAction } from "react";
 
 type FilterDifficultyProps = {
   difficultyFilter: string[];
-  setDifficultyFilter: Dispatch<SetStateAction<string[]>>;
+  handleDifficultyChange: (difficulty: string) => void;
 };
 
 const FilterDifficulty = ({
   difficultyFilter,
-  setDifficultyFilter
+  handleDifficultyChange
 }: FilterDifficultyProps) => {
   const difficulties = ["any", "easy", "medium", "hard"];
   return (
@@ -36,21 +35,7 @@ const FilterDifficulty = ({
             <DropdownMenuCheckboxItem
               key={index}
               checked={difficultyFilter.includes(difficulty)}
-              onCheckedChange={() => {
-                if (
-                  (difficulty === "any" &&
-                    !difficultyFilter.includes(difficulty)) ||
-                  (difficultyFilter.length === 2 &&
-                    !difficultyFilter.includes(difficulty))
-                ) {
-                  setDifficultyFilter(() => ["any"]);
-                } else {
-                  setDifficultyFilter((prev) => {
-                    const filteredArray = prev.filter((e) => e !== "any");
-                    return [...filteredArray, difficulty];
-                  });
-                }
-              }}
+              onCheckedChange={() => handleDifficultyChange(difficulty)}
             >
               {difficulty}
             </DropdownMenuCheckboxItem>

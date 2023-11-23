@@ -134,6 +134,21 @@ const DisplayFilters = () => {
     setListOfTags(listOfAllTags);
   };
 
+  const handleDifficultyChange = (difficulty: string) => {
+    let difficultyArray = ["any"];
+
+    if (
+      !difficultyFilter.includes(difficulty) &&
+      difficultyFilter.length !== 2 &&
+      difficulty !== "any"
+    ) {
+      const filteredArray = difficultyFilter.filter((e) => e !== "any");
+      filteredArray.push(difficulty);
+      difficultyArray = filteredArray;
+    }
+    setDifficultyFilter(difficultyArray);
+  };
+
   return (
     <div className="p-4 pb-0 flex flex-col items-start gap-2">
       <div className="flex gap-2 pb-2 w-full">
@@ -154,7 +169,7 @@ const DisplayFilters = () => {
               />
               <FilterDifficulty
                 difficultyFilter={difficultyFilter}
-                setDifficultyFilter={setDifficultyFilter}
+                handleDifficultyChange={handleDifficultyChange}
               />
               <FilterTags
                 listOfTags={listOfTags}
