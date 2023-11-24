@@ -7,11 +7,11 @@ import Tag from "./tag";
 interface FormTagsProps {
   onUpdateTags: (tags: string[]) => void;
   content: string;
+  tags: string[];
 }
 
-const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content }) => {
+const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
   const [inputTag, setInputTag] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
   const [tagErrors, setTagErrors] = useState<{ [key: number]: string }>({});
 
   const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +30,6 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content }) => {
     const newIndex = tags.length;
 
     if (validateTag(selectedTag, newIndex)) {
-      setTags([...tags, selectedTag]);
       onUpdateTags([...tags, selectedTag]);
       setInputTag("");
     }
@@ -59,13 +58,11 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content }) => {
       return;
     }
 
-    setTags([...tags, trimmedTag]);
     onUpdateTags([...tags, trimmedTag]);
     setInputTag("");
   };
 
   const handleRemoveAllTags = () => {
-    setTags([]);
     onUpdateTags([]);
   };
 
@@ -81,7 +78,6 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content }) => {
 
   const removeTag = (tagToRemove: string) => {
     const updatedTags = tags.filter((tag) => tag !== tagToRemove);
-    setTags(updatedTags);
     onUpdateTags(updatedTags);
   };
 

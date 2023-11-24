@@ -12,7 +12,7 @@ interface SelectDifficultyProps {
 }
 
 const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
-  onDifficultyChange
+  onDifficultyChange,
 }) => {
   const handleDifficultyChange = (selectedValue: string) => {
     const syntheticEvent = {
@@ -25,7 +25,7 @@ const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
   return (
     <div className="flex flex-col space-y-1.5">
       <CardTitle className="text-sm mt-2">Difficulty Level</CardTitle>
-      <Select onValueChange={handleDifficultyChange} required>
+      <Select onValueChange={handleDifficultyChange}>
         <SelectTrigger id="difficulty">
           <SelectValue placeholder="Select Difficulty Level..." />
         </SelectTrigger>
