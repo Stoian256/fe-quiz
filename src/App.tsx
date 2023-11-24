@@ -2,8 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/layout";
 import Dashboard from "./pages/adminDashboard";
 import Questions from "./pages/adminQuestions";
-import Quizzes from "./pages/adminQuizzes";
-// import QCreate from "./pages/adminQCreate";
 import { AuthenticationGuard } from "./components/auth/authentication-guard";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "./authContext";
@@ -15,6 +13,7 @@ import UserLayout from "./components/userLayout";
 import { Profile } from "./pages/profile";
 
 import CreateQuestionForm from "./components/createQuestion/createQuestionForm";
+import CreateQuizForm from "./components/createQuiz/createQuizForm";
 // import CreateQuizForm from "./components/createQuiz/createQuizForm";
 
 const App: React.FC = () => {
@@ -47,7 +46,7 @@ const App: React.FC = () => {
             <Route index element={<Dashboard />} />
             <Route path="/questions" element={<Questions />} />
             <Route path="/questions/create" element={<CreateQuestionForm />} />
-            <Route path="/quizzes" element={<Quizzes />} />
+            <Route path="/quizzes" element={<CreateQuizForm />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
         </>

@@ -11,6 +11,6 @@ const CreateQuizForm: React.FC = () => {
       </Card>
     </div>
   );
-}
+};
 
 export default CreateQuizForm;

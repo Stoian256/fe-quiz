@@ -12,6 +12,7 @@ import Toast from "./toast";
 import QuizHeader from "../createQuiz/quizHeader";
 import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
+import QuizQuestions from "../createQuiz/quizQuestions";
 
 interface QuestionFormData {
   questionTitle: string;
@@ -335,14 +336,20 @@ const Form: React.FC<FormProps> = ({ formType }) => {
               tags={tags}
             />
           )}
-          <FormAnswers
-            onAnswersChange={handleAnswersChange}
-            answerData={answers}
-            answersInfo={answersInfo}
-            setAnswersInfo={setAnswersInfo}
-          />
+          {formType === "question" ? (
+            <FormAnswers
+              onAnswersChange={handleAnswersChange}
+              answerData={answers}
+              answersInfo={answersInfo}
+              setAnswersInfo={setAnswersInfo}
+            />
+          ) : (
+            <QuizQuestions />
+          )}
           <CardFooter>
-            <Button type="submit">Create Question</Button>
+            <Button type="submit">
+              {formType === "question" ? "Create Question" : "Create Quiz"}
+            </Button>
           </CardFooter>
         </div>
       </form>
