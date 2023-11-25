@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
+import Pagination from "../displayQuestions/pagination";
 
 const questionData = [
   {
@@ -24,6 +26,34 @@ const questionData = [
 ];
 
 const QuizQuestions: React.FC = () => {
+  const [pageNumber, setPageNumber] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const handleItemsPerPage = (e: React.SetStateAction<string>) => {
+    setItemsPerPage(Number(e));
+    setPageNumber(1);
+  };
+
+  const numbersOfPages = Math.ceil(questionData.length / itemsPerPage);
+
+  const startIndex = (pageNumber - 1) * itemsPerPage;
+  const slicedQuestions = questionData.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const handleArrowClick = (direction: string) => {
+    let newPageNumber = pageNumber;
+  
+    if (direction === 'left' && pageNumber > 1) {
+      newPageNumber = pageNumber - 1;
+    } else if (direction === 'right' && pageNumber < numbersOfPages) {
+      newPageNumber = pageNumber + 1;
+    }
+  
+    setPageNumber(newPageNumber);
+  };
+
   const getDifficultyStyle = (difficulty: string) => {
     switch (difficulty) {
       case "Easy":
@@ -38,14 +68,17 @@ const QuizQuestions: React.FC = () => {
   };
 
   return (
-    <div className="grid w-full items-center gap-4 p-1.5">
-      <CardTitle>Quiz Questions</CardTitle>
-      <Button className="w-fit" type="button">
+    <div className="grid w-full items-center p-1.5">
+      <CardTitle className="text-base mb-4">Quiz Questions</CardTitle>
+      <Button className="w-fit mb-4" type="button">
         Manage Questions
       </Button>
-      {questionData.map((question, i) => (
-        <Card key={i} className="p-5 flex items-start justify-between">
-          <div className="flex flex-col gap-1">
+      {slicedQuestions.map((question, i) => (
+        <Card
+          key={i}
+          className="p-5 flex items-start justify-between border-b-0"
+        >
+          <div className="flex flex-col">
             <h2 className="font-medium">{question.questionTitle}</h2>
             <p>{question.questionBody}</p>
             <div className="flex items-center gap-1.5">
@@ -63,6 +96,14 @@ const QuizQuestions: React.FC = () => {
           </div>
         </Card>
       ))}
+      <Pagination
+        pageNumber={pageNumber}
+        onPageNumberChange={(page) => setPageNumber(page)}
+        handleArrowClick={(direction: string) => handleArrowClick(direction)}
+        itemsPerPage={itemsPerPage}
+        handleItemsPerPage={handleItemsPerPage}
+        numbersOfPages={numbersOfPages}
+      />
     </div>
   );
 };
