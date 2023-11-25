@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
 import Pagination from "../displayQuestions/pagination";
+import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 
 const questionData = [
   {
@@ -25,7 +26,12 @@ const questionData = [
   }
 ];
 
-const QuizQuestions: React.FC = () => {
+interface QuizProps {
+  onQuestionsChange: Dispatch<SetStateAction<QuestionData[]>>;
+}
+
+
+const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 

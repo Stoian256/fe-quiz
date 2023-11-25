@@ -13,14 +13,16 @@ import QuizHeader from "../createQuiz/quizHeader";
 import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import QuizQuestions from "../createQuiz/quizQuestions";
+import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 
-interface QuestionFormData {
-  questionTitle: string;
-  questionBody: string;
-  difficulty: string;
-  tags: string[];
-  answers: AnswerData[];
+interface QuizData {
+  quizTitle: string;
+  quizDifficultyLevel: string;
+  quizTags: string[];
+  quizQuestions: QuestionData[];
 }
+
+type FormData = QuestionData | QuizData;
 
 const defaultAnswerInfo = [
   {
@@ -67,6 +69,7 @@ const Form: React.FC<FormProps> = ({ formType }) => {
   const [quizTitle, setQuizTitle] = useState<string>("");
   const [quizDifficultyLevel, setQuizDifficultyLevel] = useState<string>("");
   const [quizTags, setQuizTags] = useState<string[]>([]);
+  const [quizQuestions, setQuizQuestions] = useState<QuestionData[]>([]);
 
   const handleToastClose = () => {
     setShowToast(null);
@@ -154,7 +157,9 @@ const Form: React.FC<FormProps> = ({ formType }) => {
     )
   });
 
-  const validateQuestionData = () => {
+  const validateQuestionData = (
+    questionDataToSend: QuestionData
+  ): { isValid: boolean; errors: string[] } => {
     const minimumAnswers = 2;
     const minimumCorrectAnswers = 1;
 
@@ -188,9 +193,16 @@ const Form: React.FC<FormProps> = ({ formType }) => {
     };
   };
 
-  const validateQuizData = () => {
-    let zodErrors: string[] = [];
+  const validateQuizData = (
+    quizDataToSend: QuizData
+  ): { isValid: boolean; errors: string[] } => {
+    const minimumQuestions = 1;
 
+    const questionsCount = quizQuestions.length;
+
+    const validationErrors = [];
+
+    let zodErrors: string[] = [];
     try {
       formQuizSchema.parse(quizDataToSend);
     } catch (error) {
@@ -198,9 +210,14 @@ const Form: React.FC<FormProps> = ({ formType }) => {
         zodErrors = error.errors.map((err) => err.message);
       }
     }
+
+    if (questionsCount < minimumQuestions) {
+      validationErrors.push("Please add at least one question to the quiz.");
+    }
+
     return {
-      isValid: zodErrors.length === 0,
-      errors: zodErrors
+      isValid: zodErrors.length === 0 && validationErrors.length === 0,
+      errors: [...zodErrors, ...validationErrors]
     };
   };
 
@@ -215,21 +232,41 @@ const Form: React.FC<FormProps> = ({ formType }) => {
   const quizDataToSend = {
     quizTitle,
     quizDifficultyLevel,
-    quizTags
+    quizTags,
+    quizQuestions
+  };
+
+  const prepareFormData = (): any => {
+    if (formType === "question") {
+      return questionDataToSend;
+    } else if (formType === "quiz") {
+      return quizDataToSend;
+    }
+    return null;
   };
 
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
 
-  const sendDataToBackend = async (questionDataToSend: QuestionFormData) => {
+  const sendDataToBackend = async (formData: FormData) => {
     try {
-      const response = await fetch(`${BE_URL}questions/create`, {
+      let url = "";
+
+      if ("questionTitle" in formData) {
+        url = `${BE_URL}questions/create`;
+      } else if ("quizTitle" in formData) {
+        url = `${BE_URL}quizzes/create`;
+      } else {
+        throw new Error("Invalid form data");
+      }
+
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify(questionDataToSend)
+        body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
@@ -244,9 +281,8 @@ const Form: React.FC<FormProps> = ({ formType }) => {
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
       console.error("Failed request details:", {
-        url: BE_URL,
         method: "POST",
-        body: questionDataToSend,
+        body: formData,
         error
       });
       throw error;
@@ -275,16 +311,26 @@ const Form: React.FC<FormProps> = ({ formType }) => {
     event.preventDefault();
 
     try {
-      const { isValid, errors } = validateQuestionData();
+      const formData: FormData = prepareFormData();
+
+      const { isValid, errors } =
+        "questionTitle" in formData
+          ? validateQuestionData(formData as QuestionData)
+          : validateQuizData(formData as QuizData);
 
       if (!isValid) {
         const errorMessage = errors.join("\n");
         throw new Error(errorMessage);
       }
 
-      await sendDataToBackend(questionDataToSend);
+      await sendDataToBackend(formData);
       resetForm();
-      displayToast("success", "Form submitted successfully!");
+      displayToast(
+        "success",
+        `${
+          formType.charAt(0).toUpperCase() + formType.slice(1)
+        } submitted successfully!`
+      );
     } catch (error: any) {
       let errorMessage = "Failed to submit the form. Please try again.";
 
@@ -344,7 +390,9 @@ const Form: React.FC<FormProps> = ({ formType }) => {
               setAnswersInfo={setAnswersInfo}
             />
           ) : (
-            <QuizQuestions />
+            <QuizQuestions
+              onQuestionsChange={(question) => setQuizQuestions(question)}
+            />
           )}
           <CardFooter>
             <Button type="submit">
