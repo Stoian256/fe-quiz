@@ -1,4 +1,4 @@
 export interface AnswerData {
-  answerBody: string;
-  isCorrect: boolean;
+  answerContent: string;
+  correctAnswer: boolean;
 }

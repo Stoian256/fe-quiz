@@ -1,16 +1,16 @@
+import Form from "../createQuestion/form";
 import { Card, CardContent } from "../ui/card";
-import Form from "./form";
 
-const CreateQuestionForm = () => {
+const CreateQuizForm: React.FC = () => {
   return (
     <div className="py-5">
       <Card className="mx-5">
         <CardContent>
-          <Form formType="question" />
+          <Form formType="quiz" />
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default CreateQuestionForm;
+export default CreateQuizForm;

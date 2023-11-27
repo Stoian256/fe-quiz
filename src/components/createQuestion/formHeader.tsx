@@ -4,14 +4,16 @@ import FormRender from "./formRender";
 interface QuestionBodyProps {
   onQuestionTitleChange: (text: string) => void;
   onQuestionBodyChange: (text: string) => void;
+  title: string;
+  body: string;
 }
 
 const FormHeader: React.FC<QuestionBodyProps> = ({
   onQuestionBodyChange,
-  onQuestionTitleChange
+  onQuestionTitleChange,
+  title,
+  body
 }) => {
-  const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>("");
   const [titleError, setTitleError] = useState<string>("");
   const [bodyError, setBodyError] = useState<string>("");
 
@@ -24,7 +26,6 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
   ) => {
     const inputText = event.target.value;
     const capitalizedText = capitalizeFirstLetter(inputText);
-    setTitle(capitalizedText);
     onQuestionTitleChange(capitalizedText);
     setTitleError("");
   };
@@ -34,7 +35,6 @@ const FormHeader: React.FC<QuestionBodyProps> = ({
   ) => {
     const inputText = event.target.value;
     const capitalizedText = capitalizeFirstLetter(inputText);
-    setBody(capitalizedText);
     onQuestionBodyChange(capitalizedText);
     setBodyError("");
   };

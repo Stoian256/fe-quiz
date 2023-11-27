@@ -34,7 +34,7 @@ const AnswerOption: React.FC<Props> = ({
   const initialAnswerData =
     answerData.length > index
       ? answerData[index]
-      : { answerBody: "", isCorrect: false };
+      : { answerContent: "", correctAnswer: false };
 
   const [capitalizedText, setCapitalizedText] = useState<string>("");
 
@@ -48,11 +48,11 @@ const AnswerOption: React.FC<Props> = ({
     const inputText = event.target.value;
     const capitalizedInputText = capitalizeFirstLetter(inputText);
     setCapitalizedText(capitalizedInputText);
-    onAnswersChange(index, { answerBody: capitalizedInputText });
+    onAnswersChange(index, { answerContent: capitalizedInputText });
   };
 
   const handleSwitchChange = () => {
-    onAnswersChange(index, { isCorrect: !initialAnswerData.isCorrect });
+    onAnswersChange(index, { correctAnswer: !initialAnswerData.correctAnswer });
   };
 
   return (
@@ -83,7 +83,7 @@ const AnswerOption: React.FC<Props> = ({
       <div className="flex items-center gap-2 pl-6">
         <Switch
           id={switchId}
-          checked={initialAnswerData.isCorrect}
+          checked={initialAnswerData.correctAnswer}
           onClick={handleSwitchChange}
         />
         <span>{answerTxt}</span>
