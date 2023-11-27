@@ -106,7 +106,12 @@ const QuizForm: React.FC = () => {
     quizQuestions
   };
 
-  const resetForm = () => {};
+  const resetForm = () => {
+    setQuizTitle("");
+    setQuizDifficultyLevel("");
+    setQuizTags([]);
+    setQuizQuestions([]);
+  };
 
   const sendDataToBackend = async (quizDataToSend: QuizData) => {
     try {
