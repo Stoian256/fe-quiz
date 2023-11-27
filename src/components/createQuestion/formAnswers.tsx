@@ -9,13 +9,15 @@ interface AnswersComponentProps {
   answerData: AnswerData[];
   answersInfo: Answer[];
   setAnswersInfo: React.Dispatch<React.SetStateAction<Answer[]>>;
+  reset: boolean;
 }
 
 const FormAnswers: React.FC<AnswersComponentProps> = ({
   onAnswersChange,
   answerData,
   answersInfo,
-  setAnswersInfo
+  setAnswersInfo,
+  reset
 }) => {
   const addAnswer = () => {
     const newAnswer = {
@@ -72,6 +74,7 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
                 onAnswersChange={handleAnswerChange}
                 answerData={answerData}
                 onRemove={() => removeAnswer(i)}
+                reset={reset}
               />
             ))}
           </div>

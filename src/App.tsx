@@ -14,7 +14,6 @@ import { Profile } from "./pages/profile";
 
 import CreateQuestionForm from "./components/createQuestion/createQuestionForm";
 import CreateQuizForm from "./components/createQuiz/createQuizForm";
-// import CreateQuizForm from "./components/createQuiz/createQuizForm";
 
 const App: React.FC = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
