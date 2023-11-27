@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import FormHeader from "./formHeader";
@@ -12,6 +12,7 @@ import Toast from "./toast";
 import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
+import { useParams } from "react-router-dom";
 
 const defaultAnswerInfo = [
   {
@@ -52,6 +53,44 @@ const QuestionForm: React.FC = () => {
   } | null>(null);
 
   const [reset, setReset] = useState<boolean>(false);
+
+  const { id } = useParams<{ id: string }>();
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const fetchQuestionByID = async (questionID: string) => {
+    try {
+      const response = await fetch(`${BE_URL}questions/${questionID}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      if (response.ok) {
+        const questionData = await response.json();
+
+        setQuestionTitle(questionData.questionTitle);
+        setQuestionBody(questionData.questionBody);
+        setDifficulty(questionData.difficulty);
+        setTags(questionData.tags);
+
+        displayToast("success", "Question data fetched successfully!");
+        setIsEditing(true);
+      } else {
+        throw new Error("Failed to fetch question data");
+      }
+    } catch (error) {
+      console.error("Error fetching question data:", error);
+      displayToast("error", "Failed to fetch question data. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchQuestionByID(id);
+    }
+  }, [id]);
 
   const handleToastClose = () => {
     setShowToast(null);
@@ -158,8 +197,16 @@ const QuestionForm: React.FC = () => {
 
   const sendDataToBackend = async (questionDataToSend: QuestionData) => {
     try {
-      const response = await fetch(`${BE_URL}questions/create`, {
-        method: "POST",
+      let url = `${BE_URL}questions/create`;
+      let method = "POST";
+
+      if (isEditing) {
+        url = `${BE_URL}questions/update/${id}`;
+        method = "PUT";
+      }
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
@@ -168,22 +215,20 @@ const QuestionForm: React.FC = () => {
       });
 
       if (!response.ok) {
-        let errorMessage = `HTTP error! Status: ${response.status}`;
-        if (response.status === 400) {
-          errorMessage = "Bad request. Please check your data and try again.";
-        } else if (response.status === 500) {
-          errorMessage = "Internal server error. Please try again later.";
-        }
-        throw new Error(errorMessage);
+        throw new Error("Failed to update question");
       }
+
+      const successMessage = isEditing
+        ? "Question updated successfully!"
+        : "Question submitted successfully!";
+      displayToast("success", successMessage);
+      resetForm();
     } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
-      console.error("Failed request details:", {
-        method: "POST",
-        body: questionDataToSend,
-        error
-      });
-      throw error;
+      console.error("Error updating question:", error);
+      const errorMessage = isEditing
+        ? "Failed to update the question. Please try again."
+        : "Failed to submit the form. Please try again.";
+      displayToast("error", errorMessage);
     }
   };
 
@@ -261,7 +306,9 @@ const QuestionForm: React.FC = () => {
             reset={reset}
           />
           <CardFooter>
-            <Button type="submit">Create question</Button>
+            <Button type="submit">
+              {isEditing ? "Edit Question" : "Create Question"}
+            </Button>
           </CardFooter>
         </div>
       </form>

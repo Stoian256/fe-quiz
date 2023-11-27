@@ -19,13 +19,14 @@ import { SetStateAction, useEffect, useState } from "react";
 import { Filters } from "../utils/interfaces/Filters";
 import questionsData from "../data/questionsData.json";
 import Pagination from "./displayQuestions/pagination";
+import { Link } from "react-router-dom";
 
 const tableHeadData = [
   "QUESTION TITLE",
   "DIFFICULTY LEVEL",
   "TAGS",
   "USED IN QUIZZES",
-  "CORECTNESS ACCURACY",
+  "CORRECTNESS ACCURACY",
   "ACTIONS"
 ];
 
@@ -148,12 +149,14 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Button
-                      variant="outline"
-                      className="border-black hover:bg-black hover:text-white"
-                    >
-                      Edit
-                    </Button>
+                    <Link to={`/questions/create?id=${index + 1}`}>
+                      <Button
+                        variant="outline"
+                        className="border-black hover:bg-black hover:text-white"
+                      >
+                        Edit
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
