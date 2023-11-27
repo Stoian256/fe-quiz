@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@shadcn/components/ui/button";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
@@ -17,6 +17,7 @@ interface Props {
   onAnswersChange: (index: number, answerBody: {}) => void;
   answerData: AnswerData[];
   onRemove: () => void;
+  reset: boolean;
 }
 
 const AnswerOption: React.FC<Props> = ({
@@ -29,7 +30,8 @@ const AnswerOption: React.FC<Props> = ({
   switchId,
   onAnswersChange,
   answerData,
-  onRemove
+  onRemove,
+  reset,
 }) => {
   const initialAnswerData =
     answerData.length > index
@@ -37,6 +39,12 @@ const AnswerOption: React.FC<Props> = ({
       : { answerContent: "", correctAnswer: false };
 
   const [capitalizedText, setCapitalizedText] = useState<string>("");
+
+  useEffect(() => {
+    if (reset) {
+      setCapitalizedText(""); 
+    }
+  }, [reset]);
 
   const capitalizeFirstLetter = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
