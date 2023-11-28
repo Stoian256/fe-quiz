@@ -11,12 +11,9 @@ import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
 import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
-<<<<<<< HEAD
-import { useParams } from "react-router-dom";
-=======
 import { useToast } from "@shadcn/utils/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
->>>>>>> 27b69ff758392f93ee4d8f7b7d0e854574d022ee
+import { useParams } from "react-router-dom";
 
 const defaultAnswerInfo = [
   {
@@ -55,58 +52,6 @@ const QuestionForm: React.FC = () => {
 
   const [reset, setReset] = useState<boolean>(false);
 
-<<<<<<< HEAD
-  const { id } = useParams<{ id: string }>();
-
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-
-  const fetchQuestionByID = async (questionID: string) => {
-    try {
-      const response = await fetch(`${BE_URL}questions/${questionID}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-
-      if (response.ok) {
-        const questionData = await response.json();
-
-        setQuestionTitle(questionData.questionTitle);
-        setQuestionBody(questionData.questionBody);
-        setDifficulty(questionData.difficulty);
-        setTags(questionData.tags);
-
-        displayToast("success", "Question data fetched successfully!");
-        setIsEditing(true);
-      } else {
-        throw new Error("Failed to fetch question data");
-      }
-    } catch (error) {
-      console.error("Error fetching question data:", error);
-      displayToast("error", "Failed to fetch question data. Please try again.");
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      fetchQuestionByID(id);
-    }
-  }, [id]);
-
-  const handleToastClose = () => {
-    setShowToast(null);
-  };
-
-  const displayToast = (type: string, message: string) => {
-    setShowToast({ type, message });
-    setTimeout(() => {
-      setShowToast(null);
-    }, 3000);
-  };
-
-=======
->>>>>>> 27b69ff758392f93ee4d8f7b7d0e854574d022ee
   const handleQuestionTitleChange = (text: string) => {
     setQuestionTitle(text);
   };
@@ -213,6 +158,42 @@ const QuestionForm: React.FC = () => {
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
 
+  const { id } = useParams<{ id: string }>();
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const fetchQuestionByID = async (questionID: string) => {
+    try {
+      const response = await fetch(`${BE_URL}questions/${questionID}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      if (response.ok) {
+        const questionData = await response.json();
+        setQuestionTitle(questionData.questionTitle);
+        setQuestionBody(questionData.questionBody);
+        setDifficulty(questionData.difficulty);
+        setTags(questionData.tags);
+        showToast("success", "Question data fetched successfully!");
+        setIsEditing(true);
+      } else {
+        throw new Error("Failed to fetch question data");
+      }
+    } catch (error) {
+      console.error("Error fetching question data:", error);
+      showToast("error", "Failed to fetch question data. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchQuestionByID(id);
+    }
+  }, [id]);
+
   const sendDataToBackend = async (questionDataToSend: QuestionData) => {
     try {
       let url = `${BE_URL}questions/create`;
@@ -239,14 +220,14 @@ const QuestionForm: React.FC = () => {
       const successMessage = isEditing
         ? "Question updated successfully!"
         : "Question submitted successfully!";
-      displayToast("success", successMessage);
+      showToast("success", successMessage);
       resetForm();
     } catch (error) {
       console.error("Error updating question:", error);
       const errorMessage = isEditing
         ? "Failed to update the question. Please try again."
         : "Failed to submit the form. Please try again.";
-      displayToast("error", errorMessage);
+      showToast("error", errorMessage);
     }
   };
 
