@@ -109,16 +109,16 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
           Authorization: `Bearer ${accessToken}`
         }
       });
-
-      if (response.ok) {
-        displayToast("success", "Question removed successfully!");
-        const updatedQuestions = questions.filter(
-          (_, index) => index !== questionIndex
-        );
-        setQuestions(updatedQuestions);
-      } else {
+  
+      if (!response.ok) {
         throw new Error("Failed to remove question");
       }
+  
+      displayToast("success", "Question removed successfully!");
+      const updatedQuestions = questions.filter(
+        (_, index) => index !== questionIndex
+      );
+      setQuestions(updatedQuestions);
     } catch (error) {
       console.error("Error removing question:", error);
       displayToast("error", "Failed to remove the question. Please try again.");
