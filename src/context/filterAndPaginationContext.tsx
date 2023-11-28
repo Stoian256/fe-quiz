@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Question } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { Filters, Question } from "@shadcn/utils/interfaces/typescriptGeneral";
 import { getQuestions } from "@shadcn/services/questions.service";
 import { useAuth } from "./authContext";
 
 type PaginationContextType = {
-  // filters: Filters,
-  // setFilters: React.Dispatch<React.SetStateAction<Filters >>;
   questions: Question[];
   setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
+
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+
   pageNumber: number;
   itemsPerPage: number;
   numbersOfPages: number;
@@ -17,23 +19,29 @@ type PaginationContextType = {
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const PaginationContext = createContext<PaginationContextType | undefined>(
+const FilterAndPaginationContext = createContext<PaginationContextType | undefined>(
   undefined
 );
 
-export const usePagination = () => {
-  const context = useContext(PaginationContext);
+export const useFilterAndPagination = () => {
+  const context = useContext(FilterAndPaginationContext);
   if (!context) {
     throw new Error("usePagination must be used within a PaginationProvider");
   }
   return context;
 };
 
-export const PaginationProvider: React.FC<{ children: React.ReactNode }> = ({
+export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
   const { accessToken } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [filters, setFilters] = useState<Filters>({
+    keyword: [],
+    difficulty: ["easy"], //TODO BE & FE AGREEMENT
+    tags: []
+  });
+
   const [pageNumber, setPageNumber] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -41,28 +49,34 @@ export const PaginationProvider: React.FC<{ children: React.ReactNode }> = ({
     async function fetchData() {
       try {
         if (accessToken) {
-    
-    // const tagsArray: Tag[] = [];
+          const defaultDifficulty = "any";
+          const defaultKeyword = "";
+          //TODO BE & FE AGREEMENT
 
-    const difficulties = "easy"; 
-    const keyword ="best"
-
-    const queryParams = new URLSearchParams({
-      itemsPerPage: itemsPerPage.toString(),
-      pageIndex: pageNumber.toString(),
-      difficulties: difficulties,
-      keyword: keyword,
-      // tags: JSON.stringify(tagsArray)
-    });
+          // const tagsArray: string[] = [];
+          const queryParams = new URLSearchParams({
+            itemsPerPage: itemsPerPage.toString(),
+            pageIndex: pageNumber.toString(),
+            difficulties:
+              filters.difficulty.length > 0
+                ? filters.difficulty[0]
+                : `${defaultDifficulty}`,
+                //TODO BE & FE AGREEMENT
+            // difficulties: JSON.stringify(filters.difficulty),
+            keyword:
+              filters.keyword.length > 0 ? filters.keyword[0] : defaultKeyword
+              //TODO BE & FE AGREEMENT
+            // tags: filters.tags.length > 0 ? filters.tags[0] : defaultTag,
+            // tags: JSON.stringify(tagsArray)
+          });
 
           const data = await getQuestions(accessToken, queryParams.toString());
-                    setQuestions(data.content);
+          setQuestions(data.content);
 
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
-          
+
           console.log("Fetched data:", data);
-          // console.log("Fetched questions content :", fetchedData.content);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -70,7 +84,7 @@ export const PaginationProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     fetchData();
-  }, [pageNumber, itemsPerPage]);
+  }, [pageNumber, itemsPerPage, filters]);
 
   const handleArrowClick = (direction: string) => {
     if (direction === "left") {
@@ -112,6 +126,8 @@ export const PaginationProvider: React.FC<{ children: React.ReactNode }> = ({
   const value: PaginationContextType = {
     questions,
     setQuestions,
+    filters,
+    setFilters,
     pageNumber,
     setPageNumber,
     itemsPerPage,
@@ -122,8 +138,8 @@ export const PaginationProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <PaginationContext.Provider value={value}>
+    <FilterAndPaginationContext.Provider value={value}>
       {children}
-    </PaginationContext.Provider>
+    </FilterAndPaginationContext.Provider>
   );
 };

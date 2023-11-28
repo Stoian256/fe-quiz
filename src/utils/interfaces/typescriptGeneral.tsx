@@ -6,7 +6,8 @@ export interface Tag {
 export interface Answer {
   id: string;
   answerContent: string;
-  correctAnswer: boolean;
+  correctAnswer: boolean; 
+  // TODO please change to isCorrectAnswer (all booleans should have prefix "is")
 }
 
 export interface Question {
@@ -16,4 +17,8 @@ export interface Question {
   difficulty: string;
   tags: Tag[];
   answers: Answer[];
+}
+
+export  interface Filters {
+  [key: string]: string[];
 }

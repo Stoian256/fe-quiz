@@ -5,19 +5,17 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from "./ui/table";
+} from "../ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from "./ui/tooltip";
-import { Badge } from "./ui/badge";
-import { Progress } from "./ui/progress";
-import { Button } from "./ui/button";
-import { Filters } from "../utils/interfaces/Filters";
-import Pagination from "./displayQuestions/pagination";
-import { usePagination } from "@shadcn/context/paginationContext";
+} from "../ui/tooltip";
+import { Badge } from "../ui/badge";
+import { Progress } from "../ui/progress";
+import { Button } from "../ui/button";
+import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 
 const tableHeadData = [
   "QUESTION TITLE",
@@ -28,20 +26,8 @@ const tableHeadData = [
   "ACTIONS"
 ];
 
-type DisplayQuestionsProps = {
-  filters: Filters;
-};
-
-const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
-  const {
-    questions,
-    pageNumber,
-    setPageNumber,
-    itemsPerPage,
-    numbersOfPages,
-    handleArrowClick,
-    handleItemsPerPage
-  } = usePagination();
+const DisplayQuestions = () => {
+  const { questions } = useFilterAndPagination();
 
   return (
     <div className="pb-5 w-full">
@@ -96,9 +82,9 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
                     </Badge>
                   ))}
                 </TableCell>
-                <TableCell>0</TableCell>
+                <TableCell>1</TableCell>
                 <TableCell>
-                  0%
+                  10%
                   <Progress
                     value={10}
                     className="h-1 w-6/12 ml-2 mb-0.5 inline-block"
@@ -127,14 +113,6 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
           })}
         </TableBody>
       </Table>
-      <Pagination
-        pageNumber={pageNumber}
-        onPageNumberChange={(page) => setPageNumber(page)}
-        handleArrowClick={handleArrowClick}
-        itemsPerPage={itemsPerPage}
-        handleItemsPerPage={handleItemsPerPage}
-        numbersOfPages={numbersOfPages}
-      />
     </div>
   );
 };
