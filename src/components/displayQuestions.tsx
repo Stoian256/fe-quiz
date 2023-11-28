@@ -45,7 +45,7 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [numbersOfPages, setNumbersOfPages] = useState(
-    Math.ceil(questionsData.length / Number(itemsPerPage)) // calculate the numbers of page based on data array length
+    Math.ceil(questionsData.length / Number(itemsPerPage))
   );
 
   useEffect(() => {
@@ -157,7 +157,6 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
                     <Button
                       variant="outline"
                       className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                      // onClick={(e) => handleDelete(e)}
                       value={index}
                     >
                       Delete
