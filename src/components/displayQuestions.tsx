@@ -181,7 +181,7 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Link to={`/questions/create?id=${index + 1}`}>
+                    <Link to={`/admin/questions/create?id=${index + 1}`}>
                       <Button
                         variant="outline"
                         className="border-black hover:bg-black hover:text-white"

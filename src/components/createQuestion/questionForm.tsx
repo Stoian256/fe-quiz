@@ -103,7 +103,6 @@ const QuestionForm: React.FC = () => {
       z
         .string()
         .min(1, { message: "There must be at least 1 tag" })
-        .max(7, { message: "There can't be more than 7 tags" })
     ),
     answers: z.array(
       z.object({
@@ -184,7 +183,7 @@ const QuestionForm: React.FC = () => {
       setIsEditing(true);
     } catch (error) {
       console.error("Error fetching question data:", error);
-      showToast("error", "Failed to fetch question data. Please try again.");
+      showToast("error", "Failed to fetch question data.");
     }
   };
 
@@ -213,13 +212,14 @@ const QuestionForm: React.FC = () => {
         body: JSON.stringify(questionDataToSend)
       });
 
+      
       if (!response.ok) {
         throw new Error("Failed to update question");
       }
-
+      
       const successMessage = isEditing
-        ? "Question updated successfully!"
-        : "Question submitted successfully!";
+      ? "Question updated successfully!"
+      : "Question submitted successfully!";
       showToast("success", successMessage);
       resetForm();
     } catch (error) {
