@@ -18,7 +18,7 @@ import { Button } from "./ui/button";
 import { SetStateAction, useEffect, useState } from "react";
 import { Filters } from "../utils/interfaces/Filters";
 import questionsData from "../data/questionsData.json";
-import Pagination from "./displayQuestions/pagination";
+import Pagination from "./pagination";
 
 const tableHeadData = [
   "QUESTION TITLE",
