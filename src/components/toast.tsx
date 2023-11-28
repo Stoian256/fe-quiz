@@ -1,4 +1,4 @@
-import { useToast } from "@shadcn/utils/context/ToastContext";
+import { useToast } from "@shadcn/context/ToastContext";
 import { useEffect } from "react";
 
 interface ToastProps {

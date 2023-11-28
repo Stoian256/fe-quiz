@@ -4,8 +4,8 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0ProviderWithNavigate } from "./components/auth/auth0-provider-with-navigate";
 import "./index.css";
-import { AuthProvider } from "./authContext";
-import { ToastProvider } from "./utils/context/ToastContext";
+import { AuthProvider } from "./context/authContext";
+import { ToastProvider } from "./context/ToastContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

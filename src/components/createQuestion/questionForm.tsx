@@ -8,10 +8,10 @@ import FormAnswers from "./formAnswers";
 import { CardFooter } from "@shadcn/components/ui/card";
 import { Button } from "@shadcn/components/ui/button";
 import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
-import { useAuth } from "@shadcn/authContext";
+import { useAuth } from "../../context/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
-import { useToast } from "@shadcn/utils/context/ToastContext";
+import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 import { useParams } from "react-router-dom";
 

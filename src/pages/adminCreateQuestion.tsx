@@ -1,18 +1,21 @@
+import CreateQuestionForm from "@shadcn/components/createQuestion/createQuestionForm";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const QCreate = () => {
+const AdminCreateQuestion = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/questions/create", {
+    navigate("/admin/questions/create", {
       state: {
         mainTitle: "Create Question",
         title: "Add a new question to the system"
       }
     });
   }, [navigate]);
-  return <div className="text-center">Create question form</div>;
+  return (
+    <CreateQuestionForm />
+  )
 };
 
-export default QCreate;
+export default AdminCreateQuestion;

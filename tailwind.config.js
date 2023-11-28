@@ -17,6 +17,8 @@ module.exports = {
     },
     extend: {
       colors: {
+        dyellow: "#FFd464",
+        dorange: "#FFB74D",
         dblue: "#0c1520",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

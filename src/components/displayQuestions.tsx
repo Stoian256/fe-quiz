@@ -20,8 +20,8 @@ import { Filters } from "../utils/interfaces/Filters";
 import questionsData from "../data/questionsData.json";
 import Pagination from "../components/pagination";
 import { Link } from "react-router-dom";
-import { useAuth } from "@shadcn/authContext";
-import { useToast } from "@shadcn/utils/context/ToastContext";
+import { useAuth } from "../context/authContext";
+import { useToast } from "@shadcn/context/ToastContext";
 
 const tableHeadData = [
   "QUESTION TITLE",
@@ -50,7 +50,7 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
   const [numbersOfPages, setNumbersOfPages] = useState(
     Math.ceil(questionsData.length / Number(itemsPerPage))
   );
-  
+
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -96,11 +96,11 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
           Authorization: `Bearer ${accessToken}`
         }
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to remove question");
       }
-  
+
       showToast("success", "Question removed successfully!");
       const updatedQuestions = questions.filter(
         (_, index) => index !== questionIndex

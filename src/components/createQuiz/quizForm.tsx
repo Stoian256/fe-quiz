@@ -2,14 +2,14 @@ import { useState } from "react";
 import { z } from "zod";
 
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
-import { useAuth } from "@shadcn/authContext";
+import { useAuth } from "../../context/authContext";
 import QuizHeader from "./quizHeader";
 import FormDifficultySelect from "../createQuestion/formDifficultySelect";
 import FormTags from "../createQuestion/formTags";
 import QuizQuestions from "./quizQuestions";
 import { CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
-import { useToast } from "@shadcn/utils/context/ToastContext";
+import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 
 interface QuizData {
