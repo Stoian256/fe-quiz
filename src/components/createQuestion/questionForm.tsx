@@ -171,17 +171,17 @@ const QuestionForm: React.FC = () => {
         }
       });
 
-      if (response.ok) {
-        const questionData = await response.json();
-        setQuestionTitle(questionData.questionTitle);
-        setQuestionBody(questionData.questionBody);
-        setDifficulty(questionData.difficulty);
-        setTags(questionData.tags);
-        showToast("success", "Question data fetched successfully!");
-        setIsEditing(true);
-      } else {
+      if (!response.ok) {
         throw new Error("Failed to fetch question data");
       }
+
+      const questionData = await response.json();
+      setQuestionTitle(questionData.questionTitle);
+      setQuestionBody(questionData.questionBody);
+      setDifficulty(questionData.difficulty);
+      setTags(questionData.tags);
+      showToast("success", "Question data fetched successfully!");
+      setIsEditing(true);
     } catch (error) {
       console.error("Error fetching question data:", error);
       showToast("error", "Failed to fetch question data. Please try again.");
