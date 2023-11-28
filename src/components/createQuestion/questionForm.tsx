@@ -12,6 +12,7 @@ import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import { useToast } from "@shadcn/utils/context/ToastContext";
+import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 
 const defaultAnswerInfo = [
   {
@@ -121,9 +122,7 @@ const QuestionForm: React.FC = () => {
     try {
       formQuestionSchema.parse(questionDataToSend);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        zodErrors = error.errors.map((err) => err.message);
-      }
+      zodErrors = extractZodErrors(error);
     }
 
     const answersCount = answers.length;
