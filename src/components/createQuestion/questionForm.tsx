@@ -89,7 +89,18 @@ const QuestionForm: React.FC = () => {
   const handleAnswersInfoChange = (newAnswersInfo: Answer[]) => {
     setAnswersInfo(newAnswersInfo);
   };
-  
+
+  const removeAnswer = (indexToRemove: number) => {
+    const updatedAnswers = answersInfo.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setAnswersInfo(updatedAnswers);
+
+    const updatedAnswerData = answers.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setAnswers(updatedAnswerData);
+  };
 
   const formQuestionSchema = z.object({
     questionTitle: z
@@ -263,6 +274,7 @@ const QuestionForm: React.FC = () => {
             answerData={answers}
             answersInfo={answersInfo}
             setAnswersInfo={handleAnswersInfoChange}
+            removeAnswer={removeAnswer}
             reset={reset}
           />
           <CardFooter>
