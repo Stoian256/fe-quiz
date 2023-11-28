@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
-import Pagination from "../displayQuestions/pagination";
+import Pagination from "../pagination";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 
 const questionData = [
@@ -30,8 +30,7 @@ interface QuizProps {
   onQuestionsChange: Dispatch<SetStateAction<QuestionData[]>>;
 }
 
-
-const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
+const QuizQuestions: React.FC<QuizProps> = ({ onQuestionsChange }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
@@ -50,13 +49,11 @@ const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
 
   const handleArrowClick = (direction: string) => {
     let newPageNumber = pageNumber;
-  
-    if (direction === 'left' && pageNumber > 1) {
+
+    if (direction === "left" && pageNumber > 1) {
       newPageNumber = pageNumber - 1;
-    } else if (direction === 'right' && pageNumber < numbersOfPages) {
-      newPageNumber = pageNumber + 1;
     }
-  
+
     setPageNumber(newPageNumber);
   };
 
@@ -79,9 +76,9 @@ const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
       <Button className="w-fit mb-4" type="button">
         Manage Questions
       </Button>
-      {slicedQuestions.map((question, i) => (
+      {slicedQuestions.map((question) => (
         <Card
-          key={i}
+          key={`${question.questionTitle}-${question.questionBody}-${question.difficulty}`}
           className="p-5 flex items-start justify-between border-b-0"
         >
           <div className="flex flex-col">
@@ -89,7 +86,7 @@ const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
             <p>{question.questionBody}</p>
             <div className="flex items-center gap-1.5">
               {question.tags.map((tag, i) => (
-                <Badge key={i}>{tag}</Badge>
+                <Badge key={`${tag}-${i}`}>{tag}</Badge>
               ))}
             </div>
           </div>

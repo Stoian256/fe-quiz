@@ -9,7 +9,8 @@ import FormTags from "../createQuestion/formTags";
 import QuizQuestions from "./quizQuestions";
 import { CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
-import Toast from "../createQuestion/toast";
+import { useToast } from "@shadcn/utils/context/ToastContext";
+import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 
 interface QuizData {
   quizTitle: string;
@@ -24,21 +25,7 @@ const QuizForm: React.FC = () => {
   const [quizTags, setQuizTags] = useState<string[]>([]);
   const [quizQuestions, setQuizQuestions] = useState<QuestionData[]>([]);
 
-  const [showToast, setShowToast] = useState<{
-    type: string;
-    message: string;
-  } | null>(null);
-
-  const handleToastClose = () => {
-    setShowToast(null);
-  };
-
-  const displayToast = (type: string, message: string) => {
-    setShowToast({ type, message });
-    setTimeout(() => {
-      setShowToast(null);
-    }, 3000);
-  };
+  const { showToast } = useToast();
 
   const handleQuizTitleChange = (text: string) => {
     setQuizTitle(text);
@@ -81,9 +68,7 @@ const QuizForm: React.FC = () => {
     try {
       formQuizSchema.parse(quizDataToSend);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        zodErrors = error.errors.map((err) => err.message);
-      }
+      zodErrors = extractZodErrors(error);
     }
 
     if (questionsCount < minimumQuestions) {
@@ -157,9 +142,9 @@ const QuizForm: React.FC = () => {
 
       await sendDataToBackend(quizDataToSend);
       resetForm();
-      displayToast("success", "Quiz submitted successfully!");
+      showToast("success", "Quiz submitted successfully!");
     } catch (error: any) {
-      let errorMessage = "Failed to submit the form. Please try again.";
+      let errorMessage = "Failed to submit the form.";
 
       if (error instanceof z.ZodError) {
         errorMessage = error.errors.map((err) => err.message).join("\n");
@@ -169,7 +154,7 @@ const QuizForm: React.FC = () => {
         errorMessage = error.message;
       }
       console.error(error);
-      displayToast("error", errorMessage);
+      showToast("error", errorMessage);
     }
   };
 
@@ -179,32 +164,21 @@ const QuizForm: React.FC = () => {
         <div className="grid w-full items-center gap-4">
           <QuizHeader onQuizTitleChange={handleQuizTitleChange} />
           <FormDifficultySelect
-              onDifficultyChange={handleQuizDifficultyLevelChange}
+            onDifficultyChange={handleQuizDifficultyLevelChange}
           />
           <FormTags
-              onUpdateTags={updateQuizTags}
-              content={quizTitle}
-              tags={quizTags}
+            onUpdateTags={updateQuizTags}
+            content={quizTitle}
+            tags={quizTags}
           />
           <QuizQuestions
-              onQuestionsChange={(question) => setQuizQuestions(question)}
+            onQuestionsChange={(question) => setQuizQuestions(question)}
           />
           <CardFooter>
-            <Button type="submit">
-              Create Quiz
-            </Button>
+            <Button type="submit">Create Quiz</Button>
           </CardFooter>
         </div>
       </form>
-      <div className="fixed bottom-4 right-4 z-50">
-        {showToast && (
-          <Toast
-            type={showToast.type}
-            message={showToast.message}
-            onClose={handleToastClose}
-          />
-        )}
-      </div>
     </>
   );
 };

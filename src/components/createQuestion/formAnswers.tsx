@@ -8,8 +8,9 @@ interface AnswersComponentProps {
   onAnswersChange: (answers: AnswerData[]) => void;
   answerData: AnswerData[];
   answersInfo: Answer[];
-  setAnswersInfo: React.Dispatch<React.SetStateAction<Answer[]>>;
+  setAnswersInfo: (newAnswerInfo: Answer[]) => void;
   reset: boolean;
+  removeAnswer: (indexToRemove: number) => void;
 }
 
 const FormAnswers: React.FC<AnswersComponentProps> = ({
@@ -17,7 +18,8 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
   answerData,
   answersInfo,
   setAnswersInfo,
-  reset
+  reset,
+  removeAnswer
 }) => {
   const addAnswer = () => {
     const newAnswer = {
@@ -30,17 +32,6 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
     };
 
     setAnswersInfo([...answersInfo, newAnswer]);
-  };
-
-  const removeAnswer = (indexToRemove: number) => {
-    const updatedAnswers = answersInfo.filter(
-      (_, index) => index !== indexToRemove
-    );
-    setAnswersInfo(updatedAnswers);
-    const updatedAnswerData = answerData.filter(
-      (_, index) => index !== indexToRemove
-    );
-    onAnswersChange(updatedAnswerData);
   };
 
   const handleAnswerChange = (index: number, newData: Partial<AnswerData>) => {

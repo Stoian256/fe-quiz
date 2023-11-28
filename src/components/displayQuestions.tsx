@@ -18,10 +18,10 @@ import { Button } from "./ui/button";
 import { SetStateAction, useEffect, useState } from "react";
 import { Filters } from "../utils/interfaces/Filters";
 import questionsData from "../data/questionsData.json";
-import Pagination from "./displayQuestions/pagination";
+import Pagination from "../components/pagination";
 import { Link } from "react-router-dom";
 import { useAuth } from "@shadcn/authContext";
-import Toast from "./createQuestion/toast";
+import { useToast } from "@shadcn/utils/context/ToastContext";
 
 const tableHeadData = [
   "QUESTION TITLE",
@@ -48,12 +48,10 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [numbersOfPages, setNumbersOfPages] = useState(
-    Math.ceil(questionsData.length / Number(itemsPerPage)) // calculate the numbers of page based on data array length
+    Math.ceil(questionsData.length / Number(itemsPerPage))
   );
-  const [showToast, setShowToast] = useState<{
-    type: string;
-    message: string;
-  } | null>(null);
+  
+  const { showToast } = useToast();
 
   useEffect(() => {
     setNumbersOfPages(Math.ceil(questionsData.length / itemsPerPage));
@@ -86,17 +84,6 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
     setPageNumber(1);
   };
 
-  const displayToast = (type: string, message: string) => {
-    setShowToast({ type, message });
-    setTimeout(() => {
-      setShowToast(null);
-    }, 3000);
-  };
-
-  const handleToastClose = () => {
-    setShowToast(null);
-  };
-
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
 
@@ -114,14 +101,14 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
         throw new Error("Failed to remove question");
       }
   
-      displayToast("success", "Question removed successfully!");
+      showToast("success", "Question removed successfully!");
       const updatedQuestions = questions.filter(
         (_, index) => index !== questionIndex
       );
       setQuestions(updatedQuestions);
     } catch (error) {
       console.error("Error removing question:", error);
-      displayToast("error", "Failed to remove the question. Please try again.");
+      showToast("error", "Failed to remove the question. Please try again.");
     }
   };
 
@@ -225,13 +212,6 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
         handleItemsPerPage={handleItemsPerPage}
         numbersOfPages={numbersOfPages}
       />
-      {showToast && (
-        <Toast
-          type={showToast.type}
-          message={showToast.message}
-          onClose={handleToastClose}
-        />
-      )}
     </div>
   );
 };

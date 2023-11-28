@@ -8,11 +8,15 @@ import FormAnswers from "./formAnswers";
 import { CardFooter } from "@shadcn/components/ui/card";
 import { Button } from "@shadcn/components/ui/button";
 import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
-import Toast from "./toast";
 import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
+<<<<<<< HEAD
 import { useParams } from "react-router-dom";
+=======
+import { useToast } from "@shadcn/utils/context/ToastContext";
+import extractZodErrors from "@shadcn/utils/functions/zodErrors";
+>>>>>>> 27b69ff758392f93ee4d8f7b7d0e854574d022ee
 
 const defaultAnswerInfo = [
   {
@@ -47,13 +51,11 @@ const QuestionForm: React.FC = () => {
 
   const [answersInfo, setAnswersInfo] = useState<Answer[]>(defaultAnswerInfo);
 
-  const [showToast, setShowToast] = useState<{
-    type: string;
-    message: string;
-  } | null>(null);
+  const { showToast } = useToast();
 
   const [reset, setReset] = useState<boolean>(false);
 
+<<<<<<< HEAD
   const { id } = useParams<{ id: string }>();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -103,6 +105,8 @@ const QuestionForm: React.FC = () => {
     }, 3000);
   };
 
+=======
+>>>>>>> 27b69ff758392f93ee4d8f7b7d0e854574d022ee
   const handleQuestionTitleChange = (text: string) => {
     setQuestionTitle(text);
   };
@@ -123,6 +127,22 @@ const QuestionForm: React.FC = () => {
 
   const handleAnswersChange = (answersArray: AnswerData[]) => {
     setAnswers(answersArray);
+  };
+
+  const handleAnswersInfoChange = (newAnswersInfo: Answer[]) => {
+    setAnswersInfo(newAnswersInfo);
+  };
+
+  const removeAnswer = (indexToRemove: number) => {
+    const updatedAnswers = answersInfo.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setAnswersInfo(updatedAnswers);
+
+    const updatedAnswerData = answers.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setAnswers(updatedAnswerData);
   };
 
   const formQuestionSchema = z.object({
@@ -158,9 +178,7 @@ const QuestionForm: React.FC = () => {
     try {
       formQuestionSchema.parse(questionDataToSend);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        zodErrors = error.errors.map((err) => err.message);
-      }
+      zodErrors = extractZodErrors(error);
     }
 
     const answersCount = answers.length;
@@ -264,9 +282,9 @@ const QuestionForm: React.FC = () => {
 
       await sendDataToBackend(questionDataToSend);
       resetForm();
-      displayToast("success", "Question submitted successfully!");
+      showToast("success", "Question submitted successfully!");
     } catch (error: any) {
-      let errorMessage = "Failed to submit the form. Please try again.";
+      let errorMessage = "Failed to submit the form.";
 
       if (error instanceof z.ZodError) {
         errorMessage = error.errors.map((err) => err.message).join("\n");
@@ -276,7 +294,7 @@ const QuestionForm: React.FC = () => {
         errorMessage = error.message;
       }
       console.error(error);
-      displayToast("error", errorMessage);
+      showToast("error", errorMessage);
     }
   };
 
@@ -302,7 +320,8 @@ const QuestionForm: React.FC = () => {
             onAnswersChange={handleAnswersChange}
             answerData={answers}
             answersInfo={answersInfo}
-            setAnswersInfo={setAnswersInfo}
+            setAnswersInfo={handleAnswersInfoChange}
+            removeAnswer={removeAnswer}
             reset={reset}
           />
           <CardFooter>
@@ -312,15 +331,6 @@ const QuestionForm: React.FC = () => {
           </CardFooter>
         </div>
       </form>
-      <div className="fixed bottom-4 right-4 z-50">
-        {showToast && (
-          <Toast
-            type={showToast.type}
-            message={showToast.message}
-            onClose={handleToastClose}
-          />
-        )}
-      </div>
     </>
   );
 };
