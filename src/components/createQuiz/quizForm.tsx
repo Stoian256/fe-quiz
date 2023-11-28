@@ -9,7 +9,7 @@ import FormTags from "../createQuestion/formTags";
 import QuizQuestions from "./quizQuestions";
 import { CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
-import Toast from "../createQuestion/toast";
+import Toast from "../toast";
 
 interface QuizData {
   quizTitle: string;
@@ -159,7 +159,7 @@ const QuizForm: React.FC = () => {
       resetForm();
       displayToast("success", "Quiz submitted successfully!");
     } catch (error: any) {
-      let errorMessage = "Failed to submit the form. Please try again.";
+      let errorMessage = "Failed to submit the form.";
 
       if (error instanceof z.ZodError) {
         errorMessage = error.errors.map((err) => err.message).join("\n");
@@ -179,20 +179,18 @@ const QuizForm: React.FC = () => {
         <div className="grid w-full items-center gap-4">
           <QuizHeader onQuizTitleChange={handleQuizTitleChange} />
           <FormDifficultySelect
-              onDifficultyChange={handleQuizDifficultyLevelChange}
+            onDifficultyChange={handleQuizDifficultyLevelChange}
           />
           <FormTags
-              onUpdateTags={updateQuizTags}
-              content={quizTitle}
-              tags={quizTags}
+            onUpdateTags={updateQuizTags}
+            content={quizTitle}
+            tags={quizTags}
           />
           <QuizQuestions
-              onQuestionsChange={(question) => setQuizQuestions(question)}
+            onQuestionsChange={(question) => setQuizQuestions(question)}
           />
           <CardFooter>
-            <Button type="submit">
-              Create Quiz
-            </Button>
+            <Button type="submit">Create Quiz</Button>
           </CardFooter>
         </div>
       </form>

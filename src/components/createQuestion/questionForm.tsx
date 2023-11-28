@@ -8,10 +8,10 @@ import FormAnswers from "./formAnswers";
 import { CardFooter } from "@shadcn/components/ui/card";
 import { Button } from "@shadcn/components/ui/button";
 import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
-import Toast from "./toast";
 import { useAuth } from "@shadcn/authContext";
 import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
+import { useToast } from "@shadcn/utils/context/ToastContext";
 
 const defaultAnswerInfo = [
   {
@@ -46,23 +46,9 @@ const QuestionForm: React.FC = () => {
 
   const [answersInfo, setAnswersInfo] = useState<Answer[]>(defaultAnswerInfo);
 
-  const [showToast, setShowToast] = useState<{
-    type: string;
-    message: string;
-  } | null>(null);
+  const { showToast } = useToast();
 
   const [reset, setReset] = useState<boolean>(false);
-
-  const handleToastClose = () => {
-    setShowToast(null);
-  };
-
-  const displayToast = (type: string, message: string) => {
-    setShowToast({ type, message });
-    setTimeout(() => {
-      setShowToast(null);
-    }, 3000);
-  };
 
   const handleQuestionTitleChange = (text: string) => {
     setQuestionTitle(text);
@@ -235,9 +221,9 @@ const QuestionForm: React.FC = () => {
 
       await sendDataToBackend(questionDataToSend);
       resetForm();
-      displayToast("success", "Question submitted successfully!");
+      showToast("success", "Question submitted successfully!");
     } catch (error: any) {
-      let errorMessage = "Failed to submit the form. Please try again.";
+      let errorMessage = "Failed to submit the form.";
 
       if (error instanceof z.ZodError) {
         errorMessage = error.errors.map((err) => err.message).join("\n");
@@ -247,7 +233,7 @@ const QuestionForm: React.FC = () => {
         errorMessage = error.message;
       }
       console.error(error);
-      displayToast("error", errorMessage);
+      showToast("error", errorMessage);
     }
   };
 
@@ -282,15 +268,6 @@ const QuestionForm: React.FC = () => {
           </CardFooter>
         </div>
       </form>
-      <div className="fixed bottom-4 right-4 z-50">
-        {showToast && (
-          <Toast
-            type={showToast.type}
-            message={showToast.message}
-            onClose={handleToastClose}
-          />
-        )}
-      </div>
     </>
   );
 };
