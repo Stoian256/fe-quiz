@@ -44,7 +44,7 @@ type DisplayQuestionsProps = {
 };
 
 const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
-  const [questions, setQuestions] = useState<Question[]>(questionsData);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [numbersOfPages, setNumbersOfPages] = useState(
