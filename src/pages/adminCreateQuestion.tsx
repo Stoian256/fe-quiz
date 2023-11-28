@@ -11,11 +11,8 @@ const AdminCreateQuestion = () => {
     const id = queryParams.get("id");
 
     if (id) {
-      navigate(`/admin/questions/create?id=${id}`, {
-        state: {
-          mainTitle: "Edit Question",
-          title: "Edit existing question"
-        }
+      setTimeout(() => {
+        navigateWithState(id);
       });
     } else {
       navigate("/admin/questions/create", {
@@ -26,6 +23,15 @@ const AdminCreateQuestion = () => {
       });
     }
   }, [location.search, navigate]);
+
+  const navigateWithState = (id: string) => {
+    navigate(`/admin/questions/create?id=${id}`, {
+      state: {
+        mainTitle: "Edit Question",
+        title: "Edit existing question"
+      }
+    });
+  };
 
   return <CreateQuestionForm />;
 };
