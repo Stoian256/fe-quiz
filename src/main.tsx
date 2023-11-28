@@ -4,7 +4,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Auth0ProviderWithNavigate } from "./components/auth/auth0-provider-with-navigate";
 import "./index.css";
-import { AuthProvider } from "./authContext";
+import { AuthProvider } from "./context/authContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

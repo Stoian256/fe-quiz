@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminMessage } from "../services/message.service";
 import { CodeSnippet } from "@shadcn/components/auth/code-snippet";
-import { useAuth } from "@shadcn/authContext";
+import { useAuth } from "@shadcn/context/authContext";
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState<string>("");
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const { accessToken } = useAuth();
 
   useEffect(() => {
-    navigate("/", {
+    navigate("/admin", {
       state: { mainTitle: "Dashboard Title", title: "dashboard second title" }
     });
   }, [navigate]);
@@ -72,4 +72,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

@@ -88,3 +88,33 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@keyframes grow {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.grow-animation {
+  animation: grow 2s ease-in-out 1;
+}
+
+@keyframes disappear-reappear {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.disappear-reappear-animation {
+  animation: disappear-reappear 3s ease-in-out 1;
+}

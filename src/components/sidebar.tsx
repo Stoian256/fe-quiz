@@ -11,9 +11,13 @@ const Sidebar = () => {
         <div className="p-6 pl-2 mr-0">
           <img src={logo} alt={logo} />
         </div>
-        <MenuItem icon={<PieChart />} path="/" label="Dashboard" />
-        <MenuItem icon={<LayoutGrid />} path="/questions" label="Questions" />
-        <MenuItem icon={<AppWindow />} path="/quizzes" label="Quizzes" />
+        <MenuItem icon={<PieChart />} path="/admin" label="Dashboard" />
+        <MenuItem
+          icon={<LayoutGrid />}
+          path="/admin/questions"
+          label="Questions"
+        />
+        <MenuItem icon={<AppWindow />} path="/admin/quizes" label="Quizes" />
       </div>
     </div>
   );
