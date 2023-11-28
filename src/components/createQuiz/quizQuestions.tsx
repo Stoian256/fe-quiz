@@ -77,9 +77,9 @@ const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
       <Button className="w-fit mb-4" type="button">
         Manage Questions
       </Button>
-      {slicedQuestions.map((question, i) => (
+      {slicedQuestions.map((question) => (
         <Card
-          key={i}
+        key={`${question.questionTitle}-${question.questionBody}-${question.difficulty}`}
           className="p-5 flex items-start justify-between border-b-0"
         >
           <div className="flex flex-col">
