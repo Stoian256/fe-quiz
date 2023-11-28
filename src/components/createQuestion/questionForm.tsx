@@ -86,6 +86,11 @@ const QuestionForm: React.FC = () => {
     setAnswers(answersArray);
   };
 
+  const handleAnswersInfoChange = (newAnswersInfo: Answer[]) => {
+    setAnswersInfo(newAnswersInfo);
+  };
+  
+
   const formQuestionSchema = z.object({
     questionTitle: z
       .string()
@@ -257,7 +262,7 @@ const QuestionForm: React.FC = () => {
             onAnswersChange={handleAnswersChange}
             answerData={answers}
             answersInfo={answersInfo}
-            setAnswersInfo={setAnswersInfo}
+            setAnswersInfo={handleAnswersInfoChange}
             reset={reset}
           />
           <CardFooter>

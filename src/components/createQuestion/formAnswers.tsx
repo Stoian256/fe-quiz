@@ -8,7 +8,7 @@ interface AnswersComponentProps {
   onAnswersChange: (answers: AnswerData[]) => void;
   answerData: AnswerData[];
   answersInfo: Answer[];
-  setAnswersInfo: React.Dispatch<React.SetStateAction<Answer[]>>;
+  setAnswersInfo: (newAnswerInfo: Answer[]) => void;
   reset: boolean;
 }
 
