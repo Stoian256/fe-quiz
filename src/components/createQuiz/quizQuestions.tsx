@@ -53,8 +53,6 @@ const QuizQuestions: React.FC<QuizProps> = ({onQuestionsChange}) => {
   
     if (direction === 'left' && pageNumber > 1) {
       newPageNumber = pageNumber - 1;
-    } else if (direction === 'right' && pageNumber < numbersOfPages) {
-      newPageNumber = pageNumber + 1;
     }
   
     setPageNumber(newPageNumber);
