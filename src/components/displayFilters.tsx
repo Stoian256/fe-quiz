@@ -22,6 +22,7 @@ import FilterTags from "./displayFilters/filterTags";
 import ShowSelectedFilters from "./displayFilters/showSelectedFilters";
 import { ListOfTags } from "../utils/interfaces/ListOfTags";
 import { Filters } from "../utils/interfaces/Filters";
+import { PaginationProvider } from "@shadcn/context/paginationContext";
 
 const listOfAllTags = [
   {
@@ -201,7 +202,9 @@ const DisplayFilters = () => {
           clearAllFilters={clearAllFilters}
         />
       </div>
-      <DisplayQuestions filters={filters} />
+      <PaginationProvider>
+        <DisplayQuestions filters={filters} />
+      </PaginationProvider>
     </div>
   );
 };
