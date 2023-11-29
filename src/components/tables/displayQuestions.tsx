@@ -5,20 +5,17 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from "./ui/table";
+} from "../ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from "./ui/tooltip";
-import { Badge } from "./ui/badge";
-import { Progress } from "./ui/progress";
-import { Button } from "./ui/button";
-import { SetStateAction, useEffect, useState } from "react";
-import { Filters } from "../utils/interfaces/Filters";
-import questionsData from "../data/questionsData.json";
-import Pagination from "./displayQuestions/pagination";
+} from "../ui/tooltip";
+import { Badge } from "../ui/badge";
+import { Progress } from "../ui/progress";
+import { Button } from "../ui/button";
+import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 
 const tableHeadData = [
   "QUESTION TITLE",
@@ -29,55 +26,8 @@ const tableHeadData = [
   "ACTIONS"
 ];
 
-interface Question {
-  question: string;
-  difficultyLevel: string;
-  tags: string[];
-  usedInQuizzes: number;
-  correctnessAccuracy: number;
-}
-type DisplayQuestionsProps = {
-  filters: Filters;
-};
-
-const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
-  const [questions, setQuestions] = useState<Question[]>(questionsData);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [numbersOfPages, setNumbersOfPages] = useState(
-    Math.ceil(questionsData.length / Number(itemsPerPage)) // calculate the numbers of page based on data array length
-  );
-
-  useEffect(() => {
-    setNumbersOfPages(Math.ceil(questionsData.length / itemsPerPage));
-    setQuestions(questionsData);
-    const lastIndex = pageNumber * itemsPerPage;
-    const startingIndex = lastIndex - itemsPerPage;
-
-    setQuestions((prevQuestions) =>
-      prevQuestions.slice(startingIndex, lastIndex)
-    );
-  }, [numbersOfPages, pageNumber, itemsPerPage, filters]);
-
-  const handleArrowClick = (direction: string) => {
-    if (direction === "left") {
-      if (pageNumber === 1) {
-        return;
-      }
-      setPageNumber((prevPage) => prevPage - 1);
-    }
-    if (direction === "right") {
-      if (pageNumber === numbersOfPages) {
-        return;
-      }
-      setPageNumber((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handleItemsPerPage = (e: SetStateAction<string>) => {
-    setItemsPerPage(Number(e));
-    setPageNumber(1);
-  };
+const DisplayQuestions = () => {
+  const { questions } = useFilterAndPagination();
 
   return (
     <div className="pb-5 w-full">
@@ -93,56 +43,50 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
         </TableHeader>
         <TableBody>
           {questions.map((eachQuestion, index) => {
-            const {
-              question,
-              tags,
-              difficultyLevel,
-              usedInQuizzes,
-              correctnessAccuracy
-            } = eachQuestion;
+            const { questionTitle, tags, difficulty } = eachQuestion;
             return (
               <TableRow key={index} className="h-[30px] text-left">
                 <TableCell className="font-medium  w-[480px]">
-                  {question.length > 60 ? (
+                  {questionTitle.length > 60 ? (
                     <TooltipProvider delayDuration={200} key={index}>
                       <Tooltip>
                         <TooltipTrigger>
-                          {`${question.slice(0, 60)}...`}
+                          {`${questionTitle.slice(0, 60)}...`}
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="w-5/12 ml-10">
-                          {question}
+                          {questionTitle}
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   ) : (
-                    question
+                    questionTitle
                   )}
                 </TableCell>
                 <TableCell>
                   <Badge
                     className={
-                      difficultyLevel === "Easy"
+                      difficulty === "EASY"
                         ? "bg-green-600"
-                        : difficultyLevel === "Medium"
+                        : difficulty === "MEDIUM"
                         ? "bg-yellow-500"
                         : "bg-red-600"
                     }
                   >
-                    {difficultyLevel}
+                    {difficulty}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   {tags.map((tag, index) => (
                     <Badge key={index} className="mr-1 mb-1">
-                      {tag}
+                      {tag.tagTitle}
                     </Badge>
                   ))}
                 </TableCell>
-                <TableCell>{usedInQuizzes}</TableCell>
+                <TableCell>1</TableCell>
                 <TableCell>
-                  {correctnessAccuracy}%
+                  10%
                   <Progress
-                    value={correctnessAccuracy}
+                    value={10}
                     className="h-1 w-6/12 ml-2 mb-0.5 inline-block"
                   />
                 </TableCell>
@@ -169,14 +113,6 @@ const DisplayQuestions = ({ filters }: DisplayQuestionsProps) => {
           })}
         </TableBody>
       </Table>
-      <Pagination
-        pageNumber={pageNumber}
-        onPageNumberChange={(page) => setPageNumber(page)}
-        handleArrowClick={handleArrowClick}
-        itemsPerPage={itemsPerPage}
-        handleItemsPerPage={handleItemsPerPage}
-        numbersOfPages={numbersOfPages}
-      />
     </div>
   );
 };

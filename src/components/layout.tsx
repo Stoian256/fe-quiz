@@ -2,6 +2,7 @@ import Sidebar from "./sidebar";
 import Navbar from "./navbar";
 import Breadcrumbs from "./breadcrumbs";
 import { Outlet, useLocation } from "react-router-dom";
+import { FilterAndPaginationProvider } from "@shadcn/context/filterAndPaginationContext";
 
 const Layout = () => {
   const location = useLocation();
@@ -19,7 +20,9 @@ const Layout = () => {
             <h1 className="text-lg font-semibold">{state?.mainTitle || ""}</h1>
             <h3 className="text-sm">{state?.title || ""}</h3>
             <div className="bg-white min-h-[calc(100vh-200px)] rounded-md mt-4">
-              <Outlet />
+              <FilterAndPaginationProvider>
+                <Outlet />
+              </FilterAndPaginationProvider>
             </div>
           </div>
         </div>

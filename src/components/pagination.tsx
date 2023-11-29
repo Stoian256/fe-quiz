@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import {
   Select,
   SelectContent,
@@ -8,7 +8,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue
-} from "../ui/select";
+} from "./ui/select";
 import {
   ChevronsRight,
   ChevronsLeft,
