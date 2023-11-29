@@ -30,7 +30,7 @@ const tableHeadData = [
 ];
 
 const DisplayQuestions = () => {
-  const { questions } = useFilterAndPagination();
+  const { questions, setQuestions } = useFilterAndPagination();
 
   const { showToast } = useToast();
 
@@ -53,7 +53,9 @@ const DisplayQuestions = () => {
       if (!response.ok) {
         throw new Error("Failed to remove question");
       }
-
+      setQuestions((prevQuestions) =>
+        prevQuestions.filter((question) => question.id !== questionIndex)
+      );
       showToast("success", "Question removed successfully!");
     } catch (error) {
       console.error("Error removing question:", error);

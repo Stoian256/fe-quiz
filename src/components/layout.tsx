@@ -8,50 +8,50 @@ import { useEffect } from "react";
 
 const Layout = () => {
   const location = useLocation();
-  const { mainTitle, title,setMainTitle, setTitle } = useTitleContext();
+  const { mainTitle, title, setMainTitle, setTitle } = useTitleContext();
 
   useEffect(() => {
     const path = location.pathname;
     let newMainTitle = "";
     let newTitle = "";
 
-    switch (path) {
-      case "/admin":
-        newMainTitle = "Admin Dashboard";
-        newTitle = "Here we have the dashboard";
-        break;
-      case "/admin/questions":
-        newMainTitle = "Questions";
-        newTitle = "Here are the questions that we create";
-        break;
-      case "/admin/quizes":
-        newMainTitle = "Quizes";
-        newTitle = "Here are the quizes we create";
-        break;
-      case "/admin/questions/create":
-        newMainTitle = "Create Question";
-        newTitle = "Add a new question here";
-        break;
-      case "/admin/questions/edit":
-        newMainTitle = "Edit Question";
-        newTitle = "Edit the question here";
-        break;
-      case "/admin/quizes/create":
-        newMainTitle = "Create Quiz";
-        newTitle = "Add a new quiz here";
-        break;
-      case "/admin/quizes/edit":
-        newMainTitle = "Edit Quiz";
-        newTitle = "Edit the quiz here";
-        break;
-      default:
-        newMainTitle = "";
-        newTitle = "";
-        break;
+    if (path.startsWith("/admin/questions/edit")) {
+      newMainTitle = "Edit Question";
+      newTitle = "Edit the question here";
+    } else if (path.startsWith("/admin/quizes/edit")) {
+      newMainTitle = "Edit Quiz";
+      newTitle = "Edit the quiz here";
+    } else {
+      switch (path) {
+        case "/admin":
+          newMainTitle = "Admin Dashboard";
+          newTitle = "Here we have the dashboard";
+          break;
+        case "/admin/questions":
+          newMainTitle = "Questions";
+          newTitle = "Here are the questions that we create";
+          break;
+        case "/admin/quizes":
+          newMainTitle = "Quizes";
+          newTitle = "Here are the quizes we create";
+          break;
+        case "/admin/questions/create":
+          newMainTitle = "Create Question";
+          newTitle = "Add a new question here";
+          break;
+        case "/admin/quizes/create":
+          newMainTitle = "Create Quiz";
+          newTitle = "Add a new quiz here";
+          break;
+        default:
+          newMainTitle = "";
+          newTitle = "";
+          break;
+      }
     }
     setMainTitle(newMainTitle);
     setTitle(newTitle);
-  }, [location.pathname, setMainTitle, setTitle])
+  }, [location.pathname, setMainTitle, setTitle]);
 
   return (
     <div className="flex min-h-screen">

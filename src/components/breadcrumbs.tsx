@@ -7,7 +7,9 @@ const Breadcrumbs = () => {
     | "admin/questions"
     | "admin/quizes"
     | "admin/questions/create"
-    | "admin/quizes/create";
+    | "admin/questions/edit"
+    | "admin/quizes/create"
+    | "admin/quizes/edit";
   type PathDisplayNames = Record<Path, string>;
 
   const location = useLocation();
@@ -19,7 +21,9 @@ const Breadcrumbs = () => {
     "admin/questions": "Questions",
     "admin/quizes": "Quizes",
     "admin/questions/create": "Create",
-    "admin/quizes/create": "Create"
+    "admin/questions/edit": "Edit",
+    "admin/quizes/create": "Create",
+    "admin/quizes/edit": "Edit",
   };
 
   return (
@@ -36,7 +40,11 @@ const Breadcrumbs = () => {
           const pathKey = pathSlice.join("/") as Path;
           const to = `/${pathSlice.join("/")}`;
 
-          const displayName: string = pathDisplayNames[pathKey] || value;
+          let displayName: string = pathDisplayNames[pathKey] || value;
+
+          if (last && pathnames.length > 1) {
+            displayName = pathnames[pathnames.length - 2];
+          }
 
           return (
             <div key={index} className="flex items-center text-xs">

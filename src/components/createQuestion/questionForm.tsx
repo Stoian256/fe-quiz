@@ -174,11 +174,11 @@ const QuestionForm: React.FC = () => {
 
           const questionData = await response.json();
           console.log(questionData);
-          setQuestionTitle(questionData.questionTitle);
-          setQuestionBody(questionData.questionBody);
-          setDifficulty(questionData.difficulty);
+          // setQuestionTitle(questionData.questionTitle);
+          // setQuestionBody(questionData.questionBody);
+          // setDifficulty(questionData.difficulty);
           // setTags(questionData.tags);
-          console.log(questionData.tags);
+          // console.log(questionData.tags);
           showToast("success", "Question data fetched successfully!");
           setIsEditing(true);
         } catch (error) {
