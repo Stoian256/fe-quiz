@@ -13,7 +13,7 @@ import { Answer } from "@shadcn/utils/interfaces/Answer";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const defaultAnswerInfo = [
   {
@@ -37,6 +37,12 @@ const defaultAnswerInfo = [
 interface Tag {
   id: string;
   tagTitle: string;
+}
+
+interface ApiAnswer {
+  id: string;
+  answerContent: string;
+  correctAnswer: boolean;
 }
 
 const QuestionForm: React.FC = () => {
@@ -188,13 +194,23 @@ const QuestionForm: React.FC = () => {
 
           const formattedDifficulty = transformDifficulty(difficulty);
           const tagTitles = tags.map((tag: Tag) => tag.tagTitle);
+          const mappedAnswers: ApiAnswer[] = answers.map(
+            (answer: ApiAnswer) => {
+              return {
+                id: answer.id,
+                answerContent: answer.answerContent,
+                correctAnswer: answer.correctAnswer
+              };
+            }
+          );
 
           console.log(questionData);
           setQuestionTitle(questionTitle);
           setQuestionBody(questionBody);
           setDifficulty(formattedDifficulty);
           setTags(tagTitles);
-          // setAnswers(answers);
+          setAnswers(mappedAnswers);
+
           showToast("success", "Question data fetched successfully!");
           setIsEditing(true);
         } catch (error) {
@@ -262,6 +278,8 @@ const QuestionForm: React.FC = () => {
     setReset(true);
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (event: React.FormEvent<HTMLElement>) => {
     event.preventDefault();
 
@@ -276,6 +294,7 @@ const QuestionForm: React.FC = () => {
       await sendDataToBackend(questionDataToSend);
       resetForm();
       showToast("success", "Question submitted successfully!");
+      navigate("/admin/questions");
     } catch (error: any) {
       let errorMessage = "Failed to submit the form.";
 
@@ -314,7 +333,7 @@ const QuestionForm: React.FC = () => {
             onAnswersChange={handleAnswersChange}
             answerData={answers}
             answersInfo={answersInfo}
-            setAnswersInfo={handleAnswersInfoChange}
+            onAnswerInfoChange={handleAnswersInfoChange}
             removeAnswer={removeAnswer}
             reset={reset}
           />

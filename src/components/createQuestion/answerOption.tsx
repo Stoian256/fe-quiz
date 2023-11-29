@@ -31,18 +31,20 @@ const AnswerOption: React.FC<Props> = ({
   onAnswersChange,
   answerData,
   onRemove,
-  reset,
+  reset
 }) => {
   const initialAnswerData =
     answerData.length > index
       ? answerData[index]
       : { answerContent: "", correctAnswer: false };
 
-  const [capitalizedText, setCapitalizedText] = useState<string>("");
+  const [capitalizedText, setCapitalizedText] = useState<string>(
+    initialAnswerData.answerContent || ""
+  );
 
   useEffect(() => {
     if (reset) {
-      setCapitalizedText(""); 
+      setCapitalizedText("");
     }
   }, [reset]);
 
@@ -85,7 +87,7 @@ const AnswerOption: React.FC<Props> = ({
           onChange={handleAnswerInputChange}
           autoComplete="off"
           required
-          value={capitalizedText}
+          value={capitalizedText || initialAnswerData.answerContent || ""}
         />
       </div>
       <div className="flex items-center gap-2 pl-6">
