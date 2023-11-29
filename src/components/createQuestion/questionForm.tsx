@@ -34,6 +34,11 @@ const defaultAnswerInfo = [
   }
 ];
 
+interface Tag {
+  id: string;
+  tagTitle: string;
+}
+
 const QuestionForm: React.FC = () => {
   const [questionTitle, setQuestionTitle] = useState<string>("");
   const [questionBody, setQuestionBody] = useState<string>("");
@@ -182,12 +187,13 @@ const QuestionForm: React.FC = () => {
           };
 
           const formattedDifficulty = transformDifficulty(difficulty);
+          const tagTitles = tags.map((tag: Tag) => tag.tagTitle);
 
           console.log(questionData);
           setQuestionTitle(questionTitle);
           setQuestionBody(questionBody);
           setDifficulty(formattedDifficulty);
-          // setTags(tags);
+          setTags(tagTitles);
           // setAnswers(answers);
           showToast("success", "Question data fetched successfully!");
           setIsEditing(true);
