@@ -16,18 +16,50 @@ import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
+import { useAuth } from "@shadcn/context/authContext";
+import { useToast } from "@shadcn/context/ToastContext";
+import { Link } from "react-router-dom";
 
 const tableHeadData = [
   "QUESTION TITLE",
   "DIFFICULTY LEVEL",
   "TAGS",
   "USED IN QUIZZES",
-  "CORECTNESS ACCURACY",
+  "CORRECTNESS ACCURACY",
   "ACTIONS"
 ];
 
 const DisplayQuestions = () => {
   const { questions } = useFilterAndPagination();
+
+  const { showToast } = useToast();
+
+  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
+  const { accessToken } = useAuth();
+
+  const removeQuestion = async (questionIndex: string) => {
+    console.log(questionIndex);
+    try {
+      const response = await fetch(
+        `${BE_URL}questions/delete/${questionIndex}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove question");
+      }
+
+      showToast("success", "Question removed successfully!");
+    } catch (error) {
+      console.error("Error removing question:", error);
+      showToast("error", "Failed to remove the question. Please try again.");
+    }
+  };
 
   return (
     <div className="pb-5 w-full">
@@ -43,7 +75,7 @@ const DisplayQuestions = () => {
         </TableHeader>
         <TableBody>
           {questions.map((eachQuestion, index) => {
-            const { questionTitle, tags, difficulty } = eachQuestion;
+            const { questionTitle, tags, difficulty, id } = eachQuestion;
             return (
               <TableRow key={index} className="h-[30px] text-left">
                 <TableCell className="font-medium  w-[480px]">
@@ -92,16 +124,19 @@ const DisplayQuestions = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Button
-                      variant="outline"
-                      className="border-black hover:bg-black hover:text-white"
-                    >
-                      Edit
-                    </Button>
+                    <Link to={`/admin/questions/edit/${id}`}>
+                      <Button
+                        variant="outline"
+                        className="border-black hover:bg-black hover:text-white"
+                      >
+                        Edit
+                      </Button>
+                    </Link>
+
                     <Button
                       variant="outline"
                       className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                      // onClick={(e) => handleDelete(e)}
+                      onClick={() => removeQuestion(id)}
                       value={index}
                     >
                       Delete

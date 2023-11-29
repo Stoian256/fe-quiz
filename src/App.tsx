@@ -16,7 +16,6 @@ import AdminQuizes from "./pages/adminQuizes";
 import AdminCreateQuiz from "./pages/adminCreateQuiz";
 import { PageLoader } from "./components/auth/page-loader";
 import ErrorPage from "./pages/errorPage";
-// import CreateQuestionForm from "./components/createQuestion/createQuestionForm";
 
 const App: React.FC = () => {
   const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
@@ -30,7 +29,6 @@ const App: React.FC = () => {
           const decodedToken: { permissions: string[] } = jwtDecode(token);
           const userIsAdmin = decodedToken.permissions.includes("Admin");
           storeData!(token, isAuthenticated, userIsAdmin);
-          console.log(token);
         }
       }
     } catch (error) {

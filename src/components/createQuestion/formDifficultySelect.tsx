@@ -8,18 +8,14 @@ import {
 } from "@shadcn/components/ui/select";
 
 interface SelectDifficultyProps {
-  onDifficultyChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onDifficultyChange: (text: string) => void;
 }
 
 const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
   onDifficultyChange,
 }) => {
   const handleDifficultyChange = (selectedValue: string) => {
-    const syntheticEvent = {
-      target: { value: selectedValue }
-    } as React.ChangeEvent<HTMLSelectElement>;
-
-    onDifficultyChange(syntheticEvent);
+    onDifficultyChange(selectedValue);
   };
 
   return (

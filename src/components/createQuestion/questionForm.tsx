@@ -60,10 +60,8 @@ const QuestionForm: React.FC = () => {
     setQuestionBody(text);
   };
 
-  const handleQuestionDifficultyLevelChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setDifficulty(event.target.value);
+  const handleQuestionDifficultyLevelChange = (text: string) => {
+    setDifficulty(text);
   };
 
   const updateQuestionTags = (newTags: string[]) => {
@@ -100,9 +98,7 @@ const QuestionForm: React.FC = () => {
       .string()
       .min(1, { message: "Please choose a difficulty level" }),
     tags: z.array(
-      z
-        .string()
-        .min(1, { message: "There must be at least 1 tag" })
+      z.string().min(1, { message: "There must be at least 1 tag" })
     ),
     answers: z.array(
       z.object({
@@ -157,38 +153,39 @@ const QuestionForm: React.FC = () => {
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
 
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string | undefined }>();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const fetchQuestionByID = async (questionID: string) => {
-    try {
-      const response = await fetch(`${BE_URL}questions/${questionID}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch question data");
-      }
-
-      const questionData = await response.json();
-      setQuestionTitle(questionData.questionTitle);
-      setQuestionBody(questionData.questionBody);
-      setDifficulty(questionData.difficulty);
-      setTags(questionData.tags);
-      showToast("success", "Question data fetched successfully!");
-      setIsEditing(true);
-    } catch (error) {
-      console.error("Error fetching question data:", error);
-      showToast("error", "Failed to fetch question data.");
-    }
-  };
-
   useEffect(() => {
     if (id) {
+      const fetchQuestionByID = async (questionID: string) => {
+        try {
+          const response = await fetch(`${BE_URL}questions/${questionID}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch question data");
+          }
+
+          const questionData = await response.json();
+          console.log(questionData);
+          setQuestionTitle(questionData.questionTitle);
+          setQuestionBody(questionData.questionBody);
+          setDifficulty(questionData.difficulty);
+          // setTags(questionData.tags);
+          console.log(questionData.tags);
+          showToast("success", "Question data fetched successfully!");
+          setIsEditing(true);
+        } catch (error) {
+          console.error("Error fetching question data:", error);
+          showToast("error", "Failed to fetch question data.");
+        }
+      };
       fetchQuestionByID(id);
     }
   }, [id]);
@@ -212,14 +209,13 @@ const QuestionForm: React.FC = () => {
         body: JSON.stringify(questionDataToSend)
       });
 
-      
       if (!response.ok) {
         throw new Error("Failed to update question");
       }
-      
+
       const successMessage = isEditing
-      ? "Question updated successfully!"
-      : "Question submitted successfully!";
+        ? "Question updated successfully!"
+        : "Question submitted successfully!";
       showToast("success", successMessage);
       resetForm();
     } catch (error) {

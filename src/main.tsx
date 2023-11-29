@@ -6,6 +6,7 @@ import { Auth0ProviderWithNavigate } from "./components/auth/auth0-provider-with
 import "./index.css";
 import { AuthProvider } from "./context/authContext";
 import { ToastProvider } from "./context/ToastContext";
+import { TitleProvider } from "./context/TitleContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <AuthProvider>
         <Auth0ProviderWithNavigate>
           <ToastProvider>
-            <App />
+            <TitleProvider>
+              <App />
+            </TitleProvider>
           </ToastProvider>
         </Auth0ProviderWithNavigate>
       </AuthProvider>
