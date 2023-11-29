@@ -1,4 +1,4 @@
-import DisplayFilters from "@shadcn/components/displayFilters";
+// import DisplayFilters from "@shadcn/components/displayFilters";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 0,
+    "name": "React"
+  },
+  {
+    "id": 1,
+    "name": "Coding 101"
+  },
+  {
+    "id": 2,
+    "name": "Coding 102"
+  },
+  {
+    "id": 3,
+    "name": "React Advanced"
+  },
+  {
+    "id": 4,
+    "name": "React Begginers"
+  },
+  {
+    "id": 5,
+    "name": "Javascript"
+  }
+]
