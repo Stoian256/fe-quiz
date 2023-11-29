@@ -16,6 +16,7 @@ import AdminQuizes from "./pages/adminQuizes";
 import AdminCreateQuiz from "./pages/adminCreateQuiz";
 import { PageLoader } from "./components/auth/page-loader";
 import ErrorPage from "./pages/errorPage";
+// import CreateQuestionForm from "./components/createQuestion/createQuestionForm";
 
 const App: React.FC = () => {
   const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           const decodedToken: { permissions: string[] } = jwtDecode(token);
           const userIsAdmin = decodedToken.permissions.includes("Admin");
           storeData!(token, isAuthenticated, userIsAdmin);
+          console.log(token);
         }
       }
     } catch (error) {
@@ -36,7 +38,7 @@ const App: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, [getAccessTokenSilently, isAuthenticated, storeData]);
 
   if (isLoading) {
@@ -58,6 +60,11 @@ const App: React.FC = () => {
                 path="/admin/questions/create"
                 element={<AdminCreateQuestion />}
               />
+              <Route
+                path="/admin/questions/edit/:id"
+                element={<AdminCreateQuestion />}
+              />
+
               <Route path="/admin/questions" element={<AdminQuestions />} />
               <Route
                 path="/admin/quizes/create"

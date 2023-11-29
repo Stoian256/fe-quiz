@@ -25,7 +25,7 @@ const AdminCreateQuestion = () => {
   }, [location.search, navigate]);
 
   const navigateWithState = (id: string) => {
-    navigate(`/admin/questions/create?id=${id}`, {
+    navigate(`/admin/questions/edit/:${id}`, {
       state: {
         mainTitle: "Edit Question",
         title: "Edit existing question"
