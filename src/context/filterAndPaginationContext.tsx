@@ -38,7 +38,7 @@ export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filters, setFilters] = useState<Filters>({
     keyword: [],
-    difficulty: ["easy"], //TODO BE & FE AGREEMENT
+    difficulty: [], //TODO BE & FE AGREEMENT
     tags: []
   });
 
@@ -51,6 +51,7 @@ export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }
         if (accessToken) {
           const defaultDifficulty = "any";
           const defaultKeyword = "";
+          const defaultTag = "";
           //TODO BE & FE AGREEMENT
 
           // const tagsArray: string[] = [];
@@ -64,10 +65,10 @@ export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }
                 //TODO BE & FE AGREEMENT
             // difficulties: JSON.stringify(filters.difficulty),
             keyword:
-              filters.keyword.length > 0 ? filters.keyword[0] : defaultKeyword
+              filters.keyword.length > 0 ? filters.keyword[0] : defaultKeyword,
               //TODO BE & FE AGREEMENT
-            // tags: filters.tags.length > 0 ? filters.tags[0] : defaultTag,
-            // tags: JSON.stringify(tagsArray)
+            tags: filters.tags.length > 0 ? filters.tags[0] : defaultTag,
+            // tags: JSON.stringify(filters.tags)
           });
 
           const data = await getQuestions(accessToken, queryParams.toString());
