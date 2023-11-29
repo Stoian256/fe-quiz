@@ -1,51 +1,35 @@
 import { CardTitle } from "@shadcn/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@shadcn/components/ui/select";
+import Select from "../select";
+import { useEffect, useState } from "react";
 
 interface SelectDifficultyProps {
-  onDifficultyChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onDifficultyChange: (value: string) => void;
+  initialDifficulty?: string;
 }
 
 const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
-  onDifficultyChange
+  onDifficultyChange,
+  initialDifficulty = "", 
 }) => {
+  const [selectedDifficulty, setSelectedDifficulty] = useState(initialDifficulty);
+
+  useEffect(() => {
+    setSelectedDifficulty(initialDifficulty);
+  }, [initialDifficulty]);
+
   const handleDifficultyChange = (selectedValue: string) => {
-    const formatDifficulty = (value: string) => {
-      return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    };
-
-    const formattedValue = formatDifficulty(selectedValue);
-    const syntheticEvent = {
-      target: { value: formattedValue }
-    } as React.ChangeEvent<HTMLSelectElement>;
-
-    onDifficultyChange(syntheticEvent);
+    setSelectedDifficulty(selectedValue);
+    onDifficultyChange(selectedValue);
   };
 
   return (
     <div className="flex flex-col space-y-1.5">
       <CardTitle className="text-sm mt-2">Difficulty Level</CardTitle>
-      <Select onValueChange={handleDifficultyChange}>
-        <SelectTrigger id="difficulty">
-          <SelectValue placeholder="Select Difficulty Level..." />
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectItem id="easy" value="Easy">
-            Easy
-          </SelectItem>
-          <SelectItem id="medium" value="Medium">
-            Medium
-          </SelectItem>
-          <SelectItem id="hard" value="Hard">
-            Hard
-          </SelectItem>
-        </SelectContent>
-      </Select>
+      <Select
+        options={["Easy", "Medium", "Hard"]}
+        value={selectedDifficulty}
+        onChange={handleDifficultyChange}
+      />
     </div>
   );
 };
