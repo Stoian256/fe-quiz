@@ -60,8 +60,8 @@ const QuestionForm: React.FC = () => {
     setQuestionBody(text);
   };
 
-  const handleQuestionDifficultyLevelChange = (text: string) => {
-    setDifficulty(text);
+  const handleQuestionDifficultyLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setDifficulty(event.target.value);
   };
 
   const updateQuestionTags = (newTags: string[]) => {
@@ -173,12 +173,21 @@ const QuestionForm: React.FC = () => {
           }
 
           const questionData = await response.json();
+
+          const {
+            questionTitle,
+            questionBody,
+            difficulty,
+            tags,
+            answers
+          } = questionData;
+    
           console.log(questionData);
-          // setQuestionTitle(questionData.questionTitle);
-          // setQuestionBody(questionData.questionBody);
-          // setDifficulty(questionData.difficulty);
-          // setTags(questionData.tags);
-          // console.log(questionData.tags);
+          setQuestionTitle(questionTitle);
+          setQuestionBody(questionBody);
+          setDifficulty(difficulty);
+          // setTags(tags);
+          // setAnswers(answers);
           showToast("success", "Question data fetched successfully!");
           setIsEditing(true);
         } catch (error) {

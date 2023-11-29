@@ -8,14 +8,23 @@ import {
 } from "@shadcn/components/ui/select";
 
 interface SelectDifficultyProps {
-  onDifficultyChange: (text: string) => void;
+  onDifficultyChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
-  onDifficultyChange,
+  onDifficultyChange
 }) => {
   const handleDifficultyChange = (selectedValue: string) => {
-    onDifficultyChange(selectedValue);
+    const formatDifficulty = (value: string) => {
+      return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    };
+
+    const formattedValue = formatDifficulty(selectedValue);
+    const syntheticEvent = {
+      target: { value: formattedValue }
+    } as React.ChangeEvent<HTMLSelectElement>;
+
+    onDifficultyChange(syntheticEvent);
   };
 
   return (
@@ -29,10 +38,10 @@ const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
           <SelectItem id="easy" value="Easy">
             Easy
           </SelectItem>
-          <SelectItem id="medium" value="medium">
+          <SelectItem id="medium" value="Medium">
             Medium
           </SelectItem>
-          <SelectItem id="hard" value="hard">
+          <SelectItem id="hard" value="Hard">
             Hard
           </SelectItem>
         </SelectContent>
