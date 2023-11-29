@@ -3,7 +3,9 @@ import {
   createContext,
   useState,
   useContext,
-  ReactNode
+  ReactNode,
+  useEffect,
+  useRef
 } from "react";
 
 export interface ToastContextType {
@@ -30,12 +32,27 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     message: string;
   } | null>(null);
 
+  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+
   const showToast = (type: string, message: string) => {
     setToast({ type, message });
-    setTimeout(() => {
+
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+
+    timeoutIdRef.current = setTimeout(() => {
       setToast(null);
     }, 3000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+    };
+  }, []);
 
   return (
     <ToastContext.Provider value={{ showToast }}>
@@ -49,5 +66,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     </ToastContext.Provider>
   );
 };
+
 
 export default ToastContext;

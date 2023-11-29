@@ -188,11 +188,6 @@ const QuestionForm: React.FC = () => {
           const { questionTitle, questionBody, difficulty, tags, answers } =
             questionData;
 
-          const transformDifficulty = (value: string) => {
-            return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-          };
-
-          const formattedDifficulty = transformDifficulty(difficulty);
           const tagTitles = tags.map((tag: Tag) => tag.tagTitle);
           const mappedAnswers: ApiAnswer[] = answers.map(
             (answer: ApiAnswer) => {
@@ -207,7 +202,7 @@ const QuestionForm: React.FC = () => {
           console.log(questionData);
           setQuestionTitle(questionTitle);
           setQuestionBody(questionBody);
-          setDifficulty(formattedDifficulty);
+          setDifficulty(difficulty);
           setTags(tagTitles);
           setAnswers(mappedAnswers);
 

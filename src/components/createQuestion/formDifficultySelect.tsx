@@ -12,14 +12,14 @@ const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
   initialDifficulty = "", 
 }) => {
   const [selectedDifficulty, setSelectedDifficulty] = useState(initialDifficulty);
-
   useEffect(() => {
     setSelectedDifficulty(initialDifficulty);
   }, [initialDifficulty]);
 
   const handleDifficultyChange = (selectedValue: string) => {
-    setSelectedDifficulty(selectedValue);
-    onDifficultyChange(selectedValue);
+    const upperCaseValue = selectedValue.toUpperCase();
+    setSelectedDifficulty(upperCaseValue);
+    onDifficultyChange(upperCaseValue);
   };
 
   return (
