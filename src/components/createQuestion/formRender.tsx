@@ -45,7 +45,7 @@ const FormRender: React.FC<FormRenderProps> = ({
           onBlur={handleQuestionTitleBlur}
           className="w-full h-10 px-2 border rounded-md"
         />
-        {titleError && <p className="text-red-500 text-sm">{titleError}</p>}
+        {titleError && title && <p className="text-red-500 text-sm">{titleError}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -61,7 +61,7 @@ const FormRender: React.FC<FormRenderProps> = ({
             onBlur={handleQuestionBodyBlur}
             className="h-40"
           />
-          {bodyError && <p className="text-red-500 text-sm">{bodyError}</p>}
+          {bodyError && body && <p className="text-red-500 text-sm">{bodyError}</p>}
         </div>
         <div className="w-full">
           <label htmlFor="preview" className="text-sm mb-2">

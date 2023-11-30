@@ -157,7 +157,10 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
                       className={"bg-gray-200 p-1 cursor-pointer"}
                       onClick={() => handleTagSelection(tag)}
                     >
-                      {tag}
+                      <span>{tag}</span>
+                      <span className="text-xs/[5px] text-gray-500 ml-2">
+                        (Suggested from title)
+                      </span>
                     </div>
                   ))}
             </div>
