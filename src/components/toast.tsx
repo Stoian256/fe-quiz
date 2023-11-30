@@ -1,5 +1,5 @@
 import { useToast } from "@shadcn/context/ToastContext";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 interface ToastProps {
   type: string;
@@ -9,9 +9,11 @@ interface ToastProps {
 const Toast: React.FC<ToastProps> = ({ type, message }) => {
   const { showToast } = useToast();
 
+  const showToastCallback = useCallback(showToast, []);
+
   useEffect(() => {
-    showToast(type, message);
-  }, [type, message, showToast]);
+    showToastCallback(type, message);
+  }, [type, message, showToastCallback]);
 
   return (
     <div
