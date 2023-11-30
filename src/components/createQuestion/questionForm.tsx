@@ -199,12 +199,22 @@ const QuestionForm: React.FC = () => {
             }
           );
 
+          const existingAnswersInfo = answers.map((_answer: ApiAnswer, index: number) => ({
+            option: `Option ${index + 1}`,
+            button: "Remove",
+            answerTitle: "Answer Title",
+            answerTxt: "Is this Answer Correct?",
+            inputId: `answer-input-${index + 1}`,
+            switchId: `answer-switch-${index + 1}`
+          }));
+
           console.log(questionData);
           setQuestionTitle(questionTitle);
           setQuestionBody(questionBody);
           setDifficulty(difficulty);
           setTags(tagTitles);
           setAnswers(mappedAnswers);
+          setAnswersInfo(existingAnswersInfo);
 
           showToast("success", "Question data fetched successfully!");
           setIsEditing(true);

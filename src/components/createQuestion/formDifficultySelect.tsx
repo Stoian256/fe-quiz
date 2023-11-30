@@ -9,18 +9,19 @@ interface SelectDifficultyProps {
 
 const FormDifficultySelect: React.FC<SelectDifficultyProps> = ({
   onDifficultyChange,
-  initialDifficulty = "", 
+  initialDifficulty = ""
 }) => {
-  const [selectedDifficulty, setSelectedDifficulty] = useState(initialDifficulty);
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState(initialDifficulty);
+
+  const handleDifficultyChange = (selectedValue: string) => {
+    setSelectedDifficulty(selectedValue);
+    onDifficultyChange(selectedValue);
+  };
+
   useEffect(() => {
     setSelectedDifficulty(initialDifficulty);
   }, [initialDifficulty]);
-
-  const handleDifficultyChange = (selectedValue: string) => {
-    const upperCaseValue = selectedValue.toUpperCase();
-    setSelectedDifficulty(upperCaseValue);
-    onDifficultyChange(upperCaseValue);
-  };
 
   return (
     <div className="flex flex-col space-y-1.5">

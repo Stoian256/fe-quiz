@@ -7,34 +7,39 @@ const Select: React.FC<{
   options,
   value,
   onChange,
-  placeholder = "Select a difficulty level..."
+  placeholder = "Select a difficulty level...",
 }) => {
+  const handleSelectChange = (selectedValue: string) => {
+    onChange(selectedValue);
+  };
+
   return (
     <div className="relative">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-primary"
-      >
-        <option value="" disabled hidden>
-          {placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+      <div className="flex items-center border rounded-md shadow-sm focus:outline-none focus:ring focus:border-primary">
+        <select
+          value={value}
+          onChange={(e) => handleSelectChange(e.target.value)}
+          className="appearance-none block w-full px-3 py-2 focus:outline-none"
+        >
+          <option value="" disabled hidden>
+            {placeholder}
           </option>
-        ))}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
         <svg
-          className="w-4 h-4 fill-current"
-          viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 absolute right-2 pointer-events-none"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
           <path
             fillRule="evenodd"
+            d="M10 12a1 1 0 0 1-.7-.29l-3-3a1 1 0 1 1 1.41-1.42L10 10.59l2.29-2.3a1 1 0 0 1 1.41 1.42l-3 3a1 1 0 0 1-.7.28z"
             clipRule="evenodd"
-            d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
           />
         </svg>
       </div>
