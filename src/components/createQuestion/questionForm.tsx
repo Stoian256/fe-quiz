@@ -208,7 +208,6 @@ const QuestionForm: React.FC = () => {
             switchId: `answer-switch-${index + 1}`
           }));
 
-          console.log(questionData);
           setQuestionTitle(questionTitle);
           setQuestionBody(questionBody);
           setDifficulty(difficulty);
