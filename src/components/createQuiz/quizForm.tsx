@@ -30,10 +30,8 @@ const QuizForm: React.FC = () => {
   const handleQuizTitleChange = (text: string) => {
     setQuizTitle(text);
   };
-  const handleQuizDifficultyLevelChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setQuizDifficultyLevel(event.target.value);
+  const handleQuizDifficultyLevelChange = (difficulty: string) => {
+    setQuizDifficultyLevel(difficulty);
   };
   const updateQuizTags = (newTags: string[]) => {
     setQuizTags(newTags);
