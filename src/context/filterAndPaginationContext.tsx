@@ -19,9 +19,9 @@ type PaginationContextType = {
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const FilterAndPaginationContext = createContext<PaginationContextType | undefined>(
-  undefined
-);
+const FilterAndPaginationContext = createContext<
+  PaginationContextType | undefined
+>(undefined);
 
 export const useFilterAndPagination = () => {
   const context = useContext(FilterAndPaginationContext);
@@ -31,9 +31,9 @@ export const useFilterAndPagination = () => {
   return context;
 };
 
-export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }> = ({
-  children
-}) => {
+export const FilterAndPaginationProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { accessToken } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filters, setFilters] = useState<Filters>({
@@ -49,29 +49,34 @@ export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }
     async function fetchData() {
       try {
         if (accessToken) {
-          const defaultDifficulty = "any";
+          const defaultDifficulty = "";
           const defaultKeyword = "";
           const defaultTag = "";
-          //TODO BE & FE AGREEMENT
 
-          // const tagsArray: string[] = [];
           const queryParams = new URLSearchParams({
             itemsPerPage: itemsPerPage.toString(),
             pageIndex: pageNumber.toString(),
+
             difficulties:
-              filters.difficulty.length > 0
+              filters.difficulty.length === 1
                 ? filters.difficulty[0]
+                : filters.difficulty.length === 2
+                ? filters.difficulty.join("&difficulties=")
                 : `${defaultDifficulty}`,
-                //TODO BE & FE AGREEMENT
-            // difficulties: JSON.stringify(filters.difficulty),
             keyword:
               filters.keyword.length > 0 ? filters.keyword[0] : defaultKeyword,
-              //TODO BE & FE AGREEMENT
-            tags: filters.tags.length > 0 ? filters.tags[0] : defaultTag,
-            // tags: JSON.stringify(filters.tags)
+            tags:
+              filters.tags.length === 1
+                ? filters.tags[0]
+                : filters.tags.length > 1
+                ? filters.tags.join("&tags=")
+                : `${defaultTag}`
           });
 
-          const data = await getQuestions(accessToken, queryParams.toString());
+          const data = await getQuestions(
+            accessToken,
+            decodeURIComponent(queryParams.toString())
+          );
           setQuestions(data.content);
 
           setItemsPerPage(data.pageable.pageSize);
@@ -89,7 +94,7 @@ export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }
 
   const handleArrowClick = (direction: string) => {
     if (direction === "left") {
-      if (pageNumber === 1) return;
+      if (pageNumber === 0) return;
       setPageNumber((prevPage) => prevPage - 1);
     } else if (direction === "right") {
       const totalPages = Math.ceil(questions.length / itemsPerPage);

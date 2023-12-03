@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import FilterAll from "@shadcn/components/filters/filterAll";
+import Pagination from "@shadcn/components/filters/pagination";
 import DisplayQuestions from "@shadcn/components/tables/displayQuestions";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
-import Pagination from "@shadcn/components/pagination";
 
 const AdminQuestions = () => {
   const {
@@ -15,13 +14,6 @@ const AdminQuestions = () => {
     handleItemsPerPage
   } = useFilterAndPagination();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigate("/admin/questions", {
-      state: { mainTitle: "Questions Title", title: "questions second title" }
-    });
-  }, [navigate]);
   return (
     <div className="text-left  pt-4">
       <div className="pl-4">

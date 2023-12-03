@@ -34,7 +34,7 @@ const ShowSelectedFilters = ({
             ([filterType, filterValue], outerIndex) =>
               filterValue.length > 0 && (
                 <div className="flex gap-1" key={outerIndex}>
-                  {filterValue.length < 4
+                  {filterValue.length < 3
                     ? filterValue.map((selectedFilter, innerIndex) => (
                         <RenderBadge
                           key={`${outerIndex}-${innerIndex}`}
@@ -45,7 +45,7 @@ const ShowSelectedFilters = ({
                         />
                       ))
                     : filterValue
-                        .slice(0, 4)
+                        .slice(0, 3)
                         .map((selectedFilter, innerIndex) => (
                           <RenderBadge
                             key={`${outerIndex}-${innerIndex}`}
@@ -60,18 +60,18 @@ const ShowSelectedFilters = ({
           )}
           {Object.entries(filters).map(
             ([_, tagName], index) =>
-              tagName.length > 4 && (
+              tagName.length > 3 && (
                 <TooltipProvider delayDuration={200} key={index}>
                   <Tooltip>
                     <TooltipTrigger>
                       <span className="text-xs pl-2">{`see +${
-                        tagName.length - 4
+                        tagName.length - 3
                       } more ${
-                        tagName.length - 4 === 1 ? "tag" : "tags"
+                        tagName.length - 3 === 1 ? "tag" : "tags"
                       }`}</span>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
-                      {tagName.slice(4).map((tag, index) => (
+                      {tagName.slice(3).map((tag, index) => (
                         <p key={index}>tag - {tag}</p>
                       ))}
                     </TooltipContent>

@@ -25,7 +25,12 @@ const FilterDifficulty = ({
         <Label htmlFor="difficulty">Difficulty Level</Label>
         <DropdownMenuTrigger asChild name="difficulty">
           <Button variant="outline" className="justify-start">
-            Select Difficulty
+            {`Selected Difficulty:
+            ${
+              difficultyFilter.length > 0
+                ? difficultyFilter.map((difficulty) => ` ${difficulty}`)
+                : "any"
+            }`}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">

@@ -1,4 +1,4 @@
 export interface ListOfTags {
-  id: number;
-  name: string;
+  id: string;
+  tagTitle: string;
 }

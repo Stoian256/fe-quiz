@@ -23,47 +23,56 @@ import { ListOfTags } from "../../utils/interfaces/ListOfTags";
 import { Filters } from "../../utils/interfaces/Filters";
 import listOfAllTags from "../../data/listOfAllTags.json";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
+import { getTags } from "@shadcn/services/questions.service";
+import { useAuth } from "@shadcn/context/authContext";
 
 const FilterAll = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [listOfTags, setListOfTags] = useState<ListOfTags[]>(listOfAllTags);
-
-  const { filters, setFilters } = useFilterAndPagination();
-
+  const [listOfTags, setListOfTags] = useState<ListOfTags[]>();
   const [difficultyFilter, setDifficultyFilter] = useState(["easy"]);
+
+  const [requestBodyTag, setRequestBodyTag] = useState({});
+  const { filters, setFilters } = useFilterAndPagination();
+  const [intermediarFilters, setIntermediarFilters] = useState(filters);
+  const { accessToken } = useAuth();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (accessToken) {
+          const data = await getTags(accessToken, requestBodyTag);
+
+          console.log("Fetched data:", data);
+
+          setListOfTags(data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchData();
+  }, [selectedTags, requestBodyTag]);
 
   useEffect(() => {
     setSelectedTags(filters.tags);
     setDifficultyFilter(filters.difficulty);
   }, [filters]);
 
-  const handleOnSelect = (item: { name: string }) => {
-    const { name } = item;
-    setListOfTags((prevTags) => prevTags.filter((tag) => tag.name !== name));
-    setSelectedTags((prevTags) => [...prevTags, name]);
-  };
-
   const removeAllTags = () => {
     setSelectedTags([]);
-    setListOfTags(listOfAllTags);
+    setRequestBodyTag({});
   };
-
-  const formatResult = (item: { name: string }) => (
-    <span className="cursor-pointer text-sm">{item.name}</span>
-  );
 
   const handleDeleteTag: MouseEventHandler<HTMLDivElement> = (e) => {
     const tagToDelete = e.currentTarget.title;
     setSelectedTags((prevTags) =>
       prevTags.filter((tag) => tag !== tagToDelete)
     );
-    const tagToAddInList = listOfAllTags.filter(
-      (tag) => tag.name === tagToDelete
-    );
-    setListOfTags((prevTags) => [...prevTags, tagToAddInList[0]]);
   };
 
   const applyFiltersBtn = () => {
+    setFilters(intermediarFilters);
     setFilters((prevFilters) => ({
       ...prevFilters,
       difficulty: difficultyFilter.filter((tag) => tag !== "any"),
@@ -72,7 +81,7 @@ const FilterAll = () => {
   };
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFilters((prevFilters) => ({
+    setIntermediarFilters((prevFilters) => ({
       ...prevFilters,
       [e.target.name]: [e.target.value]
     }));
@@ -120,6 +129,26 @@ const FilterAll = () => {
     setDifficultyFilter(difficultyArray);
   };
 
+  const handleTagChange = (e) => {
+    const prefix = e.target.value;
+    const selectedEmpty = selectedTags.length === 0;
+    setRequestBodyTag({
+      prefix: prefix,
+      excludedTags: selectedEmpty ? [""] : selectedTags
+    });
+  };
+
+  const handleTagSelect = (e) => {
+    const addToSelectedTags: string = e.target.innerHTML;
+
+    setSelectedTags((prevTags) => [...prevTags, addToSelectedTags]);
+
+    setRequestBodyTag({
+      prefix: "",
+      excludedTags: selectedTags
+    });
+  };
+
   return (
     <div className="p-4 pb-0 pt-0 flex flex-col items-start gap-2">
       <div className="flex gap-2 pb-3 w-full">
@@ -133,7 +162,7 @@ const FilterAll = () => {
             </DialogHeader>
             <div className="flex flex-col gap-4">
               <FilterSearch
-                keyword={(filters as Filters).keyword}
+                keyword={(intermediarFilters as Filters).keyword}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   handleFilterChange(e)
                 }
@@ -145,10 +174,11 @@ const FilterAll = () => {
               <FilterTags
                 listOfTags={listOfTags}
                 selectedTags={selectedTags}
-                handleOnSelect={handleOnSelect}
-                formatResult={formatResult}
                 handleDeleteTag={handleDeleteTag}
                 removeAllTags={removeAllTags}
+                handleTagChange={handleTagChange}
+                handleTagSelect={handleTagSelect}
+                requestBodyTag={requestBodyTag}
               />
             </div>
             <DialogFooter className="flex justify-between sm:justify-between">
