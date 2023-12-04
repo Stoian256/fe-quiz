@@ -19,9 +19,9 @@ type PaginationContextType = {
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const FilterAndPaginationContext = createContext<PaginationContextType | undefined>(
-  undefined
-);
+const FilterAndPaginationContext = createContext<
+  PaginationContextType | undefined
+>(undefined);
 
 export const useFilterAndPagination = () => {
   const context = useContext(FilterAndPaginationContext);
@@ -31,65 +31,48 @@ export const useFilterAndPagination = () => {
   return context;
 };
 
-export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }> = ({
-  children
-}) => {
+export const FilterAndPaginationProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { accessToken } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filters, setFilters] = useState<Filters>({
     keyword: [],
-    difficulty: [], //TODO BE & FE AGREEMENT
+    difficulty: [],
     tags: []
   });
 
   const [pageNumber, setPageNumber] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
       try {
         if (accessToken) {
-          const defaultDifficulty = "any";
-          const defaultKeyword = "";
-          const defaultTag = "";
-          //TODO BE & FE AGREEMENT
+          const data = await getQuestions(
+            accessToken,
+            filters,
+            itemsPerPage,
+            pageNumber
+          );
 
-          // const tagsArray: string[] = [];
-          const queryParams = new URLSearchParams({
-            itemsPerPage: itemsPerPage.toString(),
-            pageIndex: pageNumber.toString(),
-            difficulties:
-              filters.difficulty.length > 0
-                ? filters.difficulty[0]
-                : `${defaultDifficulty}`,
-                //TODO BE & FE AGREEMENT
-            // difficulties: JSON.stringify(filters.difficulty),
-            keyword:
-              filters.keyword.length > 0 ? filters.keyword[0] : defaultKeyword,
-              //TODO BE & FE AGREEMENT
-            tags: filters.tags.length > 0 ? filters.tags[0] : defaultTag,
-            // tags: JSON.stringify(filters.tags)
-          });
-
-          const data = await getQuestions(accessToken, queryParams.toString());
           setQuestions(data.content);
-
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
-
+          setTotalElements(data.totalElements);
           console.log("Fetched data:", data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-
     fetchData();
   }, [pageNumber, itemsPerPage, filters]);
 
   const handleArrowClick = (direction: string) => {
     if (direction === "left") {
-      if (pageNumber === 1) return;
+      if (pageNumber === 0) return;
       setPageNumber((prevPage) => prevPage - 1);
     } else if (direction === "right") {
       const totalPages = Math.ceil(questions.length / itemsPerPage);
@@ -97,8 +80,7 @@ export const FilterAndPaginationProvider: React.FC<{ children: React.ReactNode }
       setPageNumber((prevPage) => prevPage + 1);
     }
   };
-
-  const numbersOfPages = Math.ceil(questions.length / itemsPerPage);
+  const numbersOfPages = Math.ceil(totalElements / itemsPerPage);
 
   const handleItemsPerPage = (
     value: string | ((prevValue: string) => string)

@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import FilterAll from "@shadcn/components/filters/filterAll";
+import Pagination from "@shadcn/components/filters/pagination";
 import DisplayQuestions from "@shadcn/components/tables/displayQuestions";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
-import Pagination from "@shadcn/components/pagination";
 
 const AdminQuestions = () => {
   const {
