@@ -355,7 +355,7 @@ const QuestionForm: React.FC = () => {
           />
           <CardFooter>
             <Button type="submit">
-              {isEditing ? "Edit Question" : "Create Question"}
+              {isEditing ? "Save Question" : "Create Question"}
             </Button>
           </CardFooter>
         </div>
