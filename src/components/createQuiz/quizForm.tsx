@@ -11,10 +11,12 @@ import { CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
+import FormTimer from "./formTimer";
 
 interface QuizData {
   quizTitle: string;
   difficultyLevel: string;
+  timeLimitMinutes: number;
   quizTags: string[];
   questions: QuestionData[];
 }
@@ -22,6 +24,7 @@ interface QuizData {
 const QuizForm: React.FC = () => {
   const [quizTitle, setQuizTitle] = useState<string>("");
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(0);
   const [quizTags, setQuizTags] = useState<string[]>([]);
   const [questions, setQuestions] = useState<QuestionData[]>([]);
 
@@ -45,6 +48,7 @@ const QuizForm: React.FC = () => {
     difficultyLevel: z
       .string()
       .min(1, { message: "Please choose a difficulty level" }),
+    timeLimitMinutes: z.number(),
     tags: z.array(
       z.string().min(1, { message: "There must be at least 1 tag" })
     ),
@@ -85,6 +89,7 @@ const QuizForm: React.FC = () => {
   const quizDataToSend = {
     quizTitle,
     difficultyLevel,
+    timeLimitMinutes,
     quizTags,
     questions
   };
@@ -92,6 +97,7 @@ const QuizForm: React.FC = () => {
   const resetForm = () => {
     setQuizTitle("");
     setDifficultyLevel("");
+    setTimeLimitMinutes(0);
     setQuizTags([]);
     setQuestions([]);
   };
@@ -156,6 +162,10 @@ const QuizForm: React.FC = () => {
     }
   };
 
+  const handleTimerUpdate = (minutes: number) => {
+    setTimeLimitMinutes(minutes);
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -164,13 +174,14 @@ const QuizForm: React.FC = () => {
           <FormDifficultySelect
             onDifficultyChange={handleQuizDifficultyLevelChange}
           />
+          <FormTimer updateTimeLimit={handleTimerUpdate} />
           <FormTags
             onUpdateTags={updateQuizTags}
             content={quizTitle}
             tags={quizTags}
           />
           <QuizQuestions
-            onQuestionsChange={(question) => setQuestions(question)}
+            onQuestionsChange={(question => setQuestions(question))}
           />
           <CardFooter>
             <Button type="submit">Create Quiz</Button>
