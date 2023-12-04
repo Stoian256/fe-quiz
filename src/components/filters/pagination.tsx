@@ -70,6 +70,7 @@ const Pagination = ({
               return (
                 <div key={index}>
                   <Button
+                    type="button"
                     variant="outline"
                     className={
                       pageNumber === index + 1
@@ -96,6 +97,7 @@ const Pagination = ({
                 <div key={index}>
                   <span className="tracking-widest w-6">...</span>
                   <Button
+                    type="button"
                     variant="outline"
                     className={
                       pageNumber === index + 1
@@ -119,6 +121,7 @@ const Pagination = ({
             }
             return (
               <Button
+                type="button"
                 variant="outline"
                 className={
                   pageNumber === index + 1

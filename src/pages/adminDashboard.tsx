@@ -1,23 +1,14 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getAdminMessage } from "../services/message.service";
 import { CodeSnippet } from "@shadcn/components/auth/code-snippet";
 import { useAuth } from "@shadcn/context/authContext";
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
   const [message, setMessage] = useState<string>("");
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const { accessToken } = useAuth();
 
-  useEffect(() => {
-    navigate("/admin", {
-      state: { mainTitle: "Dashboard Title", title: "dashboard second title" }
-    });
-  }, [navigate]);
-
-  //this useEffect is just for testing the api GET message
   useEffect(() => {
     let isMounted = true;
     const getMessage = async () => {

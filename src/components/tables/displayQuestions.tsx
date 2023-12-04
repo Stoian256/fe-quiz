@@ -16,8 +16,6 @@ import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
-import { useAuth } from "@shadcn/context/authContext";
-import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogClose,
@@ -25,6 +23,9 @@ import {
   DialogFooter,
   DialogTrigger
 } from "../ui/dialog";
+import { useAuth } from "@shadcn/context/authContext";
+import { useToast } from "@shadcn/context/ToastContext";
+import { Link } from "react-router-dom";
 
 const tableHeadData = [
   "QUESTION TITLE",
@@ -39,6 +40,8 @@ const DisplayQuestions = () => {
   const { questions, setQuestions } = useFilterAndPagination();
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
+
+  const { showToast } = useToast();
 
   const removeQuestion = async (questionIndex: string) => {
     console.log(questionIndex);
@@ -59,8 +62,10 @@ const DisplayQuestions = () => {
       setQuestions((prevQuestions) =>
         prevQuestions.filter((question) => question.id !== questionIndex)
       );
+      showToast("success", "Question removed successfully!");
     } catch (error) {
       console.error("Error removing question:", error);
+      showToast("error", "Failed to remove the question. Please try again.");
     }
   };
 
@@ -186,7 +191,7 @@ const DisplayQuestions = () => {
                             Are you sure you want to delete this question?
                           </p>
                           <p className="text-m">
-                            This item will be deleted immediatlely. You can't
+                            This item will be deleted immediately. You can't
                             undo this action.
                           </p>
                           <DialogFooter className="flex gap-2 items-ce">

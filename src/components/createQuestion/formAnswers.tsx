@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@shadcn/components/ui/button";
 import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
 import AnswerOption from "./answerOption";
@@ -8,61 +7,44 @@ import { Answer } from "@shadcn/utils/interfaces/Answer";
 interface AnswersComponentProps {
   onAnswersChange: (answers: AnswerData[]) => void;
   answerData: AnswerData[];
+  answersInfo: Answer[];
+  onAnswerInfoChange: (newAnswerInfo: Answer[]) => void;
+  reset: boolean;
+  removeAnswer: (indexToRemove: number) => void;
 }
-
-
 
 const FormAnswers: React.FC<AnswersComponentProps> = ({
   onAnswersChange,
-  answerData
+  answerData,
+  answersInfo,
+  onAnswerInfoChange,
+  reset,
+  removeAnswer
 }) => {
-
-  const [answersInfo, setAnswersInfo] = useState<Answer[]>([
-    {
-      option: "Option 1",
-      button: "Remove",
-      answerTitle: "Answer Title ",
-      answerTxt: "Is this Answer Correct?",
-      inputId: "answer-input-1",
-      switchId: "answer-switch-1"
-    },
-    {
-      option: "Option 2",
-      button: "Remove",
-      answerTitle: "Answer Title ",
-      answerTxt: "Is this Answer Correct?",
-      inputId: "answer-input-2",
-      switchId: "answer-switch-2"
-    }
-  ]);
-
   const addAnswer = () => {
     const newAnswer = {
       option: `Option ${answersInfo.length + 1}`,
-      button: 'Remove',
-      answerTitle: 'Answer Title ',
-      answerTxt: 'Is this Answer Correct?',
+      button: "Remove",
+      answerTitle: "Answer Title ",
+      answerTxt: "Is this Answer Correct?",
       inputId: `answer-input-${answersInfo.length + 1}`,
-      switchId: `answer-switch-${answersInfo.length + 1}`,
+      switchId: `answer-switch-${answersInfo.length + 1}`
     };
 
-    setAnswersInfo([...answersInfo, newAnswer]);
-  };
-
-  const removeAnswer = (indexToRemove: number) => {
-    const updatedAnswers = answersInfo.filter((_, index) => index !== indexToRemove);
-    setAnswersInfo(updatedAnswers);
-    const updatedAnswerData = answerData.filter((_, index) => index !== indexToRemove);
-    onAnswersChange(updatedAnswerData);
+    onAnswerInfoChange([...answersInfo, newAnswer]);
   };
 
   const handleAnswerChange = (index: number, newData: Partial<AnswerData>) => {
     const updatedAnswers = [...answerData];
     if (index >= updatedAnswers.length) {
-      updatedAnswers.push({ answerBody: '', isCorrect: false });
+      updatedAnswers.push({ answerContent: "", correctAnswer: false });
     }
     updatedAnswers[index] = { ...updatedAnswers[index], ...newData };
     onAnswersChange(updatedAnswers);
+
+    const updatedAnswersInfo = [...answersInfo];
+    updatedAnswersInfo[index] = { ...updatedAnswersInfo[index], ...newData };
+    onAnswerInfoChange(updatedAnswersInfo);
   };
 
   return (
@@ -87,6 +69,7 @@ const FormAnswers: React.FC<AnswersComponentProps> = ({
                 onAnswersChange={handleAnswerChange}
                 answerData={answerData}
                 onRemove={() => removeAnswer(i)}
+                reset={reset}
               />
             ))}
           </div>

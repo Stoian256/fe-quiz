@@ -1,16 +1,16 @@
 import { Card, CardContent } from "../ui/card";
-import QuestionForm from "./questionForm";
+import QuizForm from "./quizForm";
 
-const CreateQuestionForm = () => {
+const CreateQuizForm: React.FC = () => {
   return (
     <div className="py-5">
       <Card className="mx-5">
         <CardContent>
-          <QuestionForm />
+          <QuizForm />
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default CreateQuestionForm;
+export default CreateQuizForm;

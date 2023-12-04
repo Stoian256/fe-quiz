@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@shadcn/components/ui/button";
 import { CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
@@ -17,6 +17,7 @@ interface Props {
   onAnswersChange: (index: number, answerBody: {}) => void;
   answerData: AnswerData[];
   onRemove: () => void;
+  reset: boolean;
 }
 
 const AnswerOption: React.FC<Props> = ({
@@ -29,14 +30,23 @@ const AnswerOption: React.FC<Props> = ({
   switchId,
   onAnswersChange,
   answerData,
-  onRemove
+  onRemove,
+  reset
 }) => {
   const initialAnswerData =
     answerData.length > index
       ? answerData[index]
-      : { answerBody: "", isCorrect: false };
+      : { answerContent: "", correctAnswer: false };
 
-  const [capitalizedText, setCapitalizedText] = useState<string>("");
+  const [capitalizedText, setCapitalizedText] = useState<string>(
+    initialAnswerData.answerContent || ""
+  );
+
+  useEffect(() => {
+    if (reset) {
+      setCapitalizedText("");
+    }
+  }, [reset]);
 
   const capitalizeFirstLetter = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
@@ -48,11 +58,11 @@ const AnswerOption: React.FC<Props> = ({
     const inputText = event.target.value;
     const capitalizedInputText = capitalizeFirstLetter(inputText);
     setCapitalizedText(capitalizedInputText);
-    onAnswersChange(index, { answerBody: capitalizedInputText });
+    onAnswersChange(index, { answerContent: capitalizedInputText });
   };
 
   const handleSwitchChange = () => {
-    onAnswersChange(index, { isCorrect: !initialAnswerData.isCorrect });
+    onAnswersChange(index, { correctAnswer: !initialAnswerData.correctAnswer });
   };
 
   return (
@@ -77,13 +87,13 @@ const AnswerOption: React.FC<Props> = ({
           onChange={handleAnswerInputChange}
           autoComplete="off"
           required
-          value={capitalizedText}
+          value={capitalizedText || initialAnswerData.answerContent || ""}
         />
       </div>
       <div className="flex items-center gap-2 pl-6">
         <Switch
           id={switchId}
-          checked={initialAnswerData.isCorrect}
+          checked={initialAnswerData.correctAnswer}
           onClick={handleSwitchChange}
         />
         <span>{answerTxt}</span>
