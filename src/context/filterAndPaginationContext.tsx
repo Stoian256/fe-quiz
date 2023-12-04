@@ -38,57 +38,35 @@ export const FilterAndPaginationProvider: React.FC<{
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filters, setFilters] = useState<Filters>({
     keyword: [],
-    difficulty: [], //TODO BE & FE AGREEMENT
+    difficulty: [],
     tags: []
   });
 
   const [pageNumber, setPageNumber] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
       try {
         if (accessToken) {
-          const defaultDifficulty = "";
-          const defaultKeyword = "";
-          const defaultTag = "";
-
-          const queryParams = new URLSearchParams({
-            itemsPerPage: itemsPerPage.toString(),
-            pageIndex: pageNumber.toString(),
-
-            difficulties:
-              filters.difficulty.length === 1
-                ? filters.difficulty[0]
-                : filters.difficulty.length === 2
-                ? filters.difficulty.join("&difficulties=")
-                : `${defaultDifficulty}`,
-            keyword:
-              filters.keyword.length > 0 ? filters.keyword[0] : defaultKeyword,
-            tags:
-              filters.tags.length === 1
-                ? filters.tags[0]
-                : filters.tags.length > 1
-                ? filters.tags.join("&tags=")
-                : `${defaultTag}`
-          });
-
           const data = await getQuestions(
             accessToken,
-            decodeURIComponent(queryParams.toString())
+            filters,
+            itemsPerPage,
+            pageNumber
           );
-          setQuestions(data.content);
 
+          setQuestions(data.content);
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
-
+          setTotalElements(data.totalElements);
           console.log("Fetched data:", data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-
     fetchData();
   }, [pageNumber, itemsPerPage, filters]);
 
@@ -102,8 +80,7 @@ export const FilterAndPaginationProvider: React.FC<{
       setPageNumber((prevPage) => prevPage + 1);
     }
   };
-
-  const numbersOfPages = Math.ceil(questions.length / itemsPerPage);
+  const numbersOfPages = Math.ceil(totalElements / itemsPerPage);
 
   const handleItemsPerPage = (
     value: string | ((prevValue: string) => string)

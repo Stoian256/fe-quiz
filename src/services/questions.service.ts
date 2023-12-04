@@ -1,11 +1,30 @@
+import { Filters } from "@shadcn/utils/interfaces/typescriptGeneral";
+
 const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export const getQuestions = async (
   accessToken: string,
-  queryParams: string
+  filters: Filters,
+  itemsPerPage: number,
+  pageNumber: number
 ): Promise<any> => {
+  const difficultiesParams = filters.difficulty.map((diff) => [
+    "difficulties",
+    diff
+  ]);
+
+  const tagsParams = filters.tags.map((tag) => ["tags", tag]);
+
+  let params = new URLSearchParams();
+  difficultiesParams.map((diff) => params.append(diff[0], diff[1]));
+  tagsParams.map((tag) => params.append(tag[0], tag[1]));
+  params.append("itemsPerPage", itemsPerPage.toString());
+  params.append("pageIndex", pageNumber.toString());
+  if (filters.keyword.length > 0) {
+    params.append("keyword", filters.keyword[0].toString());
+  }
   try {
-    const url = `${apiServerUrl}/questions?${queryParams.toString()}`;
+    const url = `${apiServerUrl}/questions?${params}`;
 
     const response = await fetch(url, {
       method: "GET",

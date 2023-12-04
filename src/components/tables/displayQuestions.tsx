@@ -17,7 +17,6 @@ import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 import { useAuth } from "@shadcn/context/authContext";
-// import { useToast } from "@shadcn/context/ToastContext";
 import { Link } from "react-router-dom";
 import {
   Dialog,
@@ -38,9 +37,6 @@ const tableHeadData = [
 
 const DisplayQuestions = () => {
   const { questions, setQuestions } = useFilterAndPagination();
-
-  // const { showToast } = useToast();
-
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
 
@@ -63,10 +59,8 @@ const DisplayQuestions = () => {
       setQuestions((prevQuestions) =>
         prevQuestions.filter((question) => question.id !== questionIndex)
       );
-      // showToast("success", "Question removed successfully!");
     } catch (error) {
       console.error("Error removing question:", error);
-      // showToast("error", "Failed to remove the question. Please try again.");
     }
   };
 
