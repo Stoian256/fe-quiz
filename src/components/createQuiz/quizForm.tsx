@@ -14,16 +14,16 @@ import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 
 interface QuizData {
   quizTitle: string;
-  quizDifficultyLevel: string;
+  difficultyLevel: string;
   quizTags: string[];
-  quizQuestions: QuestionData[];
+  questions: QuestionData[];
 }
 
 const QuizForm: React.FC = () => {
   const [quizTitle, setQuizTitle] = useState<string>("");
-  const [quizDifficultyLevel, setQuizDifficultyLevel] = useState<string>("");
+  const [difficultyLevel, setDifficultyLevel] = useState<string>("");
   const [quizTags, setQuizTags] = useState<string[]>([]);
-  const [quizQuestions, setQuizQuestions] = useState<QuestionData[]>([]);
+  const [questions, setQuestions] = useState<QuestionData[]>([]);
 
   const { showToast } = useToast();
 
@@ -31,7 +31,7 @@ const QuizForm: React.FC = () => {
     setQuizTitle(text);
   };
   const handleQuizDifficultyLevelChange = (difficulty: string) => {
-    setQuizDifficultyLevel(difficulty);
+    setDifficultyLevel(difficulty);
   };
   const updateQuizTags = (newTags: string[]) => {
     setQuizTags(newTags);
@@ -58,7 +58,7 @@ const QuizForm: React.FC = () => {
   ): { isValid: boolean; errors: string[] } => {
     const minimumQuestions = 1;
 
-    const questionsCount = quizQuestions.length;
+    const questionsCount = questions.length;
 
     const validationErrors = [];
 
@@ -84,16 +84,16 @@ const QuizForm: React.FC = () => {
 
   const quizDataToSend = {
     quizTitle,
-    quizDifficultyLevel,
+    difficultyLevel,
     quizTags,
-    quizQuestions
+    questions
   };
 
   const resetForm = () => {
     setQuizTitle("");
-    setQuizDifficultyLevel("");
+    setDifficultyLevel("");
     setQuizTags([]);
-    setQuizQuestions([]);
+    setQuestions([]);
   };
 
   const sendDataToBackend = async (quizDataToSend: QuizData) => {
@@ -170,7 +170,7 @@ const QuizForm: React.FC = () => {
             tags={quizTags}
           />
           <QuizQuestions
-            onQuestionsChange={(question) => setQuizQuestions(question)}
+            onQuestionsChange={(question) => setQuestions(question)}
           />
           <CardFooter>
             <Button type="submit">Create Quiz</Button>

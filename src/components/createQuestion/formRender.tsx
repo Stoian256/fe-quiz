@@ -64,7 +64,7 @@ const FormRender: React.FC<FormRenderProps> = ({
           {bodyError && body && <p className="text-red-500 text-sm">{bodyError}</p>}
         </div>
         <div className="w-full">
-          <label htmlFor="preview" className="text-sm mb-2">
+          <label className="text-sm mb-2">
             Preview
           </label>
           <div className="border p-2 h-40 overflow-y-auto rounded-lg bg-gray-500 text-white">
