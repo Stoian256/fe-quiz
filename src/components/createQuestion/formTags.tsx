@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardTitle } from "@shadcn/components/ui/card";
 import { Input } from "@shadcn/components/ui/input";
 import { Label } from "@shadcn/components/ui/label";
 import Tag from "./tag";
+import { useAuth } from "@shadcn/context/authContext";
 
 interface FormTagsProps {
   onUpdateTags: (tags: string[]) => void;
@@ -13,12 +14,15 @@ interface FormTagsProps {
 const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
   const [inputTag, setInputTag] = useState<string>("");
   const [tagErrors, setTagErrors] = useState<{ [key: number]: string }>({});
+  const [apiTags, setApiTags] = useState<string[]>([]);
 
   const handleTagsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
-    setInputTag(inputText);
+    const capitalizedText =
+      inputText.charAt(0).toUpperCase() + inputText.slice(1);
+    setInputTag(capitalizedText);
 
-    if (inputText.endsWith(" ")) {
+    if (capitalizedText.endsWith(" ")) {
       addTag();
     } else {
       setTagErrors({});
@@ -88,9 +92,9 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
 
     if (words) {
       for (const word of words) {
-        const lowercaseWord = word.toLowerCase();
-        if (!tagSuggestions.includes(lowercaseWord)) {
-          tagSuggestions.push(lowercaseWord);
+        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+        if (!tagSuggestions.includes(capitalizedWord)) {
+          tagSuggestions.push(capitalizedWord);
         }
       }
     }
@@ -98,17 +102,59 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
     return tagSuggestions;
   };
 
+  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
+  const { accessToken } = useAuth();
+
+  useEffect(() => {
+    const getTagsFromApi = async () => {
+      try {
+        const response = await fetch(`${BE_URL}tags`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
+          },
+          body: ""
+        });
+        const data = await response.json();
+
+        const apiTagTitles = data.map((tag: {tagTitle: string}) => tag.tagTitle);
+
+        setApiTags(apiTagTitles);
+      } catch (error) {
+        console.error("Error fetching tags from API:", error);
+        setApiTags([]);
+      }
+    };
+    getTagsFromApi();
+  }, [BE_URL, accessToken]);
+
   const suggestTags = (inputText: string, questionTitle: string): string[] => {
-    const suggestedTags = suggestTagsFromTitle(questionTitle);
-
-    const matchingTags = suggestedTags.filter(
-      (tag) =>
-        tag.includes(inputText.toLowerCase()) ||
-        inputText.toLowerCase().includes(tag)
+    const matchingTagsFromApi = apiTags.filter(
+      (tag: string) =>
+        tag.toLowerCase().startsWith(inputText.toLowerCase()) ||
+        inputText.toLowerCase().startsWith(tag.toLowerCase())
     );
-
-    return matchingTags.filter((tag) => !tags.includes(tag));
+  
+    if (inputText.trim() === '') {
+      return suggestTagsFromTitle(questionTitle).filter((tag) => !tags.includes(tag));
+    }
+  
+    if (matchingTagsFromApi.length > 0) {
+      return matchingTagsFromApi.filter((tag) => !tags.includes(tag));
+    } else {
+      const suggestedTagsFromTitle = suggestTagsFromTitle(questionTitle);
+  
+      const matchingTagsFromTitle = suggestedTagsFromTitle.filter(
+        (tag) =>
+          tag.toLowerCase().startsWith(inputText.toLowerCase()) ||
+          inputText.toLowerCase().startsWith(tag.toLowerCase())
+      );
+  
+      return matchingTagsFromTitle.filter((tag) => !tags.includes(tag));
+    }
   };
+  
 
   return (
     <div className="flex flex-col space-y-1.5">
@@ -159,7 +205,9 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
                     >
                       <span>{tag}</span>
                       <span className="text-xs/[5px] text-gray-500 ml-2">
-                        (Suggested from title)
+                        {apiTags.includes(tag)
+                          ? "(Suggested from API)"
+                          : "(Suggested from title)"}
                       </span>
                     </div>
                   ))}
