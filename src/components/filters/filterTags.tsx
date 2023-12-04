@@ -1,39 +1,57 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import { Label } from "../ui/label";
-import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import { Badge } from "../ui/badge";
 import { ListOfTags } from "../../utils/interfaces/ListOfTags";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 type FilterTagsProps = {
   listOfTags: ListOfTags[];
   selectedTags: string[];
-  handleOnSelect: (item: { name: string }) => void;
-  formatResult: (item: { name: string }) => JSX.Element;
   handleDeleteTag: MouseEventHandler<HTMLDivElement>;
   removeAllTags: () => void;
+  handleTagChange: any;
+  handleTagSelect: any;
 };
 
 const FilterTags = ({
   listOfTags,
   selectedTags,
-  handleOnSelect,
-  formatResult,
   handleDeleteTag,
-  removeAllTags
+  removeAllTags,
+  handleTagChange,
+  handleTagSelect
 }: FilterTagsProps) => {
+  const [inputValue, setInputValue] = useState("");
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 relative">
       <Label htmlFor="tags">Tags</Label>
-      <ReactSearchAutocomplete
-        items={listOfTags}
-        onSelect={handleOnSelect}
-        formatResult={formatResult}
-        className="z-10"
-        styling={{
-          fontSize: "14px",
-          borderRadius: "5px"
-        }} // unable to add font size as className
+      <Input
+        id="tags"
+        placeholder="Search for tags..."
+        value={inputValue}
+        name="tags"
+        onChange={(e) => {
+          handleTagChange(e), setInputValue(e.target.value);
+        }}
+        autoComplete="off"
       />
+      {inputValue !== "" && (
+        <div className="absolute top-16 mt-1.5 flex flex-col w-full bg-white z-10">
+          {listOfTags.map((tag) => (
+            <Button
+              variant="outline"
+              onClick={(e) => {
+                handleTagSelect(e), setInputValue("");
+              }}
+              key={tag.id}
+            >
+              {tag.tagTitle}
+            </Button>
+          ))}
+        </div>
+      )}
+
       <div className="flex gap-1 flex-wrap">
         {selectedTags.map((tag, index) => (
           <Badge

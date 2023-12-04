@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
@@ -8,7 +8,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue
-} from "./ui/select";
+} from "../ui/select";
 import {
   ChevronsRight,
   ChevronsLeft,
@@ -33,6 +33,21 @@ const Pagination = ({
   handleItemsPerPage,
   numbersOfPages
 }: PaginationProps) => {
+  const defaultPageIndexes = [
+    0,
+    1,
+    2,
+    numbersOfPages - 1,
+    numbersOfPages - 2,
+    numbersOfPages - 3,
+    pageNumber - 4,
+    pageNumber - 3,
+    pageNumber - 2,
+    pageNumber - 1,
+    pageNumber,
+    pageNumber + 1,
+    pageNumber + 2
+  ];
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2 mt-3">
@@ -50,21 +65,6 @@ const Pagination = ({
         />
 
         {[...Array(numbersOfPages)].map((_page, index) => {
-          const defaultPageIndexes = [
-            0,
-            1,
-            2,
-            numbersOfPages - 1,
-            numbersOfPages - 2,
-            numbersOfPages - 3,
-            pageNumber - 4,
-            pageNumber - 3,
-            pageNumber - 2,
-            pageNumber - 1,
-            pageNumber,
-            pageNumber + 1,
-            pageNumber + 2
-          ];
           if (defaultPageIndexes.includes(index)) {
             if ((pageNumber > 7 || pageNumber === 1) && index === 2) {
               return (

@@ -29,7 +29,6 @@ const App: React.FC = () => {
           const decodedToken: { permissions: string[] } = jwtDecode(token);
           const userIsAdmin = decodedToken.permissions.includes("Admin");
           storeData!(token, isAuthenticated, userIsAdmin);
-          console.log(token)
         }
       }
     } catch (error) {
@@ -37,7 +36,7 @@ const App: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, [getAccessTokenSilently, isAuthenticated, storeData]);
 
   if (isLoading) {
