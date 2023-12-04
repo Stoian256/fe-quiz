@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
-import Pagination from "../pagination";
+import Pagination from "../filters/pagination";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 
 const questionData = [
