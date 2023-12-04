@@ -44,7 +44,6 @@ const DisplayQuestions = () => {
   const { showToast } = useToast();
 
   const removeQuestion = async (questionIndex: string) => {
-    console.log(questionIndex);
     try {
       const response = await fetch(
         `${BE_URL}questions/delete/${questionIndex}`,
@@ -114,9 +113,9 @@ const DisplayQuestions = () => {
                   <TableCell>
                     <Badge
                       className={
-                        difficulty === "EASY"
+                        difficulty === "Easy"
                           ? "bg-green-600"
-                          : difficulty === "MEDIUM"
+                          : difficulty === "Medium"
                           ? "bg-yellow-500"
                           : "bg-red-600"
                       }
@@ -180,7 +179,6 @@ const DisplayQuestions = () => {
                           <Button
                             variant="outline"
                             className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                            // onClick={(e) => handleDelete(e)}
                             value={index}
                           >
                             Delete

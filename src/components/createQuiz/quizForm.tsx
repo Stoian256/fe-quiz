@@ -46,10 +46,10 @@ const QuizForm: React.FC = () => {
       .string()
       .min(1, { message: "Please choose a difficulty level" }),
     tags: z.array(
-      z
-        .string()
-        .min(1, { message: "There must be at least 1 tag" })
-        .max(7, { message: "There can't be more than 7 tags" })
+      z.string().min(1, { message: "There must be at least 1 tag" })
+    ),
+    questions: z.array(
+      z.string().min(1, { message: "There must be at least 1 question" })
     )
   });
 
