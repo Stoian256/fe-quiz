@@ -15,7 +15,11 @@ import Pagination from "../filters/pagination";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 
-const QuizModal = () => {
+interface QuizModalProps {
+  handleSetQuestions: (selectedQuestionId: string[]) => void;
+}
+
+const QuizModal: React.FC<QuizModalProps> = ({handleSetQuestions}) => {
   const {
     pageNumber,
     setPageNumber,
@@ -27,7 +31,8 @@ const QuizModal = () => {
   const {setSelectedQuestions, data} = useQuizModalContext()
 
   const selectQuestionsForQuiz = () => {
-    setSelectedQuestions(data)
+    setSelectedQuestions(data);
+    handleSetQuestions(data);
   };
   return (
     <Dialog>

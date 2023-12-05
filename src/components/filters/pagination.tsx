@@ -60,7 +60,6 @@ const Pagination = ({
 
         {[...Array(numbersOfPages)].map((_page, index) => {
           if (defaultPageIndexes.includes(index)) {
-            console.log(pageNumber, index);
 
             if ((pageNumber > 3 || pageNumber === 0) && index === 1) {
               return (

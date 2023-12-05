@@ -1,40 +1,20 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import Pagination from "../filters/pagination";
 import QuizModal from "./quizModal";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
-
-const questionData = [
-  {
-    questionTitle: "What does the S in SOLID stand for?",
-    questionBody: "Some placeholder content",
-    difficulty: "Easy",
-    tags: ["HTML", "CSS", "JavaScript"]
-  },
-  {
-    questionTitle: "What does the S in SOLID stand for?",
-    questionBody: "Some placeholder content",
-    difficulty: "Medium",
-    tags: ["HTML", "CSS", "JavaScript"]
-  },
-  {
-    questionTitle: "What does the S in SOLID stand for?",
-    questionBody: "Some placeholder content",
-    difficulty: "Difficult",
-    tags: ["HTML", "CSS", "JavaScript"]
-  }
-];
+import { useAuth } from "@shadcn/context/authContext";
+import { useToast } from "@shadcn/context/ToastContext";
 
 interface QuizProps {
-  onQuestionsChange: Dispatch<SetStateAction<QuestionData[]>>;
+  handleSetQuestions: (selectedQuestionId: string[]) => void;
 }
 
-const QuizQuestions: React.FC<QuizProps> = ({ onQuestionsChange }) => {
+const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions }) => {
   const { selectedQuestions } = useQuizModalContext();
-
+  const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
@@ -43,10 +23,10 @@ const QuizQuestions: React.FC<QuizProps> = ({ onQuestionsChange }) => {
     setPageNumber(1);
   };
 
-  const numbersOfPages = Math.ceil(questionData.length / itemsPerPage);
+  const numbersOfPages = Math.ceil(questions.length / itemsPerPage);
 
-  const startIndex = (pageNumber - 1) * itemsPerPage;
-  const slicedQuestions = questionData.slice(
+  const startIndex = (pageNumber) * itemsPerPage;
+  const slicedQuestions = questions.slice(
     startIndex,
     startIndex + itemsPerPage
   );
@@ -73,44 +53,78 @@ const QuizQuestions: React.FC<QuizProps> = ({ onQuestionsChange }) => {
         return "bg-gray-200";
     }
   };
-  const handleClick = () => {
-    console.log("selected Questions for quiz: ", selectedQuestions);
-  };
+
+  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
+  const { accessToken } = useAuth();
+
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    if (selectedQuestions.length > 0) {
+      const fetchQuestions = async () => {
+        try {
+          const response = await fetch(`${BE_URL}/questions/get-by-ids`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(selectedQuestions)
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch questions");
+          }
+
+          const fetchedQuestions = await response.json();
+          setQuestions(fetchedQuestions);
+          showToast("success", "Questions fetched with success!");
+        } catch (error) {
+          console.error("Error fetching questions:", error);
+          showToast("error", "Failed to fetch questions");
+        }
+      };
+
+      fetchQuestions();
+    }
+  }, [selectedQuestions]);
 
   return (
     <div className="grid w-full items-center p-1.5">
       <CardTitle className="text-base mb-4">Quiz Questions</CardTitle>
 
       <div className=" items-left mb-2">
-        <QuizModal />
-        {/* TODO delete this button after you check the functionality of the modal */}
-        <Button variant="outline" onClick={handleClick}>
-          click for selected questions -&gt; check the console
-        </Button>
+        <QuizModal handleSetQuestions={handleSetQuestions} />
       </div>
-      {slicedQuestions.map((question) => (
-        <Card
-          key={`${question.questionTitle}-${question.questionBody}-${question.difficulty}`}
-          className="p-5 flex items-start justify-between border-b-0"
-        >
-          <div className="flex flex-col">
-            <h2 className="font-medium">{question.questionTitle}</h2>
-            <p>{question.questionBody}</p>
-            <div className="flex items-center gap-1.5">
-              {question.tags.map((tag, i) => (
-                <Badge key={`${tag}-${i}`}>{tag}</Badge>
-              ))}
-            </div>
-          </div>
-          <div
-            className={`${getDifficultyStyle(
-              question.difficulty
-            )} text-xs font-bold text-white rounded-xl py-1 px-1.5`}
+      {slicedQuestions.length < 1 ? (
+        <p className="h-20 font-bold text-center">
+          No questions found! Please add some questions
+        </p>
+      ) : (
+        slicedQuestions.map((question) => (
+          <Card
+            key={question.id}
+            className="p-5 flex items-start justify-between border-b-0"
           >
-            {question.difficulty}
-          </div>
-        </Card>
-      ))}
+            <div className="flex flex-col">
+              <h2 className="font-medium">{question.questionTitle}</h2>
+              <p>{question.questionBody}</p>
+              <div className="flex items-center gap-1.5">
+                {question.tags.map((tag) => (
+                  <Badge key={tag.id}>{tag.tagTitle}</Badge>
+                ))}
+              </div>
+            </div>
+            <div
+              className={`${getDifficultyStyle(
+                question.difficulty,
+              )} text-xs font-bold text-white rounded-xl py-1 px-1.5`}
+            >
+              {question.difficulty}
+            </div>
+          </Card>
+        ))
+      )}
       <Pagination
         pageNumber={pageNumber}
         onPageNumberChange={(page) => setPageNumber(page)}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { z } from "zod";
 
-import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import { useAuth } from "../../context/authContext";
 import QuizHeader from "./quizHeader";
 import FormDifficultySelect from "../createQuestion/formDifficultySelect";
@@ -18,7 +17,7 @@ interface QuizData {
   difficultyLevel: string;
   timeLimitMinutes: number;
   quizTags: string[];
-  questions: QuestionData[];
+  questions: string[];
 }
 
 const QuizForm: React.FC = () => {
@@ -26,7 +25,7 @@ const QuizForm: React.FC = () => {
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
   const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(0);
   const [quizTags, setQuizTags] = useState<string[]>([]);
-  const [questions, setQuestions] = useState<QuestionData[]>([]);
+  const [questions, setQuestions] = useState<string[]>([]);
 
   const { showToast } = useToast();
 
@@ -166,6 +165,10 @@ const QuizForm: React.FC = () => {
     setTimeLimitMinutes(minutes);
   }
 
+  const handleSelectedQuestions = (selectedQuestions: string[]) => {
+    setQuestions(selectedQuestions);
+  }
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -181,7 +184,7 @@ const QuizForm: React.FC = () => {
             tags={quizTags}
           />
           <QuizQuestions
-            onQuestionsChange={(question => setQuestions(question))}
+            handleSetQuestions={handleSelectedQuestions}
           />
           <CardFooter>
             <Button type="submit">Create Quiz</Button>

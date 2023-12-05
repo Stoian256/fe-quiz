@@ -62,8 +62,6 @@ export const FilterAndPaginationProvider: React.FC<{
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
           setTotalElements(data.totalElements);
-          console.log("Fetched data:", data);
-          console.log(pageNumber);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
