@@ -1,7 +1,3 @@
-import { Quizz } from "@shadcn/utils/interfaces/Quizz";
-import { SetStateAction, useEffect, useState } from "react";
-import FilterAll from "../filters/filterAll";
-import Pagination from "../filters/pagination";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
@@ -25,8 +21,10 @@ import {
   DialogFooter,
   DialogTrigger
 } from "../ui/dialog";
-import quizzesData from "../../data/quizzesData.json";
 import { Link } from "react-router-dom";
+import { useAuth } from "@shadcn/context/authContext";
+import { useToast } from "@shadcn/context/ToastContext";
+import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
 
 const tableHeadData = [
   "QUIZZ TITLE",
@@ -38,47 +36,35 @@ const tableHeadData = [
 ];
 
 const QuizzesTable = () => {
-  const [quizzes, setQuizzes] = useState<Quizz[]>(quizzesData);
+  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
+  const { accessToken } = useAuth();
+  const { quizzes, setQuizzes } = useFilterAndPaginationQuizz();
 
-  const [pageNumber, setPageNumber] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [numbersOfPages, setNumbersOfPages] = useState(
-    Math.ceil(quizzes.length / Number(itemsPerPage)) // calculate the numbers of page based on data array length
-  );
+  const { showToast } = useToast();
 
-  useEffect(() => {
-    setNumbersOfPages(Math.ceil(quizzes.length / itemsPerPage));
-    // setQuestions(data);
-    const lastIndex = pageNumber * itemsPerPage;
-    const startingIndex = lastIndex - itemsPerPage;
+  const removeQuiz = async (quizIndex: string) => {
+    try {
+      const response = await fetch(
+        `${BE_URL}quiz/delete/${quizIndex}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
 
-    // setQuestions((prevQuestions) =>
-    //   prevQuestions.slice(startingIndex, lastIndex)
-    // );
-  }, [numbersOfPages, pageNumber, itemsPerPage]); // add filters here
-
-  const handleArrowClick = (direction: string) => {
-    if (direction === "left") {
-      if (pageNumber === 1) {
-        return;
+      if (!response.ok) {
+        throw new Error("Failed to remove question");
       }
-      setPageNumber((prevPage) => prevPage - 1);
+      setQuizzes((prevQuizes) =>
+        prevQuizes.filter((quiz) => quiz.id !== quizIndex)
+      );
+      showToast("success", "Question removed successfully!");
+    } catch (error) {
+      console.error("Error removing question:", error);
+      showToast("error", "Failed to remove the question. Please try again.");
     }
-    if (direction === "right") {
-      if (pageNumber === numbersOfPages) {
-        return;
-      }
-      setPageNumber((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handleItemsPerPage = (e: SetStateAction<string>) => {
-    setItemsPerPage(Number(e));
-    setPageNumber(1);
-  };
-
-  const handleDelete = () => {
-    console.log("delete");
   };
 
   return (
@@ -187,7 +173,7 @@ const QuizzesTable = () => {
                             </DialogClose>
                             <DialogClose
                               className="bg-red-600 text-white hover:bg-red-900 p-2 rounded-md px-3"
-                              onClick={handleDelete}
+                              onClick={() => removeQuiz(id)}
                             >
                               Yes, delete it
                             </DialogClose>
