@@ -4,6 +4,8 @@ import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
 import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import Pagination from "../filters/pagination";
+import QuizModal from "./quizModal";
+import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 
 const questionData = [
   {
@@ -31,6 +33,8 @@ interface QuizProps {
 }
 
 const QuizQuestions: React.FC<QuizProps> = ({ onQuestionsChange }) => {
+  const { selectedQuestions } = useQuizModalContext();
+
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
@@ -69,13 +73,21 @@ const QuizQuestions: React.FC<QuizProps> = ({ onQuestionsChange }) => {
         return "bg-gray-200";
     }
   };
+  const handleClick = () => {
+    console.log("selected Questions for quiz: ", selectedQuestions);
+  };
 
   return (
     <div className="grid w-full items-center p-1.5">
       <CardTitle className="text-base mb-4">Quiz Questions</CardTitle>
-      <Button className="w-fit mb-4" type="button">
-        Manage Questions
-      </Button>
+
+      <div className=" items-left mb-2">
+        <QuizModal />
+        {/* TODO delete this button after you check the functionality of the modal */}
+        <Button variant="outline" onClick={handleClick}>
+          click for selected questions -&gt; check the console
+        </Button>
+      </div>
       {slicedQuestions.map((question) => (
         <Card
           key={`${question.questionTitle}-${question.questionBody}-${question.difficulty}`}

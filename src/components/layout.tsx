@@ -65,6 +65,11 @@ const Layout = () => {
             <h1 className="text-lg font-semibold">{mainTitle || ""}</h1>
             <h3 className="text-sm">{title || ""}</h3>
             <div className="bg-white min-h-[calc(100vh-200px)] rounded-md mt-4">
+              {/* {pathName === "/admin/quizes" && (
+                <FilterAndPaginationQuizzProvider>
+                  <Outlet />
+                </FilterAndPaginationQuizzProvider>
+              )} */}
               <FilterAndPaginationProvider>
                 <Outlet />
               </FilterAndPaginationProvider>

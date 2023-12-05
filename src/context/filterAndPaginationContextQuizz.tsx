@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Filters, Question } from "@shadcn/utils/interfaces/typescriptGeneral";
-import { getQuestions } from "@shadcn/services/questions.service";
+import { Filters } from "@shadcn/utils/interfaces/typescriptGeneral";
 import { useAuth } from "./authContext";
+import { Quizz } from "@shadcn/utils/interfaces/Quizz";
+import { getQuizzes } from "@shadcn/services/quizzes.service";
 
-type PaginationContextType = {
-  questions: Question[];
-  setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
-  updateQuestions: () => Promise<void>;
+type PaginationContextTypeQuizz = {
+  quizzes: Quizz[];
+  setQuizzes: React.Dispatch<React.SetStateAction<Quizz[]>>;
 
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -20,23 +20,23 @@ type PaginationContextType = {
   setItemsPerPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const FilterAndPaginationContext = createContext<
-  PaginationContextType | undefined
+const FilterAndPaginationContextQuizzes = createContext<
+  PaginationContextTypeQuizz | undefined
 >(undefined);
 
-export const useFilterAndPagination = () => {
-  const context = useContext(FilterAndPaginationContext);
+export const useFilterAndPaginationQuizz = () => {
+  const context = useContext(FilterAndPaginationContextQuizzes);
   if (!context) {
     throw new Error("usePagination must be used within a PaginationProvider");
   }
   return context;
 };
 
-export const FilterAndPaginationProvider: React.FC<{
+export const FilterAndPaginationQuizzProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const { accessToken } = useAuth();
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [quizzes, setQuizzes] = useState<Quizz[]>([]);
   const [filters, setFilters] = useState<Filters>({
     keyword: [],
     difficulty: [],
@@ -51,19 +51,18 @@ export const FilterAndPaginationProvider: React.FC<{
     async function fetchData() {
       try {
         if (accessToken) {
-          const data = await getQuestions(
+          const data = await getQuizzes(
             accessToken,
             filters,
             itemsPerPage,
             pageNumber
           );
 
-          setQuestions(data.content);
+          setQuizzes(data.content);
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
           setTotalElements(data.totalElements);
           console.log("Fetched data:", data);
-          console.log(pageNumber);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,8 +76,8 @@ export const FilterAndPaginationProvider: React.FC<{
       if (pageNumber === 0) return;
       setPageNumber((prevPage) => prevPage - 1);
     } else if (direction === "right") {
-      const totalPages = Math.ceil(totalElements / itemsPerPage);
-      if (pageNumber === totalPages - 1) return;
+      const totalPages = Math.ceil(quizzes.length / itemsPerPage);
+      if (pageNumber === totalPages) return;
       setPageNumber((prevPage) => prevPage + 1);
     }
   };
@@ -92,7 +91,7 @@ export const FilterAndPaginationProvider: React.FC<{
         ? parseInt(value, 10)
         : parseInt(value(pageNumber.toString()), 10);
     setItemsPerPage(perPage);
-    setPageNumber(0);
+    setPageNumber(1);
   };
 
   const dispatchItemsPerPage: React.Dispatch<React.SetStateAction<number>> = (
@@ -108,28 +107,9 @@ export const FilterAndPaginationProvider: React.FC<{
     }
   };
 
-  const updateQuestions = async () => {
-    try {
-      if (accessToken) {
-        const data = await getQuestions(
-          accessToken,
-          filters,
-          itemsPerPage,
-          pageNumber
-        );
-        setQuestions(data.content);
-        setItemsPerPage(data.pageable.pageSize);
-        setPageNumber(data.pageable.pageNumber);
-        setTotalElements(data.totalElements);
-      }
-    } catch (error) {
-      console.error("Error updating questions:", error);
-    }
-  };
-
-  const value: PaginationContextType = {
-    questions,
-    setQuestions,
+  const value: PaginationContextTypeQuizz = {
+    quizzes,
+    setQuizzes,
     filters,
     setFilters,
     pageNumber,
@@ -138,13 +118,12 @@ export const FilterAndPaginationProvider: React.FC<{
     setItemsPerPage: dispatchItemsPerPage,
     numbersOfPages,
     handleArrowClick,
-    handleItemsPerPage,
-    updateQuestions
+    handleItemsPerPage
   };
 
   return (
-    <FilterAndPaginationContext.Provider value={value}>
+    <FilterAndPaginationContextQuizzes.Provider value={value}>
       {children}
-    </FilterAndPaginationContext.Provider>
+    </FilterAndPaginationContextQuizzes.Provider>
   );
 };
