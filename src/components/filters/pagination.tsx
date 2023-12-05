@@ -36,48 +36,44 @@ const Pagination = ({
   const defaultPageIndexes = [
     0,
     1,
-    2,
     numbersOfPages - 1,
     numbersOfPages - 2,
-    numbersOfPages - 3,
-    pageNumber - 4,
-    pageNumber - 3,
-    pageNumber - 2,
     pageNumber - 1,
     pageNumber,
-    pageNumber + 1,
-    pageNumber + 2
+    pageNumber + 1
   ];
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2 mt-3">
         <ChevronsLeft
-          onClick={() => onPageNumberChange(1)}
+          onClick={() => onPageNumberChange(0)}
           className={
-            pageNumber === 1 ? "invert cursor-not-allowed" : "cursor-pointer"
+            pageNumber === 0 ? "invert cursor-not-allowed" : "cursor-pointer"
           }
         />
         <ChevronLeft
           onClick={() => handleArrowClick("left")}
           className={
-            pageNumber === 1 ? "invert cursor-not-allowed" : "cursor-pointer"
+            pageNumber === 0 ? "invert cursor-not-allowed" : "cursor-pointer"
           }
         />
 
         {[...Array(numbersOfPages)].map((_page, index) => {
           if (defaultPageIndexes.includes(index)) {
-            if ((pageNumber > 7 || pageNumber === 1) && index === 2) {
+            console.log(pageNumber, index);
+
+            if ((pageNumber > 3 || pageNumber === 0) && index === 1) {
               return (
                 <div key={index}>
                   <Button
                     type="button"
                     variant="outline"
                     className={
-                      pageNumber === index + 1
+                      pageNumber === index
                         ? "bg-gray-600 text-white hover:bg-gray-600 hover:text-white"
                         : ""
                     }
-                    name={(index + 1).toString()}
+                    name={index.toString()}
                     onClick={(e) =>
                       onPageNumberChange(Number(e.currentTarget.name))
                     }
@@ -90,8 +86,8 @@ const Pagination = ({
             }
 
             if (
-              index === numbersOfPages - 3 &&
-              pageNumber < numbersOfPages - 6
+              index === numbersOfPages - 2 &&
+              pageNumber < numbersOfPages - 4
             ) {
               return (
                 <div key={index}>
@@ -100,12 +96,12 @@ const Pagination = ({
                     type="button"
                     variant="outline"
                     className={
-                      pageNumber === index + 1
+                      pageNumber === index
                         ? "bg-gray-600 text-white hover:bg-gray-600 hover:text-white"
                         : ""
                     }
                     key={index}
-                    name={(index + 1).toString()}
+                    name={index.toString()}
                     onClick={(e) =>
                       onPageNumberChange(Number(e.currentTarget.name))
                     }
@@ -124,12 +120,12 @@ const Pagination = ({
                 type="button"
                 variant="outline"
                 className={
-                  pageNumber === index + 1
+                  pageNumber === index
                     ? "bg-gray-600 text-white hover:bg-gray-600 hover:text-white"
                     : ""
                 }
                 key={index}
-                name={(index + 1).toString()}
+                name={index.toString()}
                 onClick={(e) =>
                   onPageNumberChange(Number(e.currentTarget.name))
                 }
@@ -143,15 +139,15 @@ const Pagination = ({
         <ChevronRight
           onClick={() => handleArrowClick("right")}
           className={
-            pageNumber === numbersOfPages
+            pageNumber === numbersOfPages - 1
               ? "invert cursor-not-allowed"
               : "cursor-pointer"
           }
         />
         <ChevronsRight
-          onClick={() => onPageNumberChange(numbersOfPages)}
+          onClick={() => onPageNumberChange(numbersOfPages - 1)}
           className={
-            pageNumber === numbersOfPages
+            pageNumber === numbersOfPages - 1
               ? "invert cursor-not-allowed"
               : "cursor-pointer"
           }
