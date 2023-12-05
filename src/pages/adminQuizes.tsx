@@ -26,10 +26,10 @@ const AdminQuizes = () => {
     <div className="text-left  pt-4">
       <div className="pl-4">
         <Link
-          to="/admin/quizes"
+          to="/admin/quizes/create"
           className="p-2 rounded-lg bg-dorange text-dblue hover:bg-dyellow transition-colors duration-30"
         >
-          Create question
+          Create quiz
         </Link>
       </div>
 

@@ -5,7 +5,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "./context/authContext";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import UserDashboard from "./pages/userDashboard";
 import UserQuizes from "./pages/userQuizes";
 import UserLayout from "./components/userLayout";
 import { Profile } from "./pages/profile";
@@ -79,8 +78,7 @@ const App: React.FC = () => {
             path="/"
             element={<AuthenticationGuard component={UserLayout} />}
           >
-            <Route index element={<UserDashboard />} />
-            <Route path="/quiz" element={<UserQuizes />} />
+            <Route index element={<UserQuizes />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
         </>
