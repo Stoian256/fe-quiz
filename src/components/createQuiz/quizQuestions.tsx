@@ -1,21 +1,31 @@
 import { useEffect, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Card, CardTitle } from "../ui/card";
-import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import Pagination from "../filters/pagination";
 import QuizModal from "./quizModal";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 import { useAuth } from "@shadcn/context/authContext";
 import { useToast } from "@shadcn/context/ToastContext";
+import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
+import { Tag } from "@shadcn/utils/interfaces/typescriptGeneral";
 
 interface QuizProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
   reset: boolean;
 }
 
+interface QuizQuestionData {
+  id: string;
+  questionTitle: string;
+  questionBody: string;
+  difficulty: string;
+  tags: Tag[];
+  answers: AnswerData[];
+}
+
 const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
   const { selectedQuestions } = useQuizModalContext();
-  const [questions, setQuestions] = useState<QuestionData[]>([]);
+  const [questions, setQuestions] = useState<QuizQuestionData[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 

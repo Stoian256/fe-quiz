@@ -269,8 +269,8 @@ const QuestionForm: React.FC = () => {
     } catch (error) {
       console.error("Error updating question:", error);
       const errorMessage = isEditing
-        ? "Failed to update the question. Please try again."
-        : "Failed to submit the form. Please try again.";
+        ? "Failed to update the question."
+        : "Failed to submit the form.";
       showToast("error", errorMessage);
     }
   };

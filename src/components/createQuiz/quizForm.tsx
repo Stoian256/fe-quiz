@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { useAuth } from "../../context/authContext";
@@ -11,7 +11,9 @@ import { Button } from "../ui/button";
 import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 import FormTimer from "./formTimer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Tag } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
 
 interface QuizData {
   quizTitle: string;
@@ -28,6 +30,7 @@ const QuizForm: React.FC = () => {
   const [quizTags, setQuizTags] = useState<string[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
   const [reset, setReset] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const { showToast } = useToast();
 
@@ -84,10 +87,6 @@ const QuizForm: React.FC = () => {
     };
   };
 
-  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
-  const { accessToken } = useAuth();
-  const navigate = useNavigate()
-
   const quizDataToSend = {
     quizTitle,
     difficultyLevel,
@@ -105,10 +104,62 @@ const QuizForm: React.FC = () => {
     setReset(true);
   };
 
+  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string | undefined }>();
+
+  useEffect(() => {
+    if (id) {
+      const fetchQuizByID = async (quizID: string) => {
+        try {
+          const response = await fetch(`${BE_URL}quiz/${quizID}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch question data");
+          }
+
+          const quizData = await response.json();
+
+          const { quizTitle, difficultyLevel, quizTags, questions } = quizData;
+
+          const tagTitles = quizTags.map((tag: Tag) => tag.tagTitle);
+
+          setQuizTitle(quizTitle);
+          setDifficultyLevel(difficultyLevel);
+          setQuizTags(tagTitles);
+          setQuestions(questions);
+
+          showToast("success", "Quiz data fetched successfully!");
+          setIsEditing(true);
+        } catch (error) {
+          console.error("Error fetching question data:", error);
+          showToast("error", "Failed to fetch question data.");
+        }
+      };
+      fetchQuizByID(id);
+    }
+  }, [id]);
+
+  const { updateQuizes } = useFilterAndPaginationQuizz();
+
   const sendDataToBackend = async (quizDataToSend: QuizData) => {
     try {
-      const response = await fetch(`${BE_URL}quiz/create`, {
-        method: "POST",
+      let url = `${BE_URL}quiz/create`;
+      let method = "POST";
+
+      if (isEditing) {
+        url = `${BE_URL}quiz/update/${id}`;
+        method = "PUT";
+      }
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
@@ -125,14 +176,20 @@ const QuizForm: React.FC = () => {
         }
         throw new Error(errorMessage);
       }
+
+      const successMessage = isEditing
+        ? "Quiz updated successfully!"
+        : "Quiz submitted successfully!";
+      showToast("success", successMessage);
+      resetForm();
+
+      await updateQuizes();
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
-      console.error("Failed request details:", {
-        method: "POST",
-        body: quizDataToSend,
-        error
-      });
-      throw error;
+      const errorMessage = isEditing
+        ? "Failed to update the quiz."
+        : "Failed to submit the form.";
+      showToast("error", errorMessage);
     }
   };
 
@@ -147,15 +204,10 @@ const QuizForm: React.FC = () => {
         throw new Error(errorMessage);
       }
 
-      if (questions.length < 1) {
-        showToast("error", "Please add at least one question to the quiz.");
-        throw new Error("Please add at least one question to the quiz.");
-      }
-
       await sendDataToBackend(quizDataToSend);
       showToast("success", "Quiz submitted successfully!");
       resetForm();
-      navigate("/admin/quizes")
+      navigate("/admin/quizes");
     } catch (error: any) {
       let errorMessage = "Failed to submit the form.";
 
@@ -184,18 +236,27 @@ const QuizForm: React.FC = () => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="grid w-full items-center gap-4">
-          <QuizHeader onQuizTitleChange={handleQuizTitleChange} quizTitle={quizTitle} />
+          <QuizHeader
+            onQuizTitleChange={handleQuizTitleChange}
+            quizTitle={quizTitle}
+          />
           <FormDifficultySelect
             onDifficultyChange={handleQuizDifficultyLevelChange}
             initialDifficulty={difficultyLevel}
           />
-          <FormTimer updateTimeLimit={handleTimerUpdate} initialTime={timeLimitMinutes} />
+          <FormTimer
+            updateTimeLimit={handleTimerUpdate}
+            initialTime={timeLimitMinutes}
+          />
           <FormTags
             onUpdateTags={updateQuizTags}
             content={quizTitle}
             tags={quizTags}
           />
-          <QuizQuestions handleSetQuestions={handleSelectedQuestions} reset={reset} />
+          <QuizQuestions
+            handleSetQuestions={handleSelectedQuestions}
+            reset={reset}
+          />
           <CardFooter>
             <Button type="submit">Create Quiz</Button>
           </CardFooter>

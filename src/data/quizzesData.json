@@ -1,6 +1,7 @@
 [
   {
-    "quizz": "FE Development with React - Fundamentals",
+    "id": "12434yrmdazfd",
+    "quizz": "FE Development with React",
     "difficultyLevel": "Easy",
     "tags": ["Coding 101", "Fundamentals"],
     "numberOfQuestions": 17,

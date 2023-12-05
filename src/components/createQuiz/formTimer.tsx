@@ -29,7 +29,7 @@ const FormTimer: React.FC<FormTimerProps> = ({
       <Input
         type="number"
         min={0}
-        value={initialTime}
+        value={initialTime === 0 ? "" : initialTime}
         onChange={handleTimerChange}
         required
         autoComplete="off"

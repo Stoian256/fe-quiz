@@ -26,6 +26,7 @@ import {
   DialogTrigger
 } from "../ui/dialog";
 import quizzesData from "../../data/quizzesData.json";
+import { Link } from "react-router-dom";
 
 const tableHeadData = [
   "QUIZZ TITLE",
@@ -100,7 +101,8 @@ const QuizzesTable = () => {
                 difficultyLevel,
                 tags,
                 numberOfQuestions,
-                timeLimit
+                timeLimit,
+                id
               } = eachQuizz;
               return (
                 <TableRow key={index} className="h-[30px] text-left">
@@ -147,19 +149,20 @@ const QuizzesTable = () => {
                   <TableCell>{timeLimit} minutes</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button
-                        variant="outline"
-                        className="border-black hover:bg-black hover:text-white"
-                      >
-                        Edit
-                      </Button>
+                      <Link to={`/admin/quizes/edit/${id}`}>
+                        <Button
+                          variant="outline"
+                          className="border-black hover:bg-black hover:text-white"
+                        >
+                          Edit
+                        </Button>
+                      </Link>
 
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
                             variant="outline"
                             className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                            // onClick={(e) => handleDelete(e)}
                             value={index}
                           >
                             Delete
