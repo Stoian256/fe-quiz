@@ -165,6 +165,7 @@ const Pagination = ({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Items</SelectLabel>
+              <SelectItem value="5">5</SelectItem>
               <SelectItem value="10">10</SelectItem>
               <SelectItem value="15">15</SelectItem>
               <SelectItem value="20">20</SelectItem>

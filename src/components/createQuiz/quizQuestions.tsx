@@ -10,9 +10,10 @@ import { useToast } from "@shadcn/context/ToastContext";
 
 interface QuizProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
+  reset: boolean;
 }
 
-const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions }) => {
+const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
   const { selectedQuestions } = useQuizModalContext();
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -25,7 +26,7 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions }) => {
 
   const numbersOfPages = Math.ceil(questions.length / itemsPerPage);
 
-  const startIndex = (pageNumber) * itemsPerPage;
+  const startIndex = pageNumber * itemsPerPage;
   const slicedQuestions = questions.slice(
     startIndex,
     startIndex + itemsPerPage
@@ -89,6 +90,12 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions }) => {
     }
   }, [selectedQuestions]);
 
+  useEffect(() => {
+    if (reset) {
+      setQuestions([]);
+    }
+  }, [reset]);
+
   return (
     <div className="grid w-full items-center p-1.5">
       <CardTitle className="text-base mb-4">Quiz Questions</CardTitle>
@@ -117,7 +124,7 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions }) => {
             </div>
             <div
               className={`${getDifficultyStyle(
-                question.difficulty,
+                question.difficulty
               )} text-xs font-bold text-white rounded-xl py-1 px-1.5`}
             >
               {question.difficulty}

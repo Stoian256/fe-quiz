@@ -4,10 +4,12 @@ import { Input } from "../ui/input";
 
 interface FormTimerProps {
   updateTimeLimit: (minutes: number) => void;
+  initialTime: number;
 }
 
 const FormTimer: React.FC<FormTimerProps> = ({
   updateTimeLimit,
+  initialTime
 }) => {
   const [timerError, setTimerError] = useState<string>("");
   const handleTimerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,11 +29,12 @@ const FormTimer: React.FC<FormTimerProps> = ({
       <Input
         type="number"
         min={0}
+        value={initialTime}
         onChange={handleTimerChange}
         required
         autoComplete="off"
       />
-      {timerError && (
+      {timerError && initialTime && (
         <p className="text-red-500 text-sm">{timerError}</p>
       )}
     </div>

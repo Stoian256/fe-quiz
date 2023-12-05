@@ -11,6 +11,7 @@ import { Button } from "../ui/button";
 import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 import FormTimer from "./formTimer";
+import { useNavigate } from "react-router-dom";
 
 interface QuizData {
   quizTitle: string;
@@ -26,6 +27,7 @@ const QuizForm: React.FC = () => {
   const [timeLimitMinutes, setTimeLimitMinutes] = useState<number>(0);
   const [quizTags, setQuizTags] = useState<string[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
+  const [reset, setReset] = useState<boolean>(false);
 
   const { showToast } = useToast();
 
@@ -48,7 +50,7 @@ const QuizForm: React.FC = () => {
       .string()
       .min(1, { message: "Please choose a difficulty level" }),
     timeLimitMinutes: z.number(),
-    tags: z.array(
+    quizTags: z.array(
       z.string().min(1, { message: "There must be at least 1 tag" })
     ),
     questions: z.array(
@@ -84,6 +86,7 @@ const QuizForm: React.FC = () => {
 
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
   const { accessToken } = useAuth();
+  const navigate = useNavigate()
 
   const quizDataToSend = {
     quizTitle,
@@ -99,6 +102,7 @@ const QuizForm: React.FC = () => {
     setTimeLimitMinutes(0);
     setQuizTags([]);
     setQuestions([]);
+    setReset(true);
   };
 
   const sendDataToBackend = async (quizDataToSend: QuizData) => {
@@ -143,9 +147,15 @@ const QuizForm: React.FC = () => {
         throw new Error(errorMessage);
       }
 
+      if (questions.length < 1) {
+        showToast("error", "Please add at least one question to the quiz.");
+        throw new Error("Please add at least one question to the quiz.");
+      }
+
       await sendDataToBackend(quizDataToSend);
-      resetForm();
       showToast("success", "Quiz submitted successfully!");
+      resetForm();
+      navigate("/admin/quizes")
     } catch (error: any) {
       let errorMessage = "Failed to submit the form.";
 
@@ -156,6 +166,7 @@ const QuizForm: React.FC = () => {
       } else if (error.message) {
         errorMessage = error.message;
       }
+      console.log("Data i send", JSON.stringify(quizDataToSend));
       console.error(error);
       showToast("error", errorMessage);
     }
@@ -163,29 +174,28 @@ const QuizForm: React.FC = () => {
 
   const handleTimerUpdate = (minutes: number) => {
     setTimeLimitMinutes(minutes);
-  }
+  };
 
   const handleSelectedQuestions = (selectedQuestions: string[]) => {
     setQuestions(selectedQuestions);
-  }
+  };
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <div className="grid w-full items-center gap-4">
-          <QuizHeader onQuizTitleChange={handleQuizTitleChange} />
+          <QuizHeader onQuizTitleChange={handleQuizTitleChange} quizTitle={quizTitle} />
           <FormDifficultySelect
             onDifficultyChange={handleQuizDifficultyLevelChange}
+            initialDifficulty={difficultyLevel}
           />
-          <FormTimer updateTimeLimit={handleTimerUpdate} />
+          <FormTimer updateTimeLimit={handleTimerUpdate} initialTime={timeLimitMinutes} />
           <FormTags
             onUpdateTags={updateQuizTags}
             content={quizTitle}
             tags={quizTags}
           />
-          <QuizQuestions
-            handleSetQuestions={handleSelectedQuestions}
-          />
+          <QuizQuestions handleSetQuestions={handleSelectedQuestions} reset={reset} />
           <CardFooter>
             <Button type="submit">Create Quiz</Button>
           </CardFooter>
