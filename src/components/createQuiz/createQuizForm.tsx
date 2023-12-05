@@ -1,3 +1,4 @@
+import { QuizModalProvider } from "@shadcn/context/quizModalContext";
 import { Card, CardContent } from "../ui/card";
 import QuizForm from "./quizForm";
 
@@ -6,7 +7,9 @@ const CreateQuizForm: React.FC = () => {
     <div className="py-5">
       <Card className="mx-5">
         <CardContent>
-          <QuizForm />
+          <QuizModalProvider>
+            <QuizForm />
+          </QuizModalProvider>
         </CardContent>
       </Card>
     </div>
