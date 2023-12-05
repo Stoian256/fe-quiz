@@ -7,6 +7,10 @@ interface SelectedQuestionContextProps {
   setSelectedQuestions: React.Dispatch<React.SetStateAction<string[]>>;
   data: string[];
   setData: React.Dispatch<React.SetStateAction<string[]>>;
+  removeQuestion: (questionIdToRemove: string) => void;
+  selectedQuestionsInModal: string[];
+  setSelectedQuestionsInModal: React.Dispatch<React.SetStateAction<string[]>>;
+  removeQuestionFromModal: (questionIdToRemove: string) => void;
 }
 
 const QuizModalContext = createContext<SelectedQuestionContextProps>({
@@ -15,7 +19,11 @@ const QuizModalContext = createContext<SelectedQuestionContextProps>({
   selectedQuestions: [],
   setSelectedQuestions: () => {},
   data: [],
-  setData: () => {},
+  setData: () => { },
+  removeQuestion: () => { },
+  selectedQuestionsInModal: [],
+  setSelectedQuestionsInModal: () => {},
+  removeQuestionFromModal: () => {},
 });
 
 export const useQuizModalContext = () => useContext(QuizModalContext);
@@ -28,6 +36,19 @@ export const QuizModalProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const [data, setData] = useState<string[]>([]);
+  const [selectedQuestionsInModal, setSelectedQuestionsInModal] = useState<string[]>([]);
+
+  const removeQuestion = (questionIdToRemove: string) => {
+    setSelectedQuestions((prevQuestions) =>
+      prevQuestions.filter((questionId) => questionId !== questionIdToRemove)
+    );
+  };
+
+  const removeQuestionFromModal = (questionIdToRemove: string) => {
+    setSelectedQuestionsInModal((prevQuestions) =>
+      prevQuestions.filter((questionId) => questionId !== questionIdToRemove)
+    );
+  };
 
   return (
     <QuizModalContext.Provider
@@ -36,7 +57,12 @@ export const QuizModalProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedQuestionId,
         selectedQuestions,
         setSelectedQuestions,
-        data, setData
+        data,
+        setData,
+        removeQuestion,
+        selectedQuestionsInModal,
+        setSelectedQuestionsInModal,
+        removeQuestionFromModal,
       }}
     >
       {children}

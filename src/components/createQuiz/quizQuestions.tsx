@@ -8,6 +8,7 @@ import { useAuth } from "@shadcn/context/authContext";
 import { useToast } from "@shadcn/context/ToastContext";
 import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
 import { Tag } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { Button } from "../ui/button";
 
 interface QuizProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
@@ -24,9 +25,9 @@ interface QuizQuestionData {
 }
 
 const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
-  const { selectedQuestions } = useQuizModalContext();
+  const { selectedQuestions, removeQuestion } = useQuizModalContext();
   const [questions, setQuestions] = useState<QuizQuestionData[]>([]);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const handleItemsPerPage = (e: React.SetStateAction<string>) => {
@@ -106,6 +107,10 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
     }
   }, [reset]);
 
+  const onRemove = (indexToRemove: string) => {
+    removeQuestion(indexToRemove)
+  }
+
   return (
     <div className="grid w-full items-center p-1.5">
       <CardTitle className="text-base mb-4">Quiz Questions</CardTitle>
@@ -121,7 +126,7 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
         slicedQuestions.map((question) => (
           <Card
             key={question.id}
-            className="p-5 flex items-start justify-between border-b-0"
+            className="p-5 flex items-start justify-between border-b-0 relative"
           >
             <div className="flex flex-col">
               <h2 className="font-medium">{question.questionTitle}</h2>
@@ -139,6 +144,14 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
             >
               {question.difficulty}
             </div>
+            <Button
+              className="text-red-400 absolute bottom-0 right-0"
+              variant={"ghost"}
+              type="button"
+              onClick={() => onRemove(question.id)}
+            >
+              X
+            </Button>
           </Card>
         ))
       )}

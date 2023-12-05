@@ -19,7 +19,7 @@ interface QuizModalProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
 }
 
-const QuizModal: React.FC<QuizModalProps> = ({handleSetQuestions}) => {
+const QuizModal: React.FC<QuizModalProps> = ({ handleSetQuestions }) => {
   const {
     pageNumber,
     setPageNumber,
@@ -28,12 +28,14 @@ const QuizModal: React.FC<QuizModalProps> = ({handleSetQuestions}) => {
     handleArrowClick,
     handleItemsPerPage
   } = useFilterAndPagination();
-  const {setSelectedQuestions, data} = useQuizModalContext()
+  const { selectedQuestions, setSelectedQuestionsInModal } =
+    useQuizModalContext();
 
   const selectQuestionsForQuiz = () => {
-    setSelectedQuestions(data);
-    handleSetQuestions(data);
+    setSelectedQuestionsInModal(selectedQuestions);
+    handleSetQuestions(selectedQuestions);
   };
+
   return (
     <Dialog>
       <DialogTrigger>
