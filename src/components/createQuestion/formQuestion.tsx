@@ -1,7 +1,7 @@
 import { Card, CardContent } from "../ui/card";
 import QuestionForm from "./questionForm";
 
-const CreateQuestionForm = () => {
+const FormQuestion: React.FC = () => {
   return (
     <div className="py-5">
       <Card className="mx-5">
@@ -13,4 +13,4 @@ const CreateQuestionForm = () => {
   );
 };
 
-export default CreateQuestionForm;
+export default FormQuestion;

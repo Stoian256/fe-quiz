@@ -1,7 +1,7 @@
-import CreateQuizForm from "@shadcn/components/createQuiz/createQuizForm"
+import FormQuiz from "@shadcn/components/createQuiz/formQuiz";
 
 const AdminEditQuiz = () => {
-  return <CreateQuizForm />
-}
+  return <FormQuiz />;
+};
 
 export default AdminEditQuiz;
