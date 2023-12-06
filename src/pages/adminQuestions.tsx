@@ -26,7 +26,7 @@ const AdminQuestions = () => {
       </div>
 
       <div className="mt-4">
-        <FilterAll />
+        <FilterAll tableType="questions" />
         <DisplayQuestions />
         <Pagination
           pageNumber={pageNumber}

@@ -7,10 +7,8 @@ import { getQuizzes } from "@shadcn/services/quizzes.service";
 type PaginationContextTypeQuizz = {
   quizzes: Quizz[];
   setQuizzes: React.Dispatch<React.SetStateAction<Quizz[]>>;
-
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
-
+  filtersQuizz: Filters;
+  setFiltersQuizz: React.Dispatch<React.SetStateAction<Filters>>;
   pageNumber: number;
   itemsPerPage: number;
   numbersOfPages: number;
@@ -37,7 +35,7 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
 }> = ({ children }) => {
   const { accessToken } = useAuth();
   const [quizzes, setQuizzes] = useState<Quizz[]>([]);
-  const [filters, setFilters] = useState<Filters>({
+  const [filtersQuizz, setFiltersQuizz] = useState<Filters>({
     keyword: [],
     difficulty: [],
     tags: []
@@ -53,7 +51,7 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
         if (accessToken) {
           const data = await getQuizzes(
             accessToken,
-            filters,
+            filtersQuizz,
             itemsPerPage,
             pageNumber
           );
@@ -62,14 +60,13 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
           setTotalElements(data.totalElements);
-          console.log("Fetched data:", data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
     fetchData();
-  }, [pageNumber, itemsPerPage, filters]);
+  }, [pageNumber, itemsPerPage, filtersQuizz]);
 
   const handleArrowClick = (direction: string) => {
     if (direction === "left") {
@@ -110,8 +107,8 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
   const value: PaginationContextTypeQuizz = {
     quizzes,
     setQuizzes,
-    filters,
-    setFilters,
+    filtersQuizz,
+    setFiltersQuizz,
     pageNumber,
     setPageNumber,
     itemsPerPage,
