@@ -16,11 +16,7 @@ const FormTimer: React.FC<FormTimerProps> = ({
     const minutes = Number(e.target.value);
     updateTimeLimit(minutes);
 
-    if (minutes < 1) {
-      setTimerError("Timer must be at least 1 minute")
-    } else {
-      setTimerError("")
-    }
+    setTimerError(minutes < 1 ? "Timer must be at least 1 minute" : "");
   };
 
   return (
@@ -34,7 +30,7 @@ const FormTimer: React.FC<FormTimerProps> = ({
         required
         autoComplete="off"
       />
-      {timerError && initialTime && (
+      {timerError && (
         <p className="text-red-500 text-sm">{timerError}</p>
       )}
     </div>
