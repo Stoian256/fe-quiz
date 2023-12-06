@@ -176,8 +176,6 @@ const FilterAll: React.FC<FilterAllProps> = ({ tableType }) => {
         tags: []
       });
     }
-
-    // setListOfTags(listOfAllTags);
   };
 
   const handleDifficultyChange = (difficulty: string) => {
