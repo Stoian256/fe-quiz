@@ -1,6 +1,6 @@
 import SearchQuizzCard from "./searchQuizzCard";
 import React, { useEffect, useState } from "react";
-import { getTags } from "@shadcn/services/tags.service";
+import { getTags, getTopTags } from "@shadcn/services/tags.service";
 import { useAuth } from "@shadcn/context/authContext";
 import SearchQuizzesTag from "./searchQuizzesTag";
 import { Badge } from "../ui/badge";
@@ -19,10 +19,8 @@ const SearchQuizzes = () => {
     async function fetchData() {
       try {
         if (accessToken) {
-          const data = await getTags(accessToken, {}); // change when we have the topTags endpoint
-          setTopTags(
-            data.slice(15).map((tag: { tagTitle: string }) => tag.tagTitle)
-          );
+          const data = await getTopTags(accessToken);
+          setTopTags(data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
