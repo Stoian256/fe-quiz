@@ -218,7 +218,6 @@ const QuizForm: React.FC = () => {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      console.log("Data i send", JSON.stringify(quizDataToSend));
       console.error(error);
       showToast("error", errorMessage);
     }
