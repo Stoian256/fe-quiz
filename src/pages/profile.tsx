@@ -10,12 +10,10 @@ export const Profile: React.FC = () => {
   }
 
   return (
-    <div className="content-layout">
-      <h1 id="page-title" className="content__title">
-        Profile Page
-      </h1>
-      <div className="content__body">
-        <p id="page-description">
+    <div className="mx-20 my-10">
+      <h1 className="text-dblue text-2xl font-bold mb-2">Profile Page</h1>
+      <div>
+        <p>
           <span>
             You can use the <strong>ID Token</strong> to get the profile
             information of an authenticated user.
@@ -24,15 +22,15 @@ export const Profile: React.FC = () => {
             <strong>Only authenticated users can access this page.</strong>
           </span>
         </p>
-        <div className="profile-grid">
-          <div className="profile__header">
-            <img src={user.picture} alt="Profile" className="profile__avatar" />
-            <div className="profile__headline">
-              <h2 className="profile__title">{user.name}</h2>
-              <span className="profile__description">{user.email}</span>
+        <div className="mx-4 my-2 p-8">
+          <div className="flex flex-row gap-4 items-center">
+            <img src={user.picture} alt="Profile" className="rounded-full" />
+            <div>
+              <h2 className="text-dblue font-semibold">{user.name}</h2>
+              <span className="text-gray-400">{user.email}</span>
             </div>
           </div>
-          <div className="profile__details">
+          <div className="mt-4 bg-gray-200 p-4">
             <CodeSnippet
               title="Decoded ID Token"
               code={JSON.stringify(user, null, 2)}

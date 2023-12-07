@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Filters, Question } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { Filters, Question } from "@shadcn/utils/interfaces/typescript";
 import { getQuestions } from "@shadcn/services/questions.service";
 import { useAuth } from "./authContext";
 

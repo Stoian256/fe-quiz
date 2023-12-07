@@ -14,7 +14,7 @@ import {
 } from "../ui/tooltip";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
-import { Question } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { Question } from "@shadcn/utils/interfaces/typescript";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";

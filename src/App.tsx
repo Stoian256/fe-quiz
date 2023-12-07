@@ -16,6 +16,7 @@ import AdminCreateQuiz from "./pages/adminCreateQuiz";
 import { PageLoader } from "./components/auth/page-loader";
 import ErrorPage from "./pages/errorPage";
 import AdminEditQuestion from "./pages/adminEditQuestion";
+import UserSolveQuiz from "./pages/userSolveQuiz";
 import AdminEditQuiz from "./pages/adminEditQuiz";
 
 const App: React.FC = () => {
@@ -85,6 +86,7 @@ const App: React.FC = () => {
           >
             <Route index element={<UserQuizes />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/quizes/solve/:id" element={<UserSolveQuiz />} />
           </Route>
         </>
       )}
