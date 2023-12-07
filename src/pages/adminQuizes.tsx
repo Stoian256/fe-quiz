@@ -2,7 +2,6 @@ import FilterAll from "@shadcn/components/filters/filterAll";
 import Pagination from "@shadcn/components/filters/pagination";
 import DisplayQuizzes from "@shadcn/components/tables/displayQuizzes";
 import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const AdminQuizes = () => {

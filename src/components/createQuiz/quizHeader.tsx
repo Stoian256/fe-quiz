@@ -5,10 +5,10 @@ import { Textarea } from "../ui/textarea";
 
 interface QuizTitleProps {
   onQuizTitleChange: (text: string) => void;
+  quizTitle: string;
 }
 
-const QuizHeader: React.FC<QuizTitleProps> = ({ onQuizTitleChange }) => {
-  const [title, setTitle] = useState<string>("");
+const QuizHeader: React.FC<QuizTitleProps> = ({ onQuizTitleChange, quizTitle }) => {
   const [titleError, setTitleError] = useState<string>("");
   
 
@@ -21,7 +21,6 @@ const QuizHeader: React.FC<QuizTitleProps> = ({ onQuizTitleChange }) => {
   ) => {
     const inputText = event.target.value;
     const capitalizedText = capitalizeFirstLetter(inputText);
-    setTitle(capitalizedText);
     onQuizTitleChange(capitalizedText);
     setTitleError("");
   };
@@ -44,14 +43,14 @@ const QuizHeader: React.FC<QuizTitleProps> = ({ onQuizTitleChange }) => {
       <Textarea
         id="quizTitle"
         name="quizTitle"
-        value={title}
+        value={quizTitle}
         placeholder="Enter quiz title..."
         onChange={handleQuizTitleChange}
         onBlur={handleQuizTitleBlur}
         autoCapitalize="on"
         autoComplete="off"
       />
-      {titleError && title && <p className="text-sm text-red-500">{titleError}</p>}
+      {titleError && quizTitle && <p className="text-sm text-red-500">{titleError}</p>}
     </div>
   )
 }

@@ -18,13 +18,20 @@ import { Question } from "@shadcn/utils/interfaces/typescriptGeneral";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
+import { useEffect } from "react";
 
 const headerData = ["QUESTION TITLE", "DIFFICULTY LEVEL", "TAGS", "SELECT"];
 
 const DisplayQuizModalTable = () => {
-  const { setSelectedQuestionId } = useQuizModalContext();
+  const {
+    selectedQuestions,
+    setSelectedQuestionId,
+    setSelectedQuestions,
+    selectedQuestionsInModal,
+    removeQuestionFromModal
+  } = useQuizModalContext();
   const { questions } = useFilterAndPagination();
-  const { data, setData  } = useQuizModalContext();
+  const { data, setData } = useQuizModalContext();
 
   const handleRowClick: React.MouseEventHandler<HTMLTableRowElement> = (
     event
@@ -35,11 +42,20 @@ const DisplayQuizModalTable = () => {
     }
   };
 
+  useEffect(() => {
+    selectedQuestionsInModal.forEach((questionId) => {
+      if (!selectedQuestions.includes(questionId)) {
+        removeQuestionFromModal(questionId);
+      }
+    });
+  }, [selectedQuestions, selectedQuestionsInModal, removeQuestionFromModal]);
+
   const handleCheckboxChange = (checked: CheckedState, question: Question) => {
     const updatedQuestions = checked
       ? [...data, question.id]
       : data.filter((id) => id !== question.id);
     setData(updatedQuestions);
+    setSelectedQuestions(updatedQuestions);
   };
 
   return (
@@ -59,7 +75,7 @@ const DisplayQuizModalTable = () => {
             const { id, questionTitle, tags, difficulty } = eachQuestion;
             return (
               <TableRow
-                key={index}
+                key={id}
                 className="h-[10px] text-left hover:bg-green-100"
                 onClick={handleRowClick}
                 data-question-id={id}
@@ -116,8 +132,8 @@ const DisplayQuizModalTable = () => {
                 </TableCell>
                 <TableCell className="p-2">
                   <Checkbox
-                    className="data-[state=checked]:bg-white data-[state=checked]:text-green-400 data-[state=checked]:font-bold data-[state=checked]:border-none"
-                    checked={data.includes(eachQuestion.id)}
+                    className="appearance-none checked:bg-blue-600 checked:border-transparent checked:ring-2 checked:ring-blue-500 checked:text-blue-600 checked:checked:bg-blue-600 checked:checked:border-transparent checked:checked:ring-2 checked:checked:ring-blue-500 checked:checked:text-blue-600 h-5 w-5 rounded border-gray-300 cursor-pointer focus:outline-none"
+                    checked={selectedQuestions.includes(eachQuestion.id)}
                     onCheckedChange={(checked) =>
                       handleCheckboxChange(checked, eachQuestion)
                     }

@@ -15,7 +15,11 @@ import Pagination from "../filters/pagination";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 
-const QuizModal = () => {
+interface QuizModalProps {
+  handleSetQuestions: (selectedQuestionId: string[]) => void;
+}
+
+const QuizModal: React.FC<QuizModalProps> = ({ handleSetQuestions }) => {
   const {
     pageNumber,
     setPageNumber,
@@ -24,11 +28,14 @@ const QuizModal = () => {
     handleArrowClick,
     handleItemsPerPage
   } = useFilterAndPagination();
-  const {setSelectedQuestions, data} = useQuizModalContext()
+  const { selectedQuestions, setSelectedQuestionsInModal } =
+    useQuizModalContext();
 
   const selectQuestionsForQuiz = () => {
-    setSelectedQuestions(data)
+    setSelectedQuestionsInModal(selectedQuestions);
+    handleSetQuestions(selectedQuestions);
   };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -42,7 +49,7 @@ const QuizModal = () => {
         </DialogHeader>
         <div className="flex min-h-[560px] gap-4">
           <div className="flex-1  overflow-y-auto h-[560px]">
-            <FilterAll />
+            <FilterAll tableType="quizzes" />
             <DisplayQuizModalTable />
             <Pagination
               pageNumber={pageNumber}

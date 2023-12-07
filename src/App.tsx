@@ -16,6 +16,7 @@ import AdminCreateQuiz from "./pages/adminCreateQuiz";
 import { PageLoader } from "./components/auth/page-loader";
 import ErrorPage from "./pages/errorPage";
 import AdminEditQuestion from "./pages/adminEditQuestion";
+import AdminEditQuiz from "./pages/adminEditQuiz";
 
 const App: React.FC = () => {
   const { isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
@@ -67,6 +68,10 @@ const App: React.FC = () => {
               <Route
                 path="/admin/quizes/create"
                 element={<AdminCreateQuiz />}
+              />
+              <Route
+                path="/admin/quizes/edit/:id"
+                element={<AdminEditQuiz />}
               />
               <Route path="/admin/quizes" element={<AdminQuizes />} />
             </Route>

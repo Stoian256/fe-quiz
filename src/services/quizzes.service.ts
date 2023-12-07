@@ -25,7 +25,6 @@ export const getQuizzes = async (
   }
   try {
     const url = `${apiServerUrl}/quiz?${params}`;
-    console.log(url);
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -38,7 +37,6 @@ export const getQuizzes = async (
       throw new Error(`Request failed with status ${response.status}`);
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching questions:", error);

@@ -1,10 +1,11 @@
 import { ListOfTags } from "./ListOfTags";
 
 export interface Quizz {
-  quizTitle: string;
+  id: string;
+  quizz: string;
   difficultyLevel: string;
   quizTags: ListOfTags[];
+  quizTitle: string;
   numberOfQuestions: number;
   timeLimitMinutes: number;
-  id: string;
 }

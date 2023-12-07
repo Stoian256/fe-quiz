@@ -1,7 +1,7 @@
-import CreateQuestionForm from "@shadcn/components/createQuestion/createQuestionForm"
+import FormQuestion from "@shadcn/components/createQuestion/formQuestion";
 
 const AdminEditQuestion = () => {
-  return <CreateQuestionForm />
-}
+  return <FormQuestion />;
+};
 
-export default AdminEditQuestion
+export default AdminEditQuestion;

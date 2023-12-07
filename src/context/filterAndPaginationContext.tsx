@@ -6,6 +6,7 @@ import { useAuth } from "./authContext";
 type PaginationContextType = {
   questions: Question[];
   setQuestions: React.Dispatch<React.SetStateAction<Question[]>>;
+  updateQuestions: () => Promise<void>;
 
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -61,7 +62,6 @@ export const FilterAndPaginationProvider: React.FC<{
           setItemsPerPage(data.pageable.pageSize);
           setPageNumber(data.pageable.pageNumber);
           setTotalElements(data.totalElements);
-          console.log("Fetched data:", data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -106,6 +106,25 @@ export const FilterAndPaginationProvider: React.FC<{
     }
   };
 
+  const updateQuestions = async () => {
+    try {
+      if (accessToken) {
+        const data = await getQuestions(
+          accessToken,
+          filters,
+          itemsPerPage,
+          pageNumber
+        );
+        setQuestions(data.content);
+        setItemsPerPage(data.pageable.pageSize);
+        setPageNumber(data.pageable.pageNumber);
+        setTotalElements(data.totalElements);
+      }
+    } catch (error) {
+      console.error("Error updating questions:", error);
+    }
+  };
+
   const value: PaginationContextType = {
     questions,
     setQuestions,
@@ -117,7 +136,8 @@ export const FilterAndPaginationProvider: React.FC<{
     setItemsPerPage: dispatchItemsPerPage,
     numbersOfPages,
     handleArrowClick,
-    handleItemsPerPage
+    handleItemsPerPage,
+    updateQuestions
   };
 
   return (

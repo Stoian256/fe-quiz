@@ -21,6 +21,9 @@ import {
   DialogFooter,
   DialogTrigger
 } from "../ui/dialog";
+import { Link } from "react-router-dom";
+import { useAuth } from "@shadcn/context/authContext";
+import { useToast } from "@shadcn/context/ToastContext";
 import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
 
 const tableHeadData = [
@@ -33,9 +36,36 @@ const tableHeadData = [
 ];
 
 const QuizzesTable = () => {
-  const { quizzes } = useFilterAndPaginationQuizz();
+  const BE_URL = import.meta.env.VITE_API_SERVER_URL;
+  const { accessToken } = useAuth();
+  const { quizzes, setQuizzes } = useFilterAndPaginationQuizz();
 
-  const handleDelete = () => {};
+  const { showToast } = useToast();
+
+  const removeQuiz = async (quizIndex: string) => {
+    try {
+      const response = await fetch(
+        `${BE_URL}quiz/delete/${quizIndex}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to remove question");
+      }
+      setQuizzes((prevQuizes) =>
+        prevQuizes.filter((quiz) => quiz.id !== quizIndex)
+      );
+      showToast("success", "Quiz removed successfully!");
+    } catch (error) {
+      console.error("Error removing quiz:", error);
+      showToast("error", "Failed to remove the quiz.");
+    }
+  };
 
   return (
     <div className="p-4 pt-0">
@@ -84,9 +114,9 @@ const QuizzesTable = () => {
                   <TableCell>
                     <Badge
                       className={
-                        difficultyLevel === "Easy"
+                        difficultyLevel === "EASY"
                           ? "bg-green-600"
-                          : difficultyLevel === "Medium"
+                          : difficultyLevel === "MEDIUM"
                           ? "bg-yellow-500"
                           : "bg-red-600"
                       }
@@ -131,19 +161,20 @@ const QuizzesTable = () => {
                   <TableCell>{timeLimitMinutes} minutes</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button
-                        variant="outline"
-                        className="border-black hover:bg-black hover:text-white"
-                      >
-                        Edit
-                      </Button>
+                      <Link to={`/admin/quizes/edit/${id}`}>
+                        <Button
+                          variant="outline"
+                          className="border-black hover:bg-black hover:text-white"
+                        >
+                          Edit
+                        </Button>
+                      </Link>
 
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
                             variant="outline"
                             className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                            // onClick={(e) => handleDelete(e)}
                             value={id}
                           >
                             Delete
@@ -168,7 +199,7 @@ const QuizzesTable = () => {
                             </DialogClose>
                             <DialogClose
                               className="bg-red-600 text-white hover:bg-red-900 p-2 rounded-md px-3"
-                              onClick={handleDelete}
+                              onClick={() => removeQuiz(id)}
                             >
                               Yes, delete it
                             </DialogClose>

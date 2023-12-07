@@ -1,0 +1,109 @@
+[
+  {
+    "id": "12434yrmdazfd",
+    "quizz": "FE Development with React",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "BE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with Azure - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "GIT Development- Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "BE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with Azure - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "GIT Development- Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "BE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with Azure - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "FE Development with React - Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  },
+  {
+    "quizz": "GIT Development- Fundamentals",
+    "difficultyLevel": "Easy",
+    "tags": ["Coding 101", "Fundamentals"],
+    "numberOfQuestions": 17,
+    "timeLimit": 84
+  }
+]
+

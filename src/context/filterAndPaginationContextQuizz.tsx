@@ -7,6 +7,7 @@ import { getQuizzes } from "@shadcn/services/quizzes.service";
 type PaginationContextTypeQuizz = {
   quizzes: Quizz[];
   setQuizzes: React.Dispatch<React.SetStateAction<Quizz[]>>;
+  updateQuizes: () => Promise<void>;
   filtersQuizz: Filters;
   setFiltersQuizz: React.Dispatch<React.SetStateAction<Filters>>;
   pageNumber: number;
@@ -104,6 +105,25 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
     }
   };
 
+  const updateQuizes = async () => {
+    try {
+      if (accessToken) {
+        const data = await getQuizzes(
+          accessToken,
+          filtersQuizz,
+          itemsPerPage,
+          pageNumber
+        );
+        setQuizzes(data.content);
+        setItemsPerPage(data.pageable.pageSize);
+        setPageNumber(data.pageable.pageNumber);
+        setTotalElements(data.totalElements);
+      }
+    } catch (error) {
+      console.error("Error updating questions:", error);
+    }
+  };
+
   const value: PaginationContextTypeQuizz = {
     quizzes,
     setQuizzes,
@@ -115,7 +135,8 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
     setItemsPerPage: dispatchItemsPerPage,
     numbersOfPages,
     handleArrowClick,
-    handleItemsPerPage
+    handleItemsPerPage,
+    updateQuizes
   };
 
   return (
