@@ -9,19 +9,46 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  dockerRegistryServiceConnection: 'Pipeline automation for FE'
+  imageRepository: 'bootcampquizapife'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
 stages:
- - stage: Build
-   displayName: "Build Stage"
-   jobs:
-   - job: BuildFrontend
-     displayName: "Build Frontend"
-     steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '20.x'
+- stage: Build
+  displayName: "Build"
+  jobs:
+  - job: BuildFrontendJob
+    displayName: "Build Frontend"
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
         displayName: 'Install Node.js'
 
-      - script: |
+    - script: |
           npm install
           npm run build
-        displayName: 'npm install and build'
+      displayName: 'npm install and build'
+
+- stage: BuildAndPush
+  displayName: Build and publish stage
+  jobs:
+   - job: Build
+     displayName: Build job
+     pool:
+       name: QuizPool
+     steps:
+      - task: Docker@2
+        displayName: Build and publish image to ACR
+        inputs:
+          command: buildAndPush
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageRepository)
+          dockerfile: $(dockerfilePath)
+          tags: |
+            latest
+            $(tag)
+
+
