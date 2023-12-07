@@ -49,7 +49,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ handleSetQuestions }) => {
         </DialogHeader>
         <div className="flex min-h-[560px] gap-4">
           <div className="flex-1  overflow-y-auto h-[560px]">
-            <FilterAll />
+            <FilterAll tableType="quizzes" />
             <DisplayQuizModalTable />
             <Pagination
               pageNumber={pageNumber}

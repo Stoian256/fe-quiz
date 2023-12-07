@@ -81,17 +81,17 @@ export const saveQuestion = async (
   }
 };
 
-export const getQuestionById = async (accessToken: string, id: string) => {
-  //TODO
-};
+// export const getQuestionById = async (accessToken: string, id: string) => {
+//   //TODO
+// };
 
-export const updateQuestion = async (
-  accessToken: string,
-  dataToSend: FormData
-) => {
-  //TODO
-};
+// export const updateQuestion = async (
+//   accessToken: string,
+//   dataToSend: FormData
+// ) => {
+//   //TODO
+// };
 
-export const deleteQuestion = async (accessToken: string, id: string) => {
-  //TODO
-};
+// export const deleteQuestion = async (accessToken: string, id: string) => {
+//   //TODO
+// };

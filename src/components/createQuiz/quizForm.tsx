@@ -134,7 +134,7 @@ const QuizForm: React.FC = () => {
             timeLimitMinutes
           } = quizData;
 
-          const questionsIDs = questions.map((question: string[]) => question.id);
+          const questionsIDs = questions.map((question: {id: string}) => question.id);
 
           const tagTitles = quizTags.map((tag: Tag) => tag.tagTitle);
 

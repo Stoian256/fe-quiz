@@ -75,7 +75,7 @@ const DisplayQuizModalTable = () => {
             const { id, questionTitle, tags, difficulty } = eachQuestion;
             return (
               <TableRow
-                key={index}
+                key={id}
                 className="h-[10px] text-left hover:bg-green-100"
                 onClick={handleRowClick}
                 data-question-id={id}
