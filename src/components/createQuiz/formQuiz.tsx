@@ -2,7 +2,7 @@ import { QuizModalProvider } from "@shadcn/context/quizModalContext";
 import { Card, CardContent } from "../ui/card";
 import QuizForm from "./quizForm";
 
-const CreateQuizForm: React.FC = () => {
+const FormQuiz: React.FC = () => {
   return (
     <div className="py-5">
       <Card className="mx-5">
@@ -16,4 +16,4 @@ const CreateQuizForm: React.FC = () => {
   );
 };
 
-export default CreateQuizForm;
+export default FormQuiz;

@@ -177,6 +177,7 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
               )
             );
           })}
+          {tags.length > 7 && <p className="text-red-500">There can't be more than 7 tags!</p>}
           {tags.length > 1 && (
             <button
               onClick={handleRemoveAllTags}
@@ -191,6 +192,7 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
               id="tag"
               value={inputTag}
               onChange={handleTagsChange}
+              disabled={tags.length === 7}
               autoComplete="off"
             />
             <div className="overflow-y-scroll overscroll-auto">

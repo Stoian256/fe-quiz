@@ -1,7 +1,7 @@
 import FormQuiz from "@shadcn/components/createQuiz/formQuiz";
 
-const AdminCreateQuiz = () => {
+const AdminEditQuiz = () => {
   return <FormQuiz />;
 };
 
-export default AdminCreateQuiz;
+export default AdminEditQuiz;

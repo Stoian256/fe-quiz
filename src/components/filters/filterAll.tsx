@@ -66,9 +66,6 @@ const FilterAll: React.FC<FilterAllProps> = ({ tableType }) => {
       try {
         if (accessToken) {
           const data = await getTags(accessToken, requestBodyTag);
-
-          console.log("Fetched data:", data);
-
           setListOfTags(data);
         }
       } catch (error) {

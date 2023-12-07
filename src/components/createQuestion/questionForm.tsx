@@ -14,6 +14,7 @@ import { QuestionData } from "@shadcn/utils/interfaces/QuestionData";
 import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 import { useNavigate, useParams } from "react-router-dom";
+import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 
 const defaultAnswerInfo = [
   {
@@ -51,6 +52,10 @@ const QuestionForm: React.FC = () => {
   const [difficulty, setDifficulty] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [answers, setAnswers] = useState<AnswerData[]>([
+    {
+      answerContent: "",
+      correctAnswer: false
+    },
     {
       answerContent: "",
       correctAnswer: false
@@ -199,20 +204,23 @@ const QuestionForm: React.FC = () => {
             }
           );
 
-          const existingAnswersInfo = answers.map((_answer: ApiAnswer, index: number) => ({
-            option: `Option ${index + 1}`,
-            button: "Remove",
-            answerTitle: "Answer Title",
-            answerTxt: "Is this Answer Correct?",
-            inputId: `answer-input-${index + 1}`,
-            switchId: `answer-switch-${index + 1}`
-          }));
+          const existingAnswersInfo = answers.map(
+            (_answer: ApiAnswer, index: number) => ({
+              option: `Option ${index + 1}`,
+              button: "Remove",
+              answerTitle: "Answer Title",
+              answerTxt: "Is this Answer Correct?",
+              inputId: `answer-input-${index + 1}`,
+              switchId: `answer-switch-${index + 1}`
+            })
+          );
 
           setQuestionTitle(questionTitle);
           setQuestionBody(questionBody);
           setDifficulty(difficulty);
           setTags(tagTitles);
           setAnswers(mappedAnswers);
+
           setAnswersInfo(existingAnswersInfo);
 
           showToast("success", "Question data fetched successfully!");
@@ -225,6 +233,8 @@ const QuestionForm: React.FC = () => {
       fetchQuestionByID(id);
     }
   }, [id]);
+
+  const { updateQuestions } = useFilterAndPagination();
 
   const sendDataToBackend = async (questionDataToSend: QuestionData) => {
     try {
@@ -254,11 +264,13 @@ const QuestionForm: React.FC = () => {
         : "Question submitted successfully!";
       showToast("success", successMessage);
       resetForm();
+
+      await updateQuestions();
     } catch (error) {
       console.error("Error updating question:", error);
       const errorMessage = isEditing
-        ? "Failed to update the question. Please try again."
-        : "Failed to submit the form. Please try again.";
+        ? "Failed to update the question."
+        : "Failed to submit the form.";
       showToast("error", errorMessage);
     }
   };
@@ -343,7 +355,7 @@ const QuestionForm: React.FC = () => {
           />
           <CardFooter>
             <Button type="submit">
-              {isEditing ? "Edit Question" : "Create Question"}
+              {isEditing ? "Save Question" : "Create Question"}
             </Button>
           </CardFooter>
         </div>
