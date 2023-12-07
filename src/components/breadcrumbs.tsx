@@ -19,7 +19,7 @@ const Breadcrumbs = () => {
   const pathDisplayNames: PathDisplayNames = {
     admin: "",
     "admin/questions": "Questions",
-    "admin/quizes": "Quizes",
+    "admin/quizes": "Quizzes",
     "admin/questions/create": "Create",
     "admin/questions/edit": "Edit",
     "admin/quizes/create": "Create",

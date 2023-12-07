@@ -32,7 +32,7 @@ const Layout = () => {
           newTitle = "Here are the questions that we create";
           break;
         case "/admin/quizes":
-          newMainTitle = "Quizes";
+          newMainTitle = "Quizzes";
           newTitle = "Here are the quizes we create";
           break;
         case "/admin/questions/create":
