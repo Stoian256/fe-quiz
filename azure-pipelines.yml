@@ -23,5 +23,5 @@ stages:
 
       - script: |
           npm install
-          npm run dev
+          npm run dev -- --host
         displayName: 'npm install and build'
