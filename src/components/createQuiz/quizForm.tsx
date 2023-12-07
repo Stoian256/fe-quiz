@@ -12,7 +12,7 @@ import { useToast } from "@shadcn/context/ToastContext";
 import extractZodErrors from "@shadcn/utils/functions/zodErrors";
 import FormTimer from "./formTimer";
 import { useNavigate, useParams } from "react-router-dom";
-import { Tag } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { Tag } from "@shadcn/utils/interfaces/typescript";
 import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
 
 interface QuizData {
