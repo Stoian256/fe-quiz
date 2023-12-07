@@ -17,7 +17,7 @@ const Sidebar = () => {
           path="/admin/questions"
           label="Questions"
         />
-        <MenuItem icon={<AppWindow />} path="/admin/quizes" label="Quizes" />
+        <MenuItem icon={<AppWindow />} path="/admin/quizes" label="Quizzes" />
       </div>
     </div>
   );
