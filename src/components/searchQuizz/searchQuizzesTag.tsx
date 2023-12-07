@@ -46,7 +46,9 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
 }) => {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger className="underline">Add More</DialogTrigger>
+      <DialogTrigger className="underline">
+        {selectedTags.length > 0 ? "Add More Tags" : "Add Tags"}
+      </DialogTrigger>
       <DialogContent className="p-14 max-w-3xl">
         <DialogHeader className="flex flex-col gap-5 items-center">
           <DialogTitle className="text-4xl">
@@ -55,11 +57,10 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
           <DialogDescription className="text-xl">
             Select the topics you'd like to search quizzes for
           </DialogDescription>
-          <DialogDescription className="flex flex-wrap gap-8 justify-center">
+          <div className="flex flex-wrap gap-8 justify-center">
             {topTags.map((tag, index) => (
-              <div className="flex">
+              <div className="flex" key={`${index}-${tag}`}>
                 <Badge
-                  key={index}
                   className={`ml-3 py-1 px-3 rounded-none ${
                     selectedTags.includes(tag)
                       ? "bg-yellow-400"
@@ -80,7 +81,7 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
                 )}
               </div>
             ))}
-          </DialogDescription>
+          </div>
           <div className="flex w-full gap-10 justify-center items-center text-lg whitespace-nowrap relative">
             <div className="flex flex-col w-9/12 gap-1 mt-5 mb-3">
               <Label>Search for more topics</Label>
@@ -112,10 +113,11 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
         </DialogHeader>
         <DialogFooter className="flex gap-2">
           <DialogClose
-            className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg"
+            className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg disabled:cursor-not-allowed disabled:bg-gray-400"
             onClick={() => {
               setOpenDialog(false), handleTopicsSearch();
             }}
+            disabled={selectedTags.length === 0}
           >
             Search
           </DialogClose>

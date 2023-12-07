@@ -44,11 +44,24 @@ export const getTags = async (
   }
 };
 
-export const getTopTags = async (accessToken: string): Promise<any> => {
-  try {
-    // change endpoint here
+export const getTopTags = async (
+  accessToken: string,
+  numberOfResults: number,
+  query?: string,
+  excludedTags?: string[]
+): Promise<any> => {
+  const excludedTagsParams = excludedTags?.map((tag) => ["excludedTags", tag]);
 
-    const response = await fetch(`${apiServerUrl}tags`, {
+  let params = new URLSearchParams();
+
+  excludedTagsParams?.map((diff) => params.append(diff[0], diff[1]));
+  if (query) {
+    params.append("query", query);
+  }
+  params.append("numberOfResults", numberOfResults.toString());
+  try {
+    const url = `${apiServerUrl}tags/top?${params}`;
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +80,6 @@ export const getTopTags = async (accessToken: string): Promise<any> => {
     }
 
     const data = await response.json();
-
     return data;
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);

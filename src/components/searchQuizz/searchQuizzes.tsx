@@ -1,6 +1,6 @@
 import SearchQuizzCard from "./searchQuizzCard";
 import React, { useEffect, useState } from "react";
-import { getTags, getTopTags } from "@shadcn/services/tags.service";
+import { getTopTags } from "@shadcn/services/tags.service";
 import { useAuth } from "@shadcn/context/authContext";
 import SearchQuizzesTag from "./searchQuizzesTag";
 import { Badge } from "../ui/badge";
@@ -9,7 +9,6 @@ const SearchQuizzes = () => {
   const [openDialog, setOpenDialog] = useState(true);
   const [topTags, setTopTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [requestBodyTag, setRequestBodyTag] = useState({});
   const [prefix, setPrefix] = useState("");
   const [generatedTags, setGeneratedTags] = useState<string[]>([]);
   const [manuallyAddedTags, setManuallyAddedTags] = useState<string[]>([]);
@@ -19,8 +18,11 @@ const SearchQuizzes = () => {
     async function fetchData() {
       try {
         if (accessToken) {
-          const data = await getTopTags(accessToken);
-          setTopTags(data);
+          const data = await getTopTags(accessToken, 15);
+          const onlyTitleTagData = data.map(
+            (tag: { tagTitle: string }) => tag.tagTitle
+          );
+          setTopTags(onlyTitleTagData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -33,7 +35,7 @@ const SearchQuizzes = () => {
     async function fetchData() {
       try {
         if (accessToken) {
-          const data = await getTags(accessToken, requestBodyTag);
+          const data = await getTopTags(accessToken, 10, prefix, topTags);
 
           setGeneratedTags(
             data.map((tag: { tagTitle: string }) => tag.tagTitle)
@@ -67,10 +69,6 @@ const SearchQuizzes = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const pref = e.target.value;
     setPrefix(pref);
-    setRequestBodyTag({
-      prefix: pref,
-      excludedTags: topTags
-    });
   };
 
   const handleTagSelect = (
@@ -83,7 +81,8 @@ const SearchQuizzes = () => {
   };
 
   const handleTopicsSearch = () => {
-    // fetch API data to get quizzes here
+    if (selectedTags.length === 0) {
+    }
   };
 
   return (
@@ -91,10 +90,10 @@ const SearchQuizzes = () => {
       {/* ADD NAVBAR HERE */}
       <div className="flex flex-col gap-2">
         <h3 className="text-5xl">Quiz Search</h3>
-        <p>Showing quizzes for:</p>
-        <div className="flex gap-2">
-          {selectedTags.map((tag) => (
-            <div className="flex">
+        {selectedTags.length > 0 && <p>Showing quizzes for:</p>}
+        <div className="flex gap-2 flex-wrap">
+          {selectedTags.map((tag, index) => (
+            <div className="flex" key={`${index}-${tag}`}>
               <Badge
                 className="ml-3 py-1 px-3 rounded-none bg-yellow-400
            text-black font-bold text-base hover:bg-yellow-400"
@@ -125,14 +124,27 @@ const SearchQuizzes = () => {
             handleTopicsSearch={handleTopicsSearch}
           />
         </div>
-
-        {/*  */}
-        <SearchQuizzCard
-          title="Quiz 1 Title"
-          tags={["reac", "re", "tag"]}
-          difficulty="Easy"
-          timeLimit={90}
-        />
+        {selectedTags.length === 0 ? (
+          <p className="text-2xl">
+            No tags selected. Please select at least one tag to continue by
+            clicking Add Tags above!
+          </p>
+        ) : (
+          <>
+            <SearchQuizzCard
+              title="Quiz 1 Title"
+              tags={["reac", "re", "tag"]}
+              difficulty="Easy"
+              timeLimit={90}
+            />
+            <SearchQuizzCard
+              title="Quiz 2 Title"
+              tags={["reac", "re", "tag"]}
+              difficulty="Medium"
+              timeLimit={120}
+            />
+          </>
+        )}
       </div>
     </div>
   );
