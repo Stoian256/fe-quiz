@@ -31,9 +31,9 @@ const Navbar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem><Link to="/profile">Profile</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link to="/#team">Team</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link to="/#settings">Setting</Link></DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/profile">Profile</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogoutButton />

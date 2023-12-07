@@ -22,3 +22,22 @@ export interface Question {
 export interface Filters {
   [key: string]: string[];
 }
+
+export interface UserAnswer{
+  answerOptionId: string,
+  answerOptionTitle: string
+}
+
+export interface UserQuestion {
+  questionId: string;
+  questionTitle: string;
+  questionBody: string;
+  answerOptions: UserAnswer[];
+}
+
+export interface UserQuiz {
+  attemptId: string,
+  startedAt: Date,
+  timeLimit: string,
+  questions: UserQuestion[]
+}

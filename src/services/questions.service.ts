@@ -1,4 +1,4 @@
-import { Filters } from "@shadcn/utils/interfaces/typescriptGeneral";
+import { Filters } from "@shadcn/utils/interfaces/typescript";
 
 const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
 
