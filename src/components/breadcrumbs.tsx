@@ -23,7 +23,7 @@ const Breadcrumbs = () => {
     "admin/questions/create": "Create",
     "admin/questions/edit": "Edit",
     "admin/quizes/create": "Create",
-    "admin/quizes/edit": "Edit",
+    "admin/quizes/edit": "Edit"
   };
 
   return (
@@ -39,8 +39,11 @@ const Breadcrumbs = () => {
           const pathSlice = pathnames.slice(0, index + 1);
           const pathKey = pathSlice.join("/") as Path;
           const to = `/${pathSlice.join("/")}`;
+          const shouldExclude = value.match(/\d+/);
 
-          let displayName: string = pathDisplayNames[pathKey] || value;
+          let displayName: string = shouldExclude
+            ? ""
+            : pathDisplayNames[pathKey] || value;
 
           if (last && pathDisplayNames[pathKey]) {
             displayName = pathDisplayNames[pathKey];

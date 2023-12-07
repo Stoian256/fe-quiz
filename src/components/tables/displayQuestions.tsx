@@ -26,6 +26,7 @@ import {
 import { useAuth } from "@shadcn/context/authContext";
 import { useToast } from "@shadcn/context/ToastContext";
 import { Link } from "react-router-dom";
+import { Difficulty, difficultyMap } from "@shadcn/utils/functions/mapDifficultyColors";
 
 const tableHeadData = [
   "QUESTION TITLE",
@@ -114,11 +115,7 @@ const DisplayQuestions = () => {
                     <TableCell>
                       <Badge
                         className={
-                          difficulty === "Easy"
-                            ? "bg-green-600"
-                            : difficulty === "Medium"
-                            ? "bg-yellow-500"
-                            : "bg-red-600"
+                          difficultyMap[difficulty as Difficulty]
                         }
                       >
                         {difficulty}

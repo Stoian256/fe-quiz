@@ -25,6 +25,10 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@shadcn/context/authContext";
 import { useToast } from "@shadcn/context/ToastContext";
 import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
+import {
+  Difficulty,
+  difficultyMap
+} from "@shadcn/utils/functions/mapDifficultyColors";
 
 const tableHeadData = [
   "QUIZZ TITLE",
@@ -44,15 +48,12 @@ const QuizzesTable = () => {
 
   const removeQuiz = async (quizIndex: string) => {
     try {
-      const response = await fetch(
-        `${BE_URL}quiz/delete/${quizIndex}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+      const response = await fetch(`${BE_URL}quiz/delete/${quizIndex}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`
         }
-      );
+      });
 
       if (!response.ok) {
         throw new Error("Failed to remove question");
@@ -90,6 +91,11 @@ const QuizzesTable = () => {
                 quizTitle,
                 timeLimitMinutes
               } = eachQuizz;
+
+              const formattedDifficulty =
+                difficultyLevel.charAt(0).toUpperCase() +
+                difficultyLevel.slice(1).toLowerCase();
+
               return (
                 <TableRow key={id} className="h-[30px] text-left">
                   <TableCell className="font-medium  w-[480px]">
@@ -113,15 +119,9 @@ const QuizzesTable = () => {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      className={
-                        difficultyLevel === "EASY"
-                          ? "bg-green-600"
-                          : difficultyLevel === "MEDIUM"
-                          ? "bg-yellow-500"
-                          : "bg-red-600"
-                      }
+                      className={difficultyMap[formattedDifficulty as Difficulty]}
                     >
-                      {difficultyLevel}
+                      {formattedDifficulty}
                     </Badge>
                   </TableCell>
                   <TableCell>

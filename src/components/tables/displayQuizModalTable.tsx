@@ -19,6 +19,7 @@ import { CheckedState } from "@radix-ui/react-checkbox";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
 import { useEffect } from "react";
+import { Difficulty, difficultyMap } from "@shadcn/utils/functions/mapDifficultyColors";
 
 const headerData = ["QUESTION TITLE", "DIFFICULTY LEVEL", "TAGS", "SELECT"];
 
@@ -99,11 +100,7 @@ const DisplayQuizModalTable = () => {
                 <TableCell className="p-2">
                   <Badge
                     className={
-                      difficulty.toLowerCase() === "easy"
-                        ? "bg-green-600"
-                        : difficulty.toLowerCase() === "medium"
-                        ? "bg-yellow-500"
-                        : "bg-red-600"
+                      difficultyMap[difficulty as Difficulty]
                     }
                   >
                     {difficulty}
