@@ -1,5 +1,5 @@
 import { AnswerData } from "./AnswerData";
-import { Tag } from "./typescriptGeneral";
+import { Tag } from "./typescript";
 
 export interface QuizQuestionData {
   id: string;

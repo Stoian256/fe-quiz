@@ -1,6 +1,6 @@
 export const dummyQuiz = {
   attemptId: "1",
-  startedAt: "",
+  startedAt: new Date(),
   timeLimit: "90",
   questions: [
     {
