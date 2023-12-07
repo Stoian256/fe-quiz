@@ -6,25 +6,20 @@ import QuizModal from "./quizModal";
 import { useQuizModalContext } from "@shadcn/context/quizModalContext";
 import { useAuth } from "@shadcn/context/authContext";
 import { useToast } from "@shadcn/context/ToastContext";
-import { AnswerData } from "@shadcn/utils/interfaces/AnswerData";
-import { Tag } from "@shadcn/utils/interfaces/typescriptGeneral";
 import { Button } from "../ui/button";
+import { QuizQuestionData } from "@shadcn/utils/interfaces/QuizQuestionData";
 
 interface QuizProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
   reset: boolean;
+  apiQuestions: string[];
 }
 
-interface QuizQuestionData {
-  id: string;
-  questionTitle: string;
-  questionBody: string;
-  difficulty: string;
-  tags: Tag[];
-  answers: AnswerData[];
-}
-
-const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
+const QuizQuestions: React.FC<QuizProps> = ({
+  handleSetQuestions,
+  reset,
+  apiQuestions
+}) => {
   const { selectedQuestions, removeQuestion } = useQuizModalContext();
   const [questions, setQuestions] = useState<QuizQuestionData[]>([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -72,34 +67,61 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (selectedQuestions.length > 0) {
-      const fetchQuestions = async () => {
-        try {
-          const response = await fetch(`${BE_URL}/questions/get-by-ids`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(selectedQuestions)
-          });
+    const fetchQuestions = async () => {
+      try {
+        if (apiQuestions.length > 0) {
+          const apiQuestionsResponse = await fetch(
+            `${BE_URL}/questions/get-by-ids`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
+              },
+              body: JSON.stringify(apiQuestions)
+            }
+          );
 
-          if (!response.ok) {
-            throw new Error("Failed to fetch questions");
+          if (!apiQuestionsResponse.ok) {
+            throw new Error("Failed to fetch API questions");
           }
 
-          const fetchedQuestions = await response.json();
-          setQuestions(fetchedQuestions);
-          showToast("success", "Questions fetched with success!");
-        } catch (error) {
-          console.error("Error fetching questions:", error);
-          showToast("error", "Failed to fetch questions");
+          const apiQuestionsData = await apiQuestionsResponse.json();
+          setQuestions(apiQuestionsData);
         }
-      };
 
-      fetchQuestions();
-    }
-  }, [selectedQuestions]);
+        if (selectedQuestions.length > 0) {
+          const selectedQuestionsResponse = await fetch(
+            `${BE_URL}/questions/get-by-ids`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
+              },
+              body: JSON.stringify(selectedQuestions)
+            }
+          );
+
+          if (!selectedQuestionsResponse.ok) {
+            throw new Error("Failed to fetch selected questions");
+          }
+
+          const selectedQuestionsData = await selectedQuestionsResponse.json();
+
+          const mergedQuestions = [...questions, ...selectedQuestionsData];
+          setQuestions(mergedQuestions);
+        }
+
+        showToast("success", "Questions fetched successfully!");
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        showToast("error", "Failed to fetch questions");
+      }
+    };
+
+    fetchQuestions();
+  }, [selectedQuestions, apiQuestions]);
 
   useEffect(() => {
     if (reset) {
@@ -108,8 +130,8 @@ const QuizQuestions: React.FC<QuizProps> = ({ handleSetQuestions, reset }) => {
   }, [reset]);
 
   const onRemove = (indexToRemove: string) => {
-    removeQuestion(indexToRemove)
-  }
+    removeQuestion(indexToRemove);
+  };
 
   return (
     <div className="grid w-full items-center p-1.5">

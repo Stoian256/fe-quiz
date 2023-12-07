@@ -60,10 +60,10 @@ const QuizzesTable = () => {
       setQuizzes((prevQuizes) =>
         prevQuizes.filter((quiz) => quiz.id !== quizIndex)
       );
-      showToast("success", "Question removed successfully!");
+      showToast("success", "Quiz removed successfully!");
     } catch (error) {
-      console.error("Error removing question:", error);
-      showToast("error", "Failed to remove the question. Please try again.");
+      console.error("Error removing quiz:", error);
+      showToast("error", "Failed to remove the quiz.");
     }
   };
 
@@ -114,9 +114,9 @@ const QuizzesTable = () => {
                   <TableCell>
                     <Badge
                       className={
-                        difficultyLevel === "Easy"
+                        difficultyLevel === "EASY"
                           ? "bg-green-600"
-                          : difficultyLevel === "Medium"
+                          : difficultyLevel === "MEDIUM"
                           ? "bg-yellow-500"
                           : "bg-red-600"
                       }

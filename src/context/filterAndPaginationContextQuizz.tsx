@@ -110,7 +110,7 @@ export const FilterAndPaginationQuizzProvider: React.FC<{
       if (accessToken) {
         const data = await getQuizzes(
           accessToken,
-          filters,
+          filtersQuizz,
           itemsPerPage,
           pageNumber
         );

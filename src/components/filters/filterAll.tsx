@@ -47,7 +47,6 @@ const FilterAll: React.FC<FilterAllProps> = ({ tableType }) => {
 
   const { accessToken } = useAuth();
 
-  // Reset the filters onMount
   useEffect(() => {
     setFilters({
       keyword: [],
@@ -139,8 +138,6 @@ const FilterAll: React.FC<FilterAllProps> = ({ tableType }) => {
   ) => {
     const filterName = e.currentTarget.id;
     const filterValue = e.currentTarget.title;
-
-    console.log(filterName, filterValue);
 
     if (tableType === "questions") {
       setFilters((prevFilter) => ({

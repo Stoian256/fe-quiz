@@ -126,14 +126,23 @@ const QuizForm: React.FC = () => {
 
           const quizData = await response.json();
 
-          const { quizTitle, difficultyLevel, quizTags, questions } = quizData;
+          const {
+            quizTitle,
+            difficultyLevel,
+            quizTags,
+            questions,
+            timeLimitMinutes
+          } = quizData;
+
+          const questionsIDs = questions.map((question: string[]) => question.id);
 
           const tagTitles = quizTags.map((tag: Tag) => tag.tagTitle);
 
           setQuizTitle(quizTitle);
           setDifficultyLevel(difficultyLevel);
           setQuizTags(tagTitles);
-          setQuestions(questions);
+          setQuestions(questionsIDs);
+          setTimeLimitMinutes(timeLimitMinutes);
 
           showToast("success", "Quiz data fetched successfully!");
           setIsEditing(true);
@@ -255,9 +264,12 @@ const QuizForm: React.FC = () => {
           <QuizQuestions
             handleSetQuestions={handleSelectedQuestions}
             reset={reset}
+            apiQuestions={questions}
           />
           <CardFooter>
-            <Button type="submit">Create Quiz</Button>
+            <Button type="submit">
+              {isEditing ? "Save Quiz" : "Create Quiz"}
+            </Button>
           </CardFooter>
         </div>
       </form>

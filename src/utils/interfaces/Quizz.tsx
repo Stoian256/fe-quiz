@@ -5,6 +5,7 @@ export interface Quizz {
   quizz: string;
   difficultyLevel: string;
   quizTags: ListOfTags[];
+  quizTitle: string;
   numberOfQuestions: number;
   timeLimitMinutes: number;
 }
