@@ -55,11 +55,10 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
           <DialogDescription className="text-xl">
             Select the topics you'd like to search quizzes for
           </DialogDescription>
-          <DialogDescription className="flex flex-wrap gap-8 justify-center">
+          <div className="flex flex-wrap gap-8 justify-center">
             {topTags.map((tag, index) => (
-              <div className="flex">
+              <div className="flex" key={index}>
                 <Badge
-                  key={index}
                   className={`ml-3 py-1 px-3 rounded-none ${
                     selectedTags.includes(tag)
                       ? "bg-yellow-400"
@@ -80,7 +79,7 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
                 )}
               </div>
             ))}
-          </DialogDescription>
+          </div>
           <div className="flex w-full gap-10 justify-center items-center text-lg whitespace-nowrap relative">
             <div className="flex flex-col w-9/12 gap-1 mt-5 mb-3">
               <Label>Search for more topics</Label>

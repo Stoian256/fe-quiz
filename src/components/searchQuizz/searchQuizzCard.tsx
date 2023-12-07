@@ -18,8 +18,11 @@ const SearchQuizzCard: React.FC<SearchQuizzCardProps> = ({
     <div className="border border-dashed p-5 my-3 flex flex-col gap-2">
       <h3 className="text-3xl">{title}</h3>
       <div className="flex gap-4">
-        {tags.map((tag) => (
-          <Badge className="rounded-none text-lg bg-gray-300 text-black font-bold">
+        {tags.map((tag, index) => (
+          <Badge
+            key={index}
+            className="rounded-none text-lg bg-gray-300 text-black font-bold"
+          >
             {tag}
           </Badge>
         ))}
