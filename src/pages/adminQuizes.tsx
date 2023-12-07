@@ -3,7 +3,7 @@ import Pagination from "@shadcn/components/filters/pagination";
 import DisplayQuizzes from "@shadcn/components/tables/displayQuizzes";
 import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const AdminQuizes = () => {
   const {
@@ -15,13 +15,6 @@ const AdminQuizes = () => {
     handleItemsPerPage
   } = useFilterAndPaginationQuizz();
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigate("/admin/quizes", {
-      state: { mainTitle: "Quiz Title", title: "quiz second title" }
-    });
-  }, [navigate]);
   return (
     <div className="text-left  pt-4">
       <div className="pl-4">
@@ -34,7 +27,7 @@ const AdminQuizes = () => {
       </div>
 
       <div className="mt-4">
-        <FilterAll />
+        <FilterAll tableType="quizzes" />
         <DisplayQuizzes />
         <Pagination
           pageNumber={pageNumber}

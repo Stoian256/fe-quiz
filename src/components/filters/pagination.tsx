@@ -43,8 +43,8 @@ const Pagination = ({
     pageNumber + 1
   ];
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 mt-3">
+    <div className="flex items-center justify-between pb-5">
+      <div className="flex items-center gap-2 mt-3 ml-5">
         <ChevronsLeft
           onClick={() => onPageNumberChange(0)}
           className={
@@ -60,8 +60,6 @@ const Pagination = ({
 
         {[...Array(numbersOfPages)].map((_page, index) => {
           if (defaultPageIndexes.includes(index)) {
-            console.log(pageNumber, index);
-
             if ((pageNumber > 3 || pageNumber === 0) && index === 1) {
               return (
                 <div key={index}>
@@ -153,7 +151,7 @@ const Pagination = ({
           }
         />
       </div>
-      <div className="flex items-center gap-2 mt-3">
+      <div className="flex items-center gap-2 mt-3 mr-5">
         <p>Items per Page</p>
         <Select
           defaultValue="10"

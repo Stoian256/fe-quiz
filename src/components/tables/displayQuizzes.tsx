@@ -1,7 +1,3 @@
-import { Quizz } from "@shadcn/utils/interfaces/Quizz";
-import { SetStateAction, useEffect, useState } from "react";
-import FilterAll from "../filters/filterAll";
-import Pagination from "../filters/pagination";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
@@ -25,7 +21,7 @@ import {
   DialogFooter,
   DialogTrigger
 } from "../ui/dialog";
-import quizzesData from "../../data/quizzesData.json";
+import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
 
 const tableHeadData = [
   "QUIZZ TITLE",
@@ -37,48 +33,9 @@ const tableHeadData = [
 ];
 
 const QuizzesTable = () => {
-  const [quizzes, setQuizzes] = useState<Quizz[]>(quizzesData);
+  const { quizzes } = useFilterAndPaginationQuizz();
 
-  const [pageNumber, setPageNumber] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [numbersOfPages, setNumbersOfPages] = useState(
-    Math.ceil(quizzes.length / Number(itemsPerPage)) // calculate the numbers of page based on data array length
-  );
-
-  useEffect(() => {
-    setNumbersOfPages(Math.ceil(quizzes.length / itemsPerPage));
-    // setQuestions(data);
-    const lastIndex = pageNumber * itemsPerPage;
-    const startingIndex = lastIndex - itemsPerPage;
-
-    // setQuestions((prevQuestions) =>
-    //   prevQuestions.slice(startingIndex, lastIndex)
-    // );
-  }, [numbersOfPages, pageNumber, itemsPerPage]); // add filters here
-
-  const handleArrowClick = (direction: string) => {
-    if (direction === "left") {
-      if (pageNumber === 1) {
-        return;
-      }
-      setPageNumber((prevPage) => prevPage - 1);
-    }
-    if (direction === "right") {
-      if (pageNumber === numbersOfPages) {
-        return;
-      }
-      setPageNumber((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handleItemsPerPage = (e: SetStateAction<string>) => {
-    setItemsPerPage(Number(e));
-    setPageNumber(1);
-  };
-
-  const handleDelete = () => {
-    console.log("delete");
-  };
+  const handleDelete = () => {};
 
   return (
     <div className="p-4 pt-0">
@@ -94,33 +51,34 @@ const QuizzesTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {quizzes.map((eachQuizz, index) => {
+            {quizzes.map((eachQuizz) => {
               const {
-                quizz,
                 difficultyLevel,
-                tags,
+                id,
                 numberOfQuestions,
-                timeLimit
+                quizTags,
+                quizTitle,
+                timeLimitMinutes
               } = eachQuizz;
               return (
-                <TableRow key={index} className="h-[30px] text-left">
+                <TableRow key={id} className="h-[30px] text-left">
                   <TableCell className="font-medium  w-[480px]">
-                    {quizz.length > 60 ? (
-                      <TooltipProvider delayDuration={200} key={index}>
+                    {quizTitle.length > 60 ? (
+                      <TooltipProvider delayDuration={200} key={id}>
                         <Tooltip>
                           <TooltipTrigger>
-                            {`${quizz.slice(0, 60)}...`}
+                            {`${quizTitle.slice(0, 60)}...`}
                           </TooltipTrigger>
                           <TooltipContent
                             side="bottom"
                             className="w-5/12 ml-10"
                           >
-                            {quizz}
+                            {quizTitle}
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     ) : (
-                      quizz
+                      quizTitle
                     )}
                   </TableCell>
                   <TableCell>
@@ -137,14 +95,40 @@ const QuizzesTable = () => {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {tags.map((tag, index) => (
-                      <Badge key={index} className="mr-1 mb-1">
-                        {tag}
-                      </Badge>
-                    ))}
+                    {quizTags.length < 3
+                      ? quizTags.map((tag, index) => (
+                          <Badge key={index} className="mr-1 mb-1">
+                            {tag.tagTitle}
+                          </Badge>
+                        ))
+                      : quizTags.slice(0, 2).map((tag, index) => (
+                          <Badge key={index} className="mr-1 mb-1">
+                            {tag.tagTitle}
+                          </Badge>
+                        ))}
+                    {quizTags.length > 3 && (
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <span className="text-xs pl-2">{`see +${
+                              quizTags.length - 2
+                            } more ${
+                              quizTags.length - 2 === 1 ? "tag" : "tags"
+                            }`}</span>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom">
+                            {quizTags.slice(2).map((tagss, index) => (
+                              <Badge key={index} className="mr-1 mb-1">
+                                {tagss.tagTitle}
+                              </Badge>
+                            ))}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                   </TableCell>
                   <TableCell>{numberOfQuestions}</TableCell>
-                  <TableCell>{timeLimit} minutes</TableCell>
+                  <TableCell>{timeLimitMinutes} minutes</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
                       <Button
@@ -160,7 +144,7 @@ const QuizzesTable = () => {
                             variant="outline"
                             className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
                             // onClick={(e) => handleDelete(e)}
-                            value={index}
+                            value={id}
                           >
                             Delete
                           </Button>

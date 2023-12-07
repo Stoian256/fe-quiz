@@ -21,20 +21,45 @@ import FilterTags from "./filterTags";
 import ShowSelectedFilters from "./showSelectedFilters";
 import { ListOfTags } from "../../utils/interfaces/ListOfTags";
 import { Filters } from "../../utils/interfaces/Filters";
-import listOfAllTags from "../../data/listOfAllTags.json";
 import { useFilterAndPagination } from "@shadcn/context/filterAndPaginationContext";
-import { getTags } from "@shadcn/services/questions.service";
+import { useFilterAndPaginationQuizz } from "@shadcn/context/filterAndPaginationContextQuizz";
+import { getTags } from "@shadcn/services/tags.service";
 import { useAuth } from "@shadcn/context/authContext";
 
-const FilterAll = () => {
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [listOfTags, setListOfTags] = useState<ListOfTags[]>();
-  const [difficultyFilter, setDifficultyFilter] = useState(["easy"]);
+type TableType = "quizzes" | "questions";
 
+interface FilterAllProps {
+  tableType: TableType;
+}
+
+const FilterAll: React.FC<FilterAllProps> = ({ tableType }) => {
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [listOfTags, setListOfTags] = useState<ListOfTags[]>([]);
+  const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
   const [requestBodyTag, setRequestBodyTag] = useState({});
+
   const { filters, setFilters } = useFilterAndPagination();
+  const { filtersQuizz, setFiltersQuizz } = useFilterAndPaginationQuizz();
+
   const [intermediarFilters, setIntermediarFilters] = useState(filters);
+  const [intermediarFiltersQuizz, setIntermediarFiltersQuizz] =
+    useState(filtersQuizz);
+
   const { accessToken } = useAuth();
+
+  // Reset the filters onMount
+  useEffect(() => {
+    setFilters({
+      keyword: [],
+      difficulty: [],
+      tags: []
+    });
+    setFiltersQuizz({
+      keyword: [],
+      difficulty: [],
+      tags: []
+    });
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -59,6 +84,11 @@ const FilterAll = () => {
     setDifficultyFilter(filters.difficulty);
   }, [filters]);
 
+  useEffect(() => {
+    setSelectedTags(filtersQuizz.tags);
+    setDifficultyFilter(filtersQuizz.difficulty);
+  }, [filtersQuizz]);
+
   const removeAllTags = () => {
     setSelectedTags([]);
     setRequestBodyTag({});
@@ -72,19 +102,39 @@ const FilterAll = () => {
   };
 
   const applyFiltersBtn = () => {
-    setFilters(intermediarFilters);
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      difficulty: difficultyFilter.filter((tag) => tag !== "any"),
-      tags: selectedTags
-    }));
+    if (tableType === "questions") {
+      setFilters(intermediarFilters);
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        difficulty: difficultyFilter.filter((tag) => tag !== "any"),
+        tags: selectedTags
+      }));
+    }
+
+    if (tableType === "quizzes") {
+      setFiltersQuizz(intermediarFiltersQuizz);
+      setFiltersQuizz((prevFilters) => ({
+        ...prevFilters,
+        difficulty: difficultyFilter.filter((tag) => tag !== "any"),
+        tags: selectedTags
+      }));
+    }
   };
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntermediarFilters((prevFilters) => ({
-      ...prevFilters,
-      [e.target.name]: [e.target.value]
-    }));
+    if (tableType === "questions") {
+      setIntermediarFilters((prevFilters) => ({
+        ...prevFilters,
+        [e.target.name]: [e.target.value]
+      }));
+    }
+
+    if (tableType === "quizzes") {
+      setIntermediarFiltersQuizz((prevFilters) => ({
+        ...prevFilters,
+        [e.target.name]: [e.target.value]
+      }));
+    }
   };
 
   const handleFilterDelete = (
@@ -92,26 +142,40 @@ const FilterAll = () => {
   ) => {
     const filterName = e.currentTarget.id;
     const filterValue = e.currentTarget.title;
-    setFilters((prevFilter) => ({
-      ...prevFilter,
-      [filterName]: prevFilter[filterName].filter((e) => e !== filterValue)
-    }));
 
-    if (filterName === "tags") {
-      const tagToAddInList = listOfAllTags.filter(
-        (tag) => tag.name === filterValue
-      );
-      setListOfTags((prevTags) => [...prevTags, tagToAddInList[0]]);
+    console.log(filterName, filterValue);
+
+    if (tableType === "questions") {
+      setFilters((prevFilter) => ({
+        ...prevFilter,
+        [filterName]: prevFilter[filterName].filter((e) => e !== filterValue)
+      }));
+    }
+
+    if (tableType === "quizzes") {
+      setFiltersQuizz((prevFilter) => ({
+        ...prevFilter,
+        [filterName]: prevFilter[filterName].filter((e) => e !== filterValue)
+      }));
     }
   };
 
   const clearAllFilters = () => {
-    setFilters({
-      keyword: [],
-      difficulty: [],
-      tags: []
-    });
-    setListOfTags(listOfAllTags);
+    if (tableType === "questions") {
+      setFilters({
+        keyword: [],
+        difficulty: [],
+        tags: []
+      });
+    }
+
+    if (tableType === "quizzes") {
+      setFiltersQuizz({
+        keyword: [],
+        difficulty: [],
+        tags: []
+      });
+    }
   };
 
   const handleDifficultyChange = (difficulty: string) => {
@@ -129,7 +193,9 @@ const FilterAll = () => {
     setDifficultyFilter(difficultyArray);
   };
 
-  const handleTagChange = (e) => {
+  const handleTagChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const prefix = e.target.value;
     const selectedEmpty = selectedTags.length === 0;
     setRequestBodyTag({
@@ -138,8 +204,8 @@ const FilterAll = () => {
     });
   };
 
-  const handleTagSelect = (e) => {
-    const addToSelectedTags: string = e.target.innerHTML;
+  const handleTagSelect = (e: React.MouseEvent<HTMLDivElement>) => {
+    const addToSelectedTags: string = e.currentTarget.innerHTML;
 
     setSelectedTags((prevTags) => [...prevTags, addToSelectedTags]);
 
@@ -162,7 +228,11 @@ const FilterAll = () => {
             </DialogHeader>
             <div className="flex flex-col gap-4">
               <FilterSearch
-                keyword={(intermediarFilters as Filters).keyword}
+                keyword={
+                  tableType === "questions"
+                    ? (intermediarFilters as Filters).keyword
+                    : (intermediarFiltersQuizz as Filters).keyword
+                }
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   handleFilterChange(e)
                 }
@@ -178,7 +248,6 @@ const FilterAll = () => {
                 removeAllTags={removeAllTags}
                 handleTagChange={handleTagChange}
                 handleTagSelect={handleTagSelect}
-                requestBodyTag={requestBodyTag}
               />
             </div>
             <DialogFooter className="flex justify-between sm:justify-between">
@@ -197,7 +266,7 @@ const FilterAll = () => {
           </DialogContent>
         </Dialog>
         <ShowSelectedFilters
-          filters={filters}
+          filters={tableType === "questions" ? filters : filtersQuizz}
           handleFilterDelete={handleFilterDelete}
           clearAllFilters={clearAllFilters}
         />
