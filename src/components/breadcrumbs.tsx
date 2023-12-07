@@ -42,8 +42,8 @@ const Breadcrumbs = () => {
 
           let displayName: string = pathDisplayNames[pathKey] || value;
 
-          if (last && pathnames.length > 1) {
-            displayName = pathnames[pathnames.length - 2];
+          if (last && pathDisplayNames[pathKey]) {
+            displayName = pathDisplayNames[pathKey];
           }
 
           return (
