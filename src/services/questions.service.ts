@@ -80,18 +80,3 @@ export const saveQuestion = async (
     throw error;
   }
 };
-
-export const getQuestionById = async (accessToken: string, id: string) => {
-  //TODO
-};
-
-export const updateQuestion = async (
-  accessToken: string,
-  dataToSend: FormData
-) => {
-  //TODO
-};
-
-export const deleteQuestion = async (accessToken: string, id: string) => {
-  //TODO
-};

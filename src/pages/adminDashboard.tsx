@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getAdminMessage } from "../services/message.service";
 import { CodeSnippet } from "@shadcn/components/auth/code-snippet";
 import { useAuth } from "@shadcn/context/authContext";
+import SearchQuizzes from "@shadcn/components/searchQuizz/searchQuizzes";
 
 const AdminDashboard = () => {
   const [message, setMessage] = useState<string>("");
@@ -37,29 +38,30 @@ const AdminDashboard = () => {
   }, [getAccessTokenSilently]);
 
   return (
-    <div className="text-center">
-      Dashboard content goes here
-      {isAuthenticated ? (
-        <div className="font-semibold text-green-500">
-          Session initialized as: {user?.name}{" "}
-        </div>
-      ) : (
-        <div className="font-semibold text-red-500">No session initialized</div>
-      )}
-      <div className="api">
-        <span>
-          This page retrieves an <strong>admin message</strong> from an external
-          API.
-        </span>
-        <span>
-          <strong>
-            Only authenticated users with the <code>Admin</code> permission
-            should access this page.
-          </strong>
-        </span>
-        <CodeSnippet title="Admin Message" code={message} />
-      </div>
-    </div>
+    // <div className="text-center">
+    //   Dashboard content goes here
+    //   {isAuthenticated ? (
+    //     <div className="font-semibold text-green-500">
+    //       Session initialized as: {user?.name}{" "}
+    //     </div>
+    //   ) : (
+    //     <div className="font-semibold text-red-500">No session initialized</div>
+    //   )}
+    //   <div className="api">
+    //     <span>
+    //       This page retrieves an <strong>admin message</strong> from an external
+    //       API.
+    //     </span>
+    //     <span>
+    //       <strong>
+    //         Only authenticated users with the <code>Admin</code> permission
+    //         should access this page.
+    //       </strong>
+    //     </span>
+    //     <CodeSnippet title="Admin Message" code={message} />
+    //   </div>
+    // </div>
+    <SearchQuizzes />
   );
 };
 

@@ -20,7 +20,7 @@ const SearchQuizzCard: React.FC<SearchQuizzCardProps> = ({
       <div className="flex gap-4">
         {tags.map((tag, index) => (
           <Badge
-            key={index}
+            key={`${index}-${tag}`}
             className="rounded-none text-lg bg-gray-300 text-black font-bold"
           >
             {tag}

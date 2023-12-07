@@ -46,7 +46,9 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
 }) => {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger className="underline">Add More</DialogTrigger>
+      <DialogTrigger className="underline">
+        {selectedTags.length > 0 ? "Add More Tags" : "Add Tags"}
+      </DialogTrigger>
       <DialogContent className="p-14 max-w-3xl">
         <DialogHeader className="flex flex-col gap-5 items-center">
           <DialogTitle className="text-4xl">
@@ -57,7 +59,7 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
           </DialogDescription>
           <div className="flex flex-wrap gap-8 justify-center">
             {topTags.map((tag, index) => (
-              <div className="flex" key={index}>
+              <div className="flex" key={`${index}-${tag}`}>
                 <Badge
                   className={`ml-3 py-1 px-3 rounded-none ${
                     selectedTags.includes(tag)
@@ -111,10 +113,11 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
         </DialogHeader>
         <DialogFooter className="flex gap-2">
           <DialogClose
-            className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg"
+            className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg disabled:cursor-not-allowed disabled:bg-gray-400"
             onClick={() => {
               setOpenDialog(false), handleTopicsSearch();
             }}
+            disabled={selectedTags.length === 0}
           >
             Search
           </DialogClose>

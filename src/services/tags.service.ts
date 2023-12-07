@@ -1,6 +1,3 @@
-import { Tag } from "./../utils/interfaces/typescriptGeneral";
-import { ListOfTags } from "@shadcn/utils/interfaces/ListOfTags";
-
 const apiServerUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export const getTags = async (

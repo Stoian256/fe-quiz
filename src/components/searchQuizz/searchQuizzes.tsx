@@ -81,7 +81,8 @@ const SearchQuizzes = () => {
   };
 
   const handleTopicsSearch = () => {
-    // fetch API data to get quizzes here
+    if (selectedTags.length === 0) {
+    }
   };
 
   return (
@@ -89,10 +90,10 @@ const SearchQuizzes = () => {
       {/* ADD NAVBAR HERE */}
       <div className="flex flex-col gap-2">
         <h3 className="text-5xl">Quiz Search</h3>
-        <p>Showing quizzes for:</p>
-        <div className="flex gap-2">
+        {selectedTags.length > 0 && <p>Showing quizzes for:</p>}
+        <div className="flex gap-2 flex-wrap">
           {selectedTags.map((tag, index) => (
-            <div className="flex" key={index}>
+            <div className="flex" key={`${index}-${tag}`}>
               <Badge
                 className="ml-3 py-1 px-3 rounded-none bg-yellow-400
            text-black font-bold text-base hover:bg-yellow-400"
@@ -123,12 +124,27 @@ const SearchQuizzes = () => {
             handleTopicsSearch={handleTopicsSearch}
           />
         </div>
-        <SearchQuizzCard
-          title="Quiz 1 Title"
-          tags={["reac", "re", "tag"]}
-          difficulty="Easy"
-          timeLimit={90}
-        />
+        {selectedTags.length === 0 ? (
+          <p className="text-2xl">
+            No tags selected. Please select at least one tag to continue by
+            clicking Add Tags above!
+          </p>
+        ) : (
+          <>
+            <SearchQuizzCard
+              title="Quiz 1 Title"
+              tags={["reac", "re", "tag"]}
+              difficulty="Easy"
+              timeLimit={90}
+            />
+            <SearchQuizzCard
+              title="Quiz 2 Title"
+              tags={["reac", "re", "tag"]}
+              difficulty="Medium"
+              timeLimit={120}
+            />
+          </>
+        )}
       </div>
     </div>
   );
