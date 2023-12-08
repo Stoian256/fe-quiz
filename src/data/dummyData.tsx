@@ -1,13 +1,13 @@
 export const dummyQuiz = {
   attemptId: "1",
   startedAt: new Date(),
-  timeLimit: "90",
+  timeLimit: 90,
   questions: [
     {
       questionId: "1",
       questionTitle: "What does the L in SOLID stand for?",
       questionBody: "What does the L in SOLID stand for?",
-      answerOptions: [
+      answersOptions: [
         {
           answerOptionId: "1",
           answerOptionTitle: "a new answer not that long"
@@ -24,7 +24,7 @@ export const dummyQuiz = {
       questionTitle: "Sed ut . ",
       questionBody:
         "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. ",
-      answerOptions: [
+      answersOptions: [
         {
           answerOptionId: "1",
           answerOptionTitle: "a new answer not that long"
@@ -53,7 +53,7 @@ export const dummyQuiz = {
       questionId: "3",
       questionTitle: "What does the S in SOLID stand for?",
       questionBody: "What does the S in SOLID stand for?",
-      answerOptions: [
+      answersOptions: [
         {
           answerOptionId: "1",
           answerOptionTitle: "a new answer not that long"

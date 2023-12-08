@@ -1,8 +1,9 @@
 import { Quizz } from "@shadcn/utils/interfaces/Quizz";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
+import StartQuiz from "../userSolveQuiz/startQuiz";
 
 const SearchQuizzCard: React.FC<Quizz> = ({
+  id,
   difficultyLevel,
   quizTags,
   quizTitle,
@@ -28,9 +29,11 @@ const SearchQuizzCard: React.FC<Quizz> = ({
         Time Limit:{" "}
         <span className="font-bold">{timeLimitMinutes} minutes</span>
       </p>
-      <Button className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg self-end">
+      {/* <Button className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg self-end">
         Start solving
-      </Button>
+      </Button> */}
+              <StartQuiz idQuiz={{ quizId: id }} />
+
     </div>
   );
 };

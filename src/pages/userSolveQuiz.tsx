@@ -1,4 +1,4 @@
-import SolveQuiz from "@shadcn/components/userSolveQuiz/SolveQuiz";
+import SolveQ from "@shadcn/components/userSolveQuiz/solve";
 import { QuizProvider } from "@shadcn/context/quizContext";
 
 const UserSolveQuiz = () => {
@@ -6,7 +6,7 @@ const UserSolveQuiz = () => {
   return (
     <>
       <QuizProvider>
-        <SolveQuiz />
+        <SolveQ />
       </QuizProvider>
     </>
   );

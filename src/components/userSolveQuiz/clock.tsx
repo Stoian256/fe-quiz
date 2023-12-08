@@ -1,15 +1,17 @@
 import { useQuizContext } from "@shadcn/context/quizContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const Clock = () => {
-  const { minutes, setMinutes, seconds, setSeconds, handleFinishQuiz } =
+const Clock = ({timeLimit}: {timeLimit: number, attemptId: string;}) => {
+  const {  handleFinishQuiz } =
     useQuizContext();
-
+    const [minutes, setMinutes] = useState<number>(timeLimit);
+    const [seconds, setSeconds] = useState<number>(0);
   useEffect(() => {
     const countdown = setInterval(() => {
       if (minutes === 0 && seconds === 0) {
         clearInterval(countdown);
         handleFinishQuiz();
+        
       } else {
         if (seconds === 0) {
           setMinutes((prevMinutes) => prevMinutes - 1);

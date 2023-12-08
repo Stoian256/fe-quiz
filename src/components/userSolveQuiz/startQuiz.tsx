@@ -10,29 +10,55 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { UserQuiz } from "@shadcn/utils/interfaces/typescript";
 import { useQuizContext } from "@shadcn/context/quizContext";
+import { IdObject } from "@shadcn/utils/interfaces/typescript";
+import { useAuth } from "@shadcn/context/authContext";
+import { getQuizData } from "@shadcn/services/solveQuiz.service";
 
 type StartQuizProps = {
-  id: string;
-  quiz: UserQuiz;
+  idQuiz: IdObject;
 };
 
-const StartQuiz: React.FC<StartQuizProps> = ({ id, quiz }) => {
+const StartQuiz: React.FC<StartQuizProps> = ({ idQuiz }) => {
+  
   const navigate = useNavigate();
-  const { setIsFinished, setUserAnswers, setMinutes, setSeconds } =
+  const { quiz, setUserAnswers, setIsFinished,  setMinutes, setSeconds } =
     useQuizContext();
-  const takeTheQuiz = (id: string) => {
-    setIsFinished(false);
-    setUserAnswers(Array(quiz.questions.length).fill([]));
-    setMinutes(parseInt(quiz.timeLimit, 10));
-    setSeconds(0);
-    navigate(`/quizes/solve/${id}`);
+  const { accessToken } = useAuth();
+
+  const { setQuizData } = useQuizContext();
+
+  const handleStartQuiz = async () => {
+    try {
+      if (accessToken && idQuiz) {
+        const data = await getQuizData(accessToken, idQuiz);
+        setQuizData(data);
+        console.log("Fetched quiz data START:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching quiz data:", error);
+    }
   };
+
+  const takeTheQuiz = (attemptId: string) => {
+    setIsFinished(false);
+    setUserAnswers(Array(20).fill([]));
+    setMinutes(quiz.timeLimit);
+    setSeconds(0);
+
+    //TODO delete after demo
+    // navigate(`/quizes/solve/${attemptId}`, { state: quiz });
+    navigate(`/quizes/solve/${attemptId}`, { state: { quiz, idQuiz } });
+  };
+
   return (
-    <div>
+    <div className="self-end">
       <Dialog>
-        <DialogTrigger className="text-lg text-center bg-dorange text-dblue hover:bg-dyellow rounded-md p-2 shadow-md">
+        <DialogTrigger
+          className="bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg self-end"
+          // className="text-lg text-center bg-dorange text-dblue hover:bg-dyellow rounded-md p-2 shadow-md"
+          onClick={handleStartQuiz}
+        >
           <span>Start Quiz</span>
         </DialogTrigger>
         <DialogContent className="w-screen max-w-lg">
@@ -43,7 +69,7 @@ const StartQuiz: React.FC<StartQuizProps> = ({ id, quiz }) => {
           </DialogHeader>
           <DialogDescription className="flex flex-col gap-2">
             <span>
-              This quiz is a timed exercise, you have{" "}
+              This quiz is a timed exercise, you have limited{" "}
               <strong className="font-bold">{quiz.timeLimit}</strong> minutes to
               solve it!
             </span>
@@ -52,14 +78,14 @@ const StartQuiz: React.FC<StartQuizProps> = ({ id, quiz }) => {
               <span className="font-bold">{quiz.questions.length}</span>{" "}
               questions with multiple responses.
             </span>
-            <span className="font-bold mt-2 ">Good luck!</span>
+            <span className="font-bold mt-2 ">Good luck! </span>
           </DialogDescription>
           <DialogFooter className="flex justify-between sm:justify-between">
             <DialogClose asChild>
               <Button
                 variant="outline"
                 className="border-none flex-end  text-dblue bg-dorange hover:bg-dyellow shadow-md"
-                onClick={() => takeTheQuiz(id)}
+                onClick={() => takeTheQuiz(quiz.attemptId)}
               >
                 Start Quiz
               </Button>

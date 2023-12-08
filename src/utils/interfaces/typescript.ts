@@ -32,12 +32,16 @@ export interface UserQuestion {
   questionId: string;
   questionTitle: string;
   questionBody: string;
-  answerOptions: UserAnswer[];
+  answersOptions: UserAnswer[];
 }
 
 export interface UserQuiz {
   attemptId: string,
   startedAt: Date,
-  timeLimit: string,
+  timeLimit: number,
   questions: UserQuestion[]
+}
+
+export interface IdObject {
+  [key:string]: string;
 }

@@ -1,7 +1,11 @@
 import { dummyQuiz } from "@shadcn/data/dummyData";
-import React, { createContext, useContext, useState } from "react";
+import { UserQuiz } from "@shadcn/utils/interfaces/typescript";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface QuizContextProps {
+  quiz: UserQuiz;
+  score: number,
+  setScore: React.Dispatch<React.SetStateAction<number>>;
   minutes: number;
   seconds: number;
   setMinutes: React.Dispatch<React.SetStateAction<number>>;
@@ -11,9 +15,19 @@ interface QuizContextProps {
   isFinished: boolean;
   setIsFinished: React.Dispatch<React.SetStateAction<boolean>>;
   handleFinishQuiz: () => void;
+  setQuizData: (data: UserQuiz ) => void;
+
 }
 
 const QuizContext = createContext<QuizContextProps>({
+  score: 0.0,
+  setScore: () => {},
+  quiz: {
+    attemptId: "",
+    startedAt: new Date(),
+    timeLimit: 0,
+    questions: []
+  },  
   minutes: 0,
   seconds: 0,
   setMinutes: () => {},
@@ -22,7 +36,9 @@ const QuizContext = createContext<QuizContextProps>({
   setUserAnswers: () => {},
   isFinished: false,
   setIsFinished: () => {},
-  handleFinishQuiz: () => {}
+  handleFinishQuiz: () => {},
+  setQuizData: ()=> {}
+
 });
 
 export const useQuizContext = () => useContext(QuizContext);
@@ -30,16 +46,28 @@ export const useQuizContext = () => useContext(QuizContext);
 export const QuizProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const [quiz] = useState(dummyQuiz);
-  const { questions } = quiz;
+  const [quiz, setQuiz] = useState(dummyQuiz);
+  const [score, setScore] = useState(0.0)
   const [userAnswers, setUserAnswers] = useState<string[][]>(
-    Array(questions.length).fill([])
+    Array(20).fill([])
   );
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [minutes, setMinutes] = useState<number>(parseInt(quiz.timeLimit, 10));
+  const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
 
-  const resetTimer = () => {
+useEffect(()=> {
+  // setUserAnswers(Array(quiz.questions.length).fill([]))
+  setMinutes(quiz.timeLimit)
+},[quiz])
+
+console.log("user answers length",userAnswers.length)
+
+  const setQuizData = (data: UserQuiz)=>{
+    setQuiz(data)
+    console.log("in context: ",quiz)
+  }
+
+    const resetTimer = () => {
     setMinutes(0);
     setSeconds(0);
   };
@@ -48,6 +76,8 @@ export const QuizProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const contextValue: QuizContextProps = {
+    quiz,
+    score, setScore,
     userAnswers,
     setUserAnswers,
     isFinished,
@@ -56,7 +86,8 @@ export const QuizProvider: React.FC<{ children: React.ReactNode }> = ({
     seconds,
     setMinutes,
     setSeconds,
-    handleFinishQuiz
+    handleFinishQuiz,
+    setQuizData
   };
 
   return (

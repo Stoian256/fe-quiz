@@ -1,14 +1,13 @@
-import StartQuiz from "@shadcn/components/userSolveQuiz/startQuiz";
+import SearchQuizzes from "@shadcn/components/searchQuizz/searchQuizzes";
+// import StartQuiz from "@shadcn/components/userSolveQuiz/startQuiz";
 import { QuizProvider } from "@shadcn/context/quizContext";
-import { dummyQuiz } from "@shadcn/data/dummyData";
-import { useState } from "react";
 
 const UserQuizes = () => {
-  const [quiz] = useState(dummyQuiz);
   return (
     <div>
       <QuizProvider>
-        <StartQuiz id={quiz.attemptId} quiz={quiz} />
+        <SearchQuizzes/>
+        {/* <StartQuiz idQuiz={{ quizId: "81548664-29b4-46a0-86b2-cb6c8f812763" }} /> */}
       </QuizProvider>
     </div>
   );
