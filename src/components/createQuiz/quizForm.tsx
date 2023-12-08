@@ -85,7 +85,7 @@ const QuizForm: React.FC = () => {
       validationErrors.push("Please add at least one tag.");
     }
 
-    if (quizDataToSend.quizTags.length >= 7) {
+    if (quizDataToSend.quizTags.length > 7) {
       validationErrors.push("Can't add more than 7 tags.");
     }
 

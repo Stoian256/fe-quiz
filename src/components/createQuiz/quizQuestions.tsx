@@ -58,8 +58,10 @@ const QuizQuestions: React.FC<QuizProps> = ({
   const { showToast } = useToast();
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchNewQuestions = async () => {
       try {
+        let newQuestions: QuizQuestionData[] = [];
+
         if (apiQuestions.length > 0) {
           const apiQuestionsResponse = await fetch(
             `${BE_URL}/questions/get-by-ids`,
@@ -78,8 +80,28 @@ const QuizQuestions: React.FC<QuizProps> = ({
           }
 
           const apiQuestionsData = await apiQuestionsResponse.json();
-          setQuestions(apiQuestionsData);
+          newQuestions = apiQuestionsData.filter(
+            (question: QuizQuestionData) => !questions.find((q) => q.id === question.id)
+          );
         }
+
+        if (newQuestions.length > 0) {
+          setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
+          showToast("success", "New questions fetched successfully!");
+        }
+      } catch (error) {
+        console.error("Error fetching new questions:", error);
+        showToast("error", "Failed to fetch new questions");
+      }
+    };
+
+    fetchNewQuestions();
+  }, [apiQuestions, questions, accessToken]);
+
+  useEffect(() => {
+    const fetchEditQuestions = async () => {
+      try {
+        let editQuestions: QuizQuestionData[] = [];
 
         if (selectedQuestions.length > 0) {
           const selectedQuestionsResponse = await fetch(
@@ -99,20 +121,23 @@ const QuizQuestions: React.FC<QuizProps> = ({
           }
 
           const selectedQuestionsData = await selectedQuestionsResponse.json();
-
-          const mergedQuestions = [...questions, ...selectedQuestionsData];
-          setQuestions(mergedQuestions);
+          editQuestions = selectedQuestionsData.filter(
+            (question: QuizQuestionData) => !questions.find((q) => q.id === question.id)
+          );
         }
 
-        showToast("success", "Questions fetched successfully!");
+        if (editQuestions.length > 0) {
+          setQuestions((prevQuestions) => [...prevQuestions, ...editQuestions]);
+          showToast("success", "Edit questions fetched successfully!");
+        }
       } catch (error) {
-        console.error("Error fetching questions:", error);
-        showToast("error", "Failed to fetch questions");
+        console.error("Error fetching edit questions:", error);
+        showToast("error", "Failed to fetch edit questions");
       }
     };
 
-    fetchQuestions();
-  }, [selectedQuestions, apiQuestions]);
+    fetchEditQuestions();
+  }, [selectedQuestions, questions, accessToken]);
 
   useEffect(() => {
     if (reset) {
