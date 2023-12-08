@@ -4,6 +4,9 @@ import { getTopTags } from "@shadcn/services/tags.service";
 import { useAuth } from "@shadcn/context/authContext";
 import SearchQuizzesTag from "./searchQuizzesTag";
 import { Badge } from "../ui/badge";
+import { quizzSearchByTags } from "@shadcn/services/quizzes.service";
+import { Quizz } from "@shadcn/utils/interfaces/Quizz";
+import { Button } from "../ui/button";
 
 const SearchQuizzes = () => {
   const [openDialog, setOpenDialog] = useState(true);
@@ -12,6 +15,9 @@ const SearchQuizzes = () => {
   const [prefix, setPrefix] = useState("");
   const [generatedTags, setGeneratedTags] = useState<string[]>([]);
   const [manuallyAddedTags, setManuallyAddedTags] = useState<string[]>([]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [quizzes, setQuizzes] = useState<Quizz[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
   const { accessToken } = useAuth();
 
   useEffect(() => {
@@ -36,7 +42,7 @@ const SearchQuizzes = () => {
       try {
         if (accessToken) {
           const data = await getTopTags(accessToken, 10, prefix, topTags);
-
+          console.log(data);
           setGeneratedTags(
             data.map((tag: { tagTitle: string }) => tag.tagTitle)
           );
@@ -49,10 +55,53 @@ const SearchQuizzes = () => {
     fetchData();
   }, [prefix]);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (accessToken) {
+          const data = await quizzSearchByTags(
+            accessToken,
+            5,
+            pageIndex,
+            selectedTags
+          );
+          setQuizzes((prevQuizzes) => [...prevQuizzes, ...data.content]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, [pageIndex]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setPageIndex(0);
+      setQuizzes([]);
+      try {
+        if (accessToken) {
+          const data = await quizzSearchByTags(
+            accessToken,
+            5,
+            pageIndex,
+            selectedTags
+          );
+          setQuizzes((prevQuizzes) => [...prevQuizzes, ...data.content]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, [selectedTags]);
+
   const handleBagdeClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     const selectedTag = e.currentTarget.title;
+    if (selectedTags.includes(selectedTag)) {
+      return;
+    }
     setSelectedTags((prevTags) => [...prevTags, selectedTag]);
   };
 
@@ -82,7 +131,29 @@ const SearchQuizzes = () => {
 
   const handleTopicsSearch = () => {
     if (selectedTags.length === 0) {
+    } else {
+      async function fetchData() {
+        try {
+          if (accessToken) {
+            const data = await quizzSearchByTags(
+              accessToken,
+              5,
+              pageIndex,
+              selectedTags
+            );
+            setQuizzes(data.content);
+            setTotalElements(data.totalElements);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+      fetchData();
     }
+  };
+
+  const handleLoadMore = () => {
+    setPageIndex((prevIndex) => prevIndex + 1);
   };
 
   return (
@@ -130,20 +201,17 @@ const SearchQuizzes = () => {
             clicking Add Tags above!
           </p>
         ) : (
-          <>
-            <SearchQuizzCard
-              title="Quiz 1 Title"
-              tags={["reac", "re", "tag"]}
-              difficulty="Easy"
-              timeLimit={90}
-            />
-            <SearchQuizzCard
-              title="Quiz 2 Title"
-              tags={["reac", "re", "tag"]}
-              difficulty="Medium"
-              timeLimit={120}
-            />
-          </>
+          quizzes.map((quizz, index) => (
+            <SearchQuizzCard key={`${quizz.id}-${index}`} {...quizz} />
+          ))
+        )}
+        {totalElements >= (pageIndex + 1) * 5 && (
+          <Button
+            onClick={handleLoadMore}
+            className={`bg-yellow-400 text-white rounded-none hover:bg-yellow-500 p-2 px-10 shadow-lg self-center`}
+          >
+            Load More
+          </Button>
         )}
       </div>
     </div>

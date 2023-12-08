@@ -92,9 +92,10 @@ const SearchQuizzesTag: React.FC<SearchQuizzesProps> = ({
               <div className="flex flex-col absolute flex-grow flex-shrink-0 w-9/12 top-24">
                 {generatedTags.length > 0 &&
                   prefix !== "" &&
-                  generatedTags.map((tag) => {
+                  generatedTags.map((tag, index) => {
                     return (
                       <Button
+                        key={`${tag}-${index}`}
                         className="z-20"
                         variant="outline"
                         onClick={(e) => {
