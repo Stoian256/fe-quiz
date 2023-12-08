@@ -8,6 +8,10 @@ import { useAuth } from "@shadcn/context/authContext";
 import { useToast } from "@shadcn/context/ToastContext";
 import { Button } from "../ui/button";
 import { QuizQuestionData } from "@shadcn/utils/interfaces/QuizQuestionData";
+import {
+  Difficulty,
+  difficultyMap
+} from "@shadcn/utils/functions/mapDifficultyColors";
 
 interface QuizProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
@@ -41,24 +45,11 @@ const QuizQuestions: React.FC<QuizProps> = ({
   const handleArrowClick = (direction: string) => {
     let newPageNumber = pageNumber;
 
-    if (direction === "left" && pageNumber > 1) {
+    if (direction === "left" && pageNumber > 0) {
       newPageNumber = pageNumber - 1;
     }
 
     setPageNumber(newPageNumber);
-  };
-
-  const getDifficultyStyle = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy":
-        return "bg-green-500";
-      case "Medium":
-        return "bg-yellow-500";
-      case "Difficult":
-        return "bg-red-500";
-      default:
-        return "bg-gray-200";
-    }
   };
 
   const BE_URL = import.meta.env.VITE_API_SERVER_URL;
@@ -160,9 +151,9 @@ const QuizQuestions: React.FC<QuizProps> = ({
               </div>
             </div>
             <div
-              className={`${getDifficultyStyle(
-                question.difficulty
-              )} text-xs font-bold text-white rounded-xl py-1 px-1.5`}
+              className={`${
+                difficultyMap[question.difficulty as Difficulty]
+              } text-xs font-bold text-white rounded-xl py-1 px-1.5`}
             >
               {question.difficulty}
             </div>
@@ -182,7 +173,7 @@ const QuizQuestions: React.FC<QuizProps> = ({
         onPageNumberChange={(page) => setPageNumber(page)}
         handleArrowClick={(direction: string) => handleArrowClick(direction)}
         itemsPerPage={itemsPerPage}
-        handleItemsPerPage={handleItemsPerPage}
+        handleItemsPerPage={(e) => handleItemsPerPage(e)}
         numbersOfPages={numbersOfPages}
       />
     </div>

@@ -62,6 +62,13 @@ const FormTags: React.FC<FormTagsProps> = ({ onUpdateTags, content, tags }) => {
       return;
     }
 
+    if (tags.length < 1) {
+      setTagErrors({
+        ...tagErrors,
+        [tags.indexOf(trimmedTag)]: "There must be at least 1 tag!"
+      })
+    }
+
     onUpdateTags([...tags, trimmedTag]);
     setInputTag("");
   };

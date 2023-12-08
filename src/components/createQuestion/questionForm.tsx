@@ -152,6 +152,14 @@ const QuestionForm: React.FC = () => {
       validationErrors.push("Please mark at least one answer as correct.");
     }
 
+    if (questionDataToSend.tags.length === 0) {
+      validationErrors.push("Please add at least one tag.");
+    }
+
+    if (questionDataToSend.tags.length >= 7) {
+      validationErrors.push("Can't add more than 7 tags.");
+    }
+
     return {
       isValid: zodErrors.length === 0 && validationErrors.length === 0,
       errors: [...zodErrors, ...validationErrors]
