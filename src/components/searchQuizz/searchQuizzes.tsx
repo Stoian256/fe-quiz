@@ -41,7 +41,7 @@ const SearchQuizzes = () => {
     async function fetchData() {
       try {
         if (accessToken) {
-          const data = await getTopTags(accessToken, 10, prefix, topTags);
+          const data = await getTopTags(accessToken, 10, prefix.charAt(0).toUpperCase() + prefix.slice(1), topTags);
           console.log(data);
           setGeneratedTags(
             data.map((tag: { tagTitle: string }) => tag.tagTitle)
