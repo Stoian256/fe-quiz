@@ -31,7 +31,6 @@ const App: React.FC = () => {
           const decodedToken: { permissions: string[] } = jwtDecode(token);
           const userIsAdmin = decodedToken.permissions.includes("Admin");
           storeData!(token, isAuthenticated, userIsAdmin);
-          console.log(token)
         }
       }
     } catch (error) {

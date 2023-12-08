@@ -17,14 +17,16 @@ interface QuizProps {
   handleSetQuestions: (selectedQuestionId: string[]) => void;
   reset: boolean;
   apiQuestions: string[];
+  handleRemoveQuestion: (questionId: string) => void;
 }
 
 const QuizQuestions: React.FC<QuizProps> = ({
   handleSetQuestions,
   reset,
-  apiQuestions
+  apiQuestions,
+  handleRemoveQuestion
 }) => {
-  const { selectedQuestions, removeQuestion } = useQuizModalContext();
+  const { selectedQuestions, removeQuestion, removeQuestionFromModal } = useQuizModalContext();
   const [questions, setQuestions] = useState<QuizQuestionData[]>([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -96,7 +98,7 @@ const QuizQuestions: React.FC<QuizProps> = ({
     };
 
     fetchNewQuestions();
-  }, [apiQuestions, questions, accessToken]);
+  }, [apiQuestions, accessToken]);
 
   useEffect(() => {
     const fetchEditQuestions = async () => {
@@ -137,7 +139,7 @@ const QuizQuestions: React.FC<QuizProps> = ({
     };
 
     fetchEditQuestions();
-  }, [selectedQuestions, questions, accessToken]);
+  }, [selectedQuestions, accessToken]);
 
   useEffect(() => {
     if (reset) {
@@ -147,6 +149,12 @@ const QuizQuestions: React.FC<QuizProps> = ({
 
   const onRemove = (indexToRemove: string) => {
     removeQuestion(indexToRemove);
+    setQuestions(prevQuestions => {
+      const updatedQuestions = prevQuestions.filter(question => question.id !== indexToRemove);
+      return updatedQuestions;
+    });
+    handleRemoveQuestion(indexToRemove)
+    removeQuestionFromModal(indexToRemove);
   };
 
   return (

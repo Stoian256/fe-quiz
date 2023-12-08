@@ -248,6 +248,10 @@ const QuizForm: React.FC = () => {
     setQuestions(selectedQuestions);
   };
 
+  const handleQuestionRemove = (questionId: string) => {
+    setQuestions((prevQuestions) => prevQuestions.filter((id) => id !== questionId));
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -273,6 +277,7 @@ const QuizForm: React.FC = () => {
             handleSetQuestions={handleSelectedQuestions}
             reset={reset}
             apiQuestions={questions}
+            handleRemoveQuestion={handleQuestionRemove}
           />
           <CardFooter>
             <Button type="submit">
